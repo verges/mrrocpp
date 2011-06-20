@@ -37,40 +37,13 @@ class MainWindow;
 
 namespace mrrocpp {
 namespace ui {
-namespace spkm {
-class UiRobot;
-}
-namespace smb {
-class UiRobot;
-}
-namespace shead {
-class UiRobot;
-}
-namespace irp6ot_m {
-class UiRobot;
-}
-namespace irp6p_m {
-class UiRobot;
-}
-namespace irp6p_tfg {
-class UiRobot;
-}
-namespace irp6ot_tfg {
-class UiRobot;
-}
-namespace polycrank {
-class UiRobot;
-}
-namespace bird_hand {
-class UiRobot;
-}
-namespace sarkofag {
-class UiRobot;
-}
-namespace conveyor {
-class UiRobot;
-}
 namespace common {
+
+#define ADD_UI_ROBOT(__robot_name) \
+		{\
+			common::UiRobot *created_robot = new __robot_name::UiRobot(*this);\
+			robot_m[created_robot->robot_name] = created_robot;\
+		}
 
 class UiRobot;
 
@@ -190,20 +163,6 @@ public:
 
 	common::robots_t robot_m;
 
-	spkm::UiRobot *spkm1;
-	smb::UiRobot *smb1;
-	shead::UiRobot *shead1;
-
-	common::UiRobot *irp6ot_m;
-	common::UiRobot *irp6p_m;
-	common::UiRobot *irp6p_tfg;
-	common::UiRobot *irp6ot_tfg;
-	common::UiRobot *polycrank;
-	common::UiRobot *bird_hand;
-	sarkofag::UiRobot *sarkofag;
-
-	conveyor::UiRobot *conveyor;
-
 	const int position_refresh_interval;
 
 	int set_ui_state_notification(UI_NOTIFICATION_STATE_ENUM new_notifacion);
@@ -296,7 +255,6 @@ public:
 	wgt_choose_option* wgt_choose_option_obj;
 	wgt_teaching* wgt_teaching_obj;
 
-	std::vector <wgt_robot_process_control *> wgt_robots_pc;
 };
 
 }

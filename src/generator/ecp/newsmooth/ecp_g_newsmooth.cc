@@ -594,7 +594,7 @@ bool newsmooth::load_trajectory_from_file(const char* file_name)
 	return true;
 }
 
-bool newsmooth::optimize_energy_cost(std::vector<double> max_current, std::vector<double> max_current_change, std::vector<double> max_velocity, std::vector<double> max_acceleration, double stop_condition)
+bool newsmooth::optimize_objective(std::vector<double> max_current, std::vector<double> max_current_change, std::vector<double> max_velocity, std::vector<double> max_acceleration, double stop_condition, double timeCoef)
 {
     bool finish = false;
 
@@ -661,22 +661,23 @@ bool newsmooth::optimize_energy_cost(std::vector<double> max_current, std::vecto
 
     if (debug)
     {
-        if (energy_cost.size() == 0)
+        if (objective_vector.size() == 0)
         {
             std::ofstream rmDataFile(last_loaded_file_path + "-optimizedData", std::ios::out);
             rmDataFile << "";
         }
     }
-
+    double objective = calculate_objective(energySum, timeSum, timeCoef);
+    objective_vector.push_back(objective);
+    time_cost.push_back(timeSum);
     energy_cost.push_back(energySum);
-    //time_vector.push_back(timeSum);
 
     printf("optimal vector size: %d\n", optimal_pose_vector.size());
 
-    if (check_if_lowest_energy_cost(energySum) == true)
-  //if (check_if_lowest_objective_function_value(energySum, timeSum) == true)
+    //if (check_if_lowest_energy_cost(energySum) == true)
+    if (check_if_highest_objective(objective) == true)
     {
-        printf("lowest cost\n");
+        printf("highest objective\n");
         //printf("lowerst obj function");
         if (optimal_pose_vector.size() == pose_vector.size())
         {
@@ -711,6 +712,7 @@ bool newsmooth::optimize_energy_cost(std::vector<double> max_current, std::vecto
         std::ofstream outDataFile(last_loaded_file_path + "-optimizedData", std::ios::app);
         outDataFile << energySum << ";";
         outDataFile << timeSum << ";";
+        outDataFile << objective << ";";
 
         for (j = 0; j < pose_vector.size(); j++)
         {
@@ -868,18 +870,18 @@ bool newsmooth::optimize_energy_cost(std::vector<double> max_current, std::vecto
     double cost_change2;
     double cost_change3;
 
-    if (energy_cost.size() > 3)
+    if (objective_vector.size() > 3)
     {
-        cost_change1 = fabs(energy_cost[energy_cost.size()-1])/fabs(energy_cost[energy_cost.size()-2]);
-        cost_change2 = fabs(energy_cost[energy_cost.size()-2])/fabs(energy_cost[energy_cost.size()-3]);
-        cost_change3 = fabs(energy_cost[energy_cost.size()-3])/fabs(energy_cost[energy_cost.size()-4]);
+        cost_change1 = fabs(objective_vector[objective_vector.size()-1])/fabs(objective_vector[objective_vector.size()-2]);
+        cost_change2 = fabs(objective_vector[objective_vector.size()-2])/fabs(objective_vector[objective_vector.size()-3]);
+        cost_change3 = fabs(objective_vector[objective_vector.size()-3])/fabs(objective_vector[objective_vector.size()-4]);
         printf("cost change 1: %f\n", cost_change1);
         printf("cost change 2: %f\n", cost_change2);
         printf("cost change 3: %f\n", cost_change3);
     }
 
 
-    if (energy_cost.size() > 3 &&
+    if (objective_vector.size() > 3 &&
         cost_change1 < (1.0 + stop_condition) && cost_change1 > (1.0 - stop_condition) &&
         cost_change2 < (1.0 + stop_condition) && cost_change2 > (1.0 - stop_condition) &&
         cost_change3 < (1.0 + stop_condition) && cost_change3 > (1.0 - stop_condition) &&
@@ -957,11 +959,13 @@ bool newsmooth::optimize_energy_cost(std::vector<double> max_current, std::vecto
     }
 
     print_energy_cost();
+    print_time_cost();
+    print_objective();
 
     return finish;
 }
 
-void newsmooth::optimize_energy_cost(std::vector<double> startPos, std::vector<double> max_current, std::vector<double>max_current_change, std::vector<double>max_velocity, std::vector<double>max_acceleration, double stop_condition, boost::shared_ptr <newsmooth> sgenstart, const char *file_name)
+void newsmooth::optimize_objective(std::vector<double> startPos, std::vector<double> max_current, std::vector<double>max_current_change, std::vector<double>max_velocity, std::vector<double>max_acceleration, double stop_condition, boost::shared_ptr <newsmooth> sgenstart, const char *file_name, double timeCoef)
 {
     reset();
     set_optimization(true);
@@ -976,7 +980,7 @@ void newsmooth::optimize_energy_cost(std::vector<double> startPos, std::vector<d
 
             //sgenstart->set_debug(true);
 
-            while (!optimize_energy_cost(max_current, max_current_change, max_velocity, max_acceleration, stop_condition)) {
+            while (!optimize_objective(max_current, max_current_change, max_velocity, max_acceleration, stop_condition, timeCoef)) {
                     sr_ecp_msg.message("Optimizing...");
 
                     sgenstart->load_absolute_joint_trajectory_pose(startPos);
@@ -998,7 +1002,7 @@ void newsmooth::optimize_energy_cost(std::vector<double> startPos, std::vector<d
     reset();
 }
 
-void newsmooth::optimize_energy_cost_postument(boost::shared_ptr <newsmooth> sgenstart, const char *file_name, std::vector<double> start_pos, double stop_condition)
+void newsmooth::optimize_objectivet_postument(boost::shared_ptr <newsmooth> sgenstart, const char *file_name, std::vector<double> start_pos, double stop_condition, double timeCoef)
 {
     std::vector <double> max_current = std::vector <double>(6);
     max_current[0] = 13000;
@@ -1032,10 +1036,10 @@ void newsmooth::optimize_energy_cost_postument(boost::shared_ptr <newsmooth> sge
     max_acceleration[4] = 0.2;
     max_acceleration[5] = 0.2;
 
-    optimize_energy_cost(start_pos, max_current, max_current_change, max_velocity, max_acceleration, stop_condition, sgenstart, file_name);
+    optimize_objective(start_pos, max_current, max_current_change, max_velocity, max_acceleration, stop_condition, sgenstart, file_name, timeCoef);
 }
 
-void newsmooth::optimize_energy_cost_track(boost::shared_ptr <newsmooth> sgenstart, const char *file_name, std::vector<double> start_pos, double stop_condition)
+void newsmooth::optimize_objective_track(boost::shared_ptr <newsmooth> sgenstart, const char *file_name, std::vector<double> start_pos, double stop_condition, double timeCoef)
 {
     std::vector <double> max_current = std::vector <double>(7);
     max_current[0] = 22000;
@@ -1073,7 +1077,7 @@ void newsmooth::optimize_energy_cost_track(boost::shared_ptr <newsmooth> sgensta
     max_acceleration[5] = 0.2;
     max_acceleration[6] = 0.2;
 
-    optimize_energy_cost(start_pos, max_current, max_current_change, max_velocity, max_acceleration, stop_condition, sgenstart, file_name);
+    optimize_objective(start_pos, max_current, max_current_change, max_velocity, max_acceleration, stop_condition, sgenstart, file_name, timeCoef);
 }
 
 //--------------- METHODS USED TO LOAD POSES END ----------------

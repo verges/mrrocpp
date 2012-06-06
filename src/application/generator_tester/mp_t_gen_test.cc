@@ -41,7 +41,7 @@ task* return_created_mp_task(lib::configurator &_config)
 void gen_test::create_robots()
 {
         ACTIVATE_MP_ROBOT(irp6ot_m);
-	ACTIVATE_MP_ROBOT(irp6p_m);
+        ACTIVATE_MP_ROBOT(irp6p_m);
         ACTIVATE_MP_ROBOT(conveyor);
 }
 
@@ -60,8 +60,8 @@ void gen_test::main_task_algorithm(void)
 
 	// Track
 
-	/*if (config.value <int> ("is_irp6ot_m_active", lib::UI_SECTION)) {
-             //------------------- CONSTANT VELOCITY GENERATOR -------------------
+    if (config.value <int> ("is_irp6ot_m_active", lib::UI_SECTION)) {
+    /*         //------------------- CONSTANT VELOCITY GENERATOR -------------------
 
              set_next_ecp_state(ecp_mp::subtask::ECP_ST_CONST_VEL_GEN_TEST, (int) 5, "", 0, lib::irp6ot_m::ROBOT_NAME);
 
@@ -80,7 +80,8 @@ void gen_test::main_task_algorithm(void)
 
              wait_for_task_termination(false, 1, lib::irp6ot_m::ROBOT_NAME.c_str());
              //------------------- SPLINE GENERATOR END -------------------
-	 }*/
+     */
+    }
 
 	// Postument
 	if (config.value <int>("is_irp6p_m_active", lib::UI_SECTION)) {

@@ -59,12 +59,12 @@ ecp::common::generator::velocity_profile_calculator::bang_bang_profile> {
 		 * Prints single pose.
 		 */
 		void print_pose(std::vector<ecp_mp::common::trajectory_pose::bang_bang_trajectory_pose>::iterator & it);
-                /**
-                 * Performs basic optimization of the motion by setting new values of maximal velocity and maximal acceleration separately on each trajectory segment.
-                 * Optimization is based on minimizing the energy cost.
-                 * @return true if optimization finished
-                 */
-                bool optimize_energy_cost(std::vector<double> max_current, std::vector<double> max_current_change, std::vector<double> max_velocity, std::vector<double> max_acceleration, double stopCondition);
+        /**
+         * Performs basic optimization of the motion by setting new values of maximal velocity and maximal acceleration separately on each trajectory segment.
+         * Optimization is based on minimizing the energy cost.
+         * @return true if optimization finished
+         */
+        bool optimize_objective(std::vector<double> max_current, std::vector<double> max_current_change, std::vector<double> max_velocity, std::vector<double> max_acceleration, double stopCondition, double timeCoef);
 
 	public:
 		/**
@@ -138,21 +138,21 @@ ecp::common::generator::velocity_profile_calculator::bang_bang_profile> {
 		 * @param trajectory to load
 		 */
 		bool load_relative_pose(ecp_mp::common::trajectory_pose::bang_bang_trajectory_pose & trajectory_pose);
-                /**
-                 * Performs basic optimization of the motion by setting new values of maximal velocity and maximal acceleration separately on each trajectory segment.
-                 * Optimization is based on minimizing the energy cost.
-                 */
-                void optimize_energy_cost(std::vector<double> startPos, std::vector<double> max_current, std::vector<double> max_current_change, std::vector<double> max_velocity, std::vector<double> max_acceleration, double stop_condition, boost::shared_ptr <newsmooth> sgenstart, const char* file_name);
-                /**
-                 * Performs basic optimization of the motion of irp6-postument robot by setting new values of maximal velocity and maximal acceleration separately on each trajectory segment.
-                 * Optimization is based on minimizing the energy cost.
-                 */
-                void optimize_energy_cost_postument(boost::shared_ptr <newsmooth> sgenstart, const char *file_name, std::vector<double> start_pos, double stop_condition);
-                /**
-                 * Performs basic optimization of the motion of irp6-track robot by setting new values of maximal velocity and maximal acceleration separately on each trajectory segment.
-                 * Optimization is based on minimizing the energy cost.
-                 */
-                void optimize_energy_cost_track(boost::shared_ptr <newsmooth> sgenstart, const char *file_name, std::vector<double> start_pos, double stop_condition);
+        /**
+         * Performs basic optimization of the motion by setting new values of maximal velocity and maximal acceleration separately on each trajectory segment.
+         * Optimization is based on minimizing the energy cost.
+         */
+        void optimize_objective(std::vector<double> startPos, std::vector<double> max_current, std::vector<double> max_current_change, std::vector<double> max_velocity, std::vector<double> max_acceleration, double stop_condition, boost::shared_ptr <newsmooth> sgenstart, const char* file_name, double timeCoef);
+        /**
+         * Performs basic optimization of the motion of irp6-postument robot by setting new values of maximal velocity and maximal acceleration separately on each trajectory segment.
+         * Optimization is based on minimizing the energy cost.
+         */
+        void optimize_objectivet_postument(boost::shared_ptr <newsmooth> sgenstart, const char *file_name, std::vector<double> start_pos, double stop_condition, double timeCoef);
+        /**
+         * Performs basic optimization of the motion of irp6-track robot by setting new values of maximal velocity and maximal acceleration separately on each trajectory segment.
+         * Optimization is based on minimizing the energy cost.
+         */
+        void optimize_objective_track(boost::shared_ptr <newsmooth> sgenstart, const char *file_name, std::vector<double> start_pos, double stop_condition, double timeCoef);
 };
 
 } // namespace generator

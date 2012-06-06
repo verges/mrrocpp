@@ -21,7 +21,6 @@ namespace generator {
 smooth_gen_test::smooth_gen_test(task::task & _ecp_t) :
                 common::generator::generator(_ecp_t)
 {
-
         generator_name = mrrocpp::ecp_mp::generator::ECP_MP_SMOOTH_GEN_TEST;
         if (_ecp_t.ecp_m_robot->robot_name == lib::irp6p_m::ROBOT_NAME) {
                 sgenjoint = (boost::shared_ptr <newsmooth>) new newsmooth(_ecp_t, lib::ECP_JOINT, 6);
@@ -145,11 +144,11 @@ void smooth_gen_test::conditional_execution()
         sgenjoint->optimize_energy_cost(startPos, max_current, max_current_change, max_velocity, max_acceleration, 0.04, sgenstart, network_path.c_str()); */
         if (postument)
         {
-            sgenjoint->optimize_energy_cost_postument(sgenstart, network_path.c_str(), startPos, 0.04);
+            sgenjoint->optimize_objectivet_postument(sgenstart, network_path.c_str(), startPos, 0.04, 0.1);
         }
         else if (track)
         {
-            sgenjoint->optimize_energy_cost_track(sgenstart, network_path.c_str(), startPos, 0.04);
+            sgenjoint->optimize_objective_track(sgenstart, network_path.c_str(), startPos, 0.04, 0.5);
         }
 
 	// JOINT ABSOLUTE

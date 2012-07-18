@@ -24,6 +24,10 @@
 #include "base/edp/HardwareInterface.h"
 #include "robot/hi_moxa/hi_moxa_combuf.h"
 
+#include "serialcomm.hpp"
+#include "nfv2.h"
+#include "mycrc.h"
+
 namespace mrrocpp {
 namespace edp {
 namespace common {
@@ -137,12 +141,6 @@ public:
 	 */
 	virtual bool robot_synchronized();
 	/**
-	 * @brief set parameter to send with next command
-	 * @param drive_number		number of drive
-	 * @param param			parameter type
-	 */
-	virtual void set_command_param(int drive_offset, uint8_t param);
-	/**
 	 * @brief read 'is impulse zero' flag from communication buffer
 	 * @param drive_number		number of drive
 	 */
@@ -164,16 +162,31 @@ private:
 	const std::size_t last_drive_number;
 	/// vector of serial port names
 	std::vector <std::string> port_names;
+	/// tab of drives addresses
+	uint8_t drives_addresses[];
 	/// tab of max allowed motor position increments
 	const double* ridiculous_increment;
 	/// tab of port designators
-	int fd[MOXA_SERVOS_NR], fd_max;
+	int fd[MOXA_SERVOS_NR];
+	int fd_max;
+	/// tab of communication class instances
+	SerialComm* SerialPort[MOXA_SERVOS_NR];
 	/// tab of data buffers
 	struct servo_St servo_data[MOXA_SERVOS_NR];
 	struct termios oldtio[MOXA_SERVOS_NR];
 
 	/// periodic timer used for generating read_write_hardware time base
 	lib::periodic_timer ptimer;
+
+
+	uint8_t txBuf[256];
+	uint8_t txCnt;
+	uint8_t rxBuf[256];
+	uint8_t rxCnt;
+	uint8_t commandArray[256];
+	uint8_t commandCnt;
+	uint8_t rxCommandArray[256];
+	uint8_t rxCommandCnt;
 };
 // endof: class hardware_interface
 

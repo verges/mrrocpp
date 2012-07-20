@@ -90,7 +90,8 @@ public:
 
 	motor_driven_effector &master;
 	virtual void init() = 0;
-	virtual void insert_set_value(int drive_number, double set_value) = 0;
+	virtual void set_pwm(int drive_number, double set_value) = 0;
+	virtual void set_current(int drive_number, double set_value) = 0;
 	virtual int get_current(int drive_number) = 0;
 
 	virtual float get_voltage(int drive_number) = 0;
@@ -108,7 +109,7 @@ public:
 	virtual bool is_impulse_zero(int drive_number) = 0;
 	virtual void reset_position(int i) = 0;
 
-	virtual int set_parameter(int drive_number, const int parameter, uint32_t new_value) = 0;
+	virtual int set_parameter_now(int drive_number, const int parameter, uint32_t new_value) = 0;
 };
 
 }

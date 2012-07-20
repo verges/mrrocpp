@@ -54,8 +54,8 @@ void servo_buffer::load_hardware_interface(void)
 
 	//Ustawienie zwlocznego ograniczenia pradowego - dlugotrwale przekroczenie ustawionej wartosci
 	//spowoduje wlaczenie stopu awaryjnego przez sterownik
-	hi->set_parameter(0, hi_moxa::PARAM_MAXCURRENT, mrrocpp::lib::irp6p_tfg::MAX_CURRENT_0);
-	//	hi->set_parameter(0, hi_moxa::PARAM_MAXCURRENT, 0);
+	hi->set_parameter_now(0, hi_moxa::PARAM_MAXCURRENT, mrrocpp::lib::irp6p_tfg::MAX_CURRENT_0);
+	//	hi->set_parameter_now(0, hi_moxa::PARAM_MAXCURRENT, 0);
 
 	// utworzenie tablicy regulatorow
 	// Serwomechanizm 1

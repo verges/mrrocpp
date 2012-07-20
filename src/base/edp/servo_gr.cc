@@ -665,7 +665,7 @@ uint64_t servo_buffer::compute_all_set_values(void)
 		// obliczenie nowej wartosci zadanej dla napedu
 		status |= ((uint64_t) regulator_ptr[j]->compute_set_value()) << 2 * j;
 		// przepisanie obliczonej wartosci zadanej do hardware interface
-		hi->insert_set_value(j, regulator_ptr[j]->get_set_value());
+		hi->set_pwm(j, regulator_ptr[j]->get_set_value());
 	}
 	return status;
 }

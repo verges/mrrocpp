@@ -17,6 +17,8 @@
 // TERMINAL INFO
 //#define T_INFO_FUNC
 //#define T_INFO_CALC
+//#define NFV2_TX_DEBUG
+//#define NFV2_RX_DEBUG
 
 #define STATUS_DISP_T 100
 
@@ -64,22 +66,42 @@ public:
 	 * @param *max_increments	tab of max allowed motor increments
 	 */
 	HI_moxa(common::motor_driven_effector &_master, int last_drive_n, std::vector <std::string> ports, const double* max_increments); // Konstruktor
+
 	/**
 	 * @brief destructor
 	 */
 	~HI_moxa();
+
 	/**
 	 * @brief initialization of hardware interface
 	 * opens serial ports, writes init values to data structures
 	 */
 	virtual void init();
+
 	/**
 	 * @brief write pwm to communication buffer
 	 * @param drive_number		number of drive
 	 * @param set_value			pwm value
 	 * writes desired pwm value to drive's communication buffer
 	 */
-	virtual void insert_set_value(int drive_number, double set_value);
+	virtual void set_pwm(int drive_number, double set_value);
+
+	/**
+	 * @brief write current to communication buffer
+	 * @param drive_number		number of drive
+	 * @param set_value			current value [mA]
+	 * writes desired current value to drive's communication buffer
+	 */
+	virtual void set_current(int drive_number, double set_value);
+
+	/**
+	 * @brief write parameter to communication buffer
+	 * @param drive_number		number of drive
+	 * @param parameter			parameter type
+	 * @param new_value			parameter value
+	 */
+	virtual void set_parameter(int drive_number, const int parameter, uint32_t new_value);
+
 	/**
 	 * @brief read motor current from communication buffer
 	 * @param drive_number		number of drive
@@ -97,54 +119,64 @@ public:
 	 * @param drive_number		number of drive
 	 */
 	virtual double get_increment(int drive_number);
+
 	/**
 	 * @brief read motor position from communication buffer
 	 * @param drive_number		number of drive
 	 */
 	virtual long int get_position(int drive_number);
+
 	/**
 	 * @brief do communication cycle
 	 * sends data in communication buffer to motor controllers,
-	 * waits 500us for answers from controllers,
+	 * waits 700us for answers from controllers,
 	 * writes received data to communication buffer.
 	 */
 	virtual uint64_t read_write_hardware(void);
+
 	/**
 	 * @brief send parameter to motor driver
 	 * @param drive_number		number of drive
 	 * @param parameter			parameter type
 	 * @param new_value			parameter value
 	 */
-	virtual int set_parameter(int drive_number, const int parameter, uint32_t new_value);
+	virtual int set_parameter_now(int drive_number, const int parameter, uint32_t new_value);
+
 	/**
 	 * @brief reset all motor positions and position increments in communication buffer
 	 */
 	virtual void reset_counters(void);
+
 	/**
 	 * @brief start synchronization procedure
 	 * @param drive_number		number of drive
 	 * command motor controller to look for 'synchro zero' signal
 	 */
 	virtual void start_synchro(int drive_number);
+
 	/**
 	 * @brief finish synchronization procedure
 	 * @param drive_number		number of drive
 	 */
 	virtual void finish_synchro(int drive_number);
+
 	/**
 	 * @brief read 'in synchro area' flag from communication buffer
 	 * @param drive_number		number of drive
 	 */
 	virtual bool in_synchro_area(int drive_number);
+
 	/**
 	 * @brief read 'all robots synchronized' flag from communication buffer
 	 */
 	virtual bool robot_synchronized();
+
 	/**
 	 * @brief read 'is impulse zero' flag from communication buffer
 	 * @param drive_number		number of drive
 	 */
 	virtual bool is_impulse_zero(int drive_offset);
+
 	/**
 	 * @brief reset motor position in communication buffer
 	 * @param drive_number		number of drive
@@ -178,7 +210,7 @@ private:
 	/// periodic timer used for generating read_write_hardware time base
 	lib::periodic_timer ptimer;
 
-
+	NF_STRUCT_ComBuf NFComBuf;
 	uint8_t txBuf[256];
 	uint8_t txCnt;
 	uint8_t rxBuf[256];

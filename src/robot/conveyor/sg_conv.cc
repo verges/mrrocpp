@@ -45,7 +45,7 @@ void servo_buffer::load_hardware_interface(void)
 	hi->init();
 
 	// conveyor uruchamia sie jako zsynchronizowany - ustawic parametr na karcie sterownika
-	hi->set_parameter(0, hi_moxa::PARAM_SYNCHRONIZED, 1);
+	hi->set_parameter_now(0, hi_moxa::PARAM_SYNCHRONIZED, 1);
 
 	// utworzenie tablicy regulatorow
 

@@ -1,23 +1,23 @@
 #include "nfv2.h"
 
-extern NF_STRUCT_ComBuf 	NFComBuf;
-
-volatile	uint8_t *dataPt;
-uint16_t * dummy;
 /*
-* Funkcja do wrzucenia w obsluge przerwania.
-* rxBuf[] - tablica, w ktorej w przerwaniu znak po znaku zapisywana jest odebrana wiadomosc,
-* rxPt - indeks pola w tablicy, na ktorym zostala zapisany zostal ostatnio odebrany bajt.
+* Funkcja do wrzucenia w obsluge przychodzacych danych.
+* NFComBuf - wskaznik do bufora komunikacyjnego, w ktorej automatycznie beda umieszczane odebrane dane.
+* rxBuf - wskaznik do tablicy, w ktorej w przerwaniu znak po znaku zapisywana jest odebrana wiadomosc.
+* rxPt - wskaznik do indeksu pola w tablicy, na ktorym zostala zapisany zostal ostatnio odebrany bajt.
+* commandArray - wskaznik do tablicy polecen, ktora jest automatycznie wypelniana w przypadku odebrania zapytan.
+* commandCnt - wskaznik do zmiennej zawierajacej liczbe polecen w commandArray[].
 * Funkcja zwraca 1, jesli zostala poprawnie odebrana ramka adresowana do naszego modulu, 0 w pozostalych przypadkach.
 */
-uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
+uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
+						volatile uint8_t *rxBuf,
 						volatile uint8_t *rxPt,
 						volatile uint8_t *commandArray,
 						volatile uint8_t *commandCnt){
 	static uint8_t n;	
 	uint8_t rxAddress, rxParamsCnt;
-	uint8_t rxBufIter, combufDataIter, rxDataIter;
-	uint8_t *paramsPt;
+	uint8_t rxBufIter, combufDataIter, rxDataIter, dataBytesIter;
+	uint8_t *dataPt, *u8TempPt;
 
 	if((*rxPt) == 0 && rxBuf[0]!='#'){
 		return 0;
@@ -39,7 +39,7 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 			return 0;
 		}
 		// if Address Fail && not a Broadcast
-		//else if(rxBuf[3] != NFComBuf.myAddress && rxBuf[3] != NF_BroadcastAddress){
+		//else if(rxBuf[3] != NFComBuf->myAddress && rxBuf[3] != NF_BroadcastAddress){
 		//	return 0;
 		//}
 		// if CRC OK && Address OK go to Command Interpreter
@@ -54,26 +54,32 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 	rxBufIter = 4; // First command starts here
 	*commandCnt = 0;
 	while(rxBufIter < n){
-		paramsPt = (uint8_t*)rxBuf + rxBufIter+2;
+		dataPt = rxBuf + rxBufIter+2;
 		
 		// ############### "WRITE" Type Commands
-		// if  rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress
+		// if  rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress
 		//		Master sends data to me (slave)
 		
 		// ########	Drives
 		// ####		Set Mode
 		#ifdef NF_BUFSZ_SetDrivesMode
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetDrivesMode){
-				if(rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress) {
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
 					combufDataIter = 0;
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesMode;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesMode)) {
-						NFComBuf.SetDrivesMode.data[combufDataIter] = ((NF_STRUCT_SetDrivesMode*)paramsPt)->data[rxDataIter];
+						u8TempPt = &(NFComBuf->SetDrivesMode.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesMode){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesMode + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetDrivesMode.data[combufDataIter] = ((NF_STRUCT_SetDrivesMode*)dataPt)->data[rxDataIter];
 						combufDataIter++;						
 						rxDataIter++;
 					}
-					NFComBuf.SetDrivesMode.updated = 1;
+					NFComBuf->SetDrivesMode.updated = 1;
 				}
 			}
 			else
@@ -81,16 +87,22 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 		// ####		Set Speed
 		#ifdef NF_BUFSZ_SetDrivesSpeed
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetDrivesSpeed){ 
-				if(rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress) {
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
 					combufDataIter = 0;
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesSpeed;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesSpeed)) {
-						NFComBuf.SetDrivesSpeed.data[combufDataIter] = ((NF_STRUCT_SetDrivesSpeed*)paramsPt)->data[rxDataIter];
+						u8TempPt = &(NFComBuf->SetDrivesSpeed.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesSpeed){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesSpeed + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetDrivesSpeed.data[combufDataIter] = ((NF_STRUCT_SetDrivesSpeed*)dataPt)->data[rxDataIter];
 						combufDataIter++;						
 						rxDataIter++;
 					}
-					NFComBuf.SetDrivesSpeed.updated = 1;
+					NFComBuf->SetDrivesSpeed.updated = 1;
 				}
 			}
 			else
@@ -98,16 +110,22 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 		// ####		Set Current
 		#ifdef NF_BUFSZ_SetDrivesCurrent
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetDrivesCurrent){				
-				if(rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress) {
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
 					combufDataIter = 0;
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesCurrent;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesCurrent)) {
-						NFComBuf.SetDrivesCurrent.data[combufDataIter] = ((NF_STRUCT_SetDrivesCurrent*)paramsPt)->data[rxDataIter];
+						u8TempPt = &(NFComBuf->SetDrivesCurrent.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesCurrent){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesCurrent + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetDrivesCurrent.data[combufDataIter] = ((NF_STRUCT_SetDrivesCurrent*)dataPt)->data[rxDataIter];
 						combufDataIter++;						
 						rxDataIter++;
 					}
-					NFComBuf.SetDrivesCurrent.updated = 1;
+					NFComBuf->SetDrivesCurrent.updated = 1;
 				}
 			}
 			else
@@ -115,16 +133,22 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 		// ####		Set Position
 		#ifdef NF_BUFSZ_SetDrivesPosition
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetDrivesPosition){			
-				if(rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress) {
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
 					combufDataIter = 0;
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesPosition;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesPosition)) {
-						NFComBuf.SetDrivesPosition.data[combufDataIter] = ((NF_STRUCT_SetDrivesPosition*)paramsPt)->data[rxDataIter];
+						u8TempPt = &(NFComBuf->SetDrivesPosition.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesPosition){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesPosition + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetDrivesPosition.data[combufDataIter] = ((NF_STRUCT_SetDrivesPosition*)dataPt)->data[rxDataIter];
 						combufDataIter++;						
 						rxDataIter++;
 					}
-					NFComBuf.SetDrivesPosition.updated = 1;
+					NFComBuf->SetDrivesPosition.updated = 1;
 				}
 			}
 			else
@@ -132,16 +156,22 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 		// ####		Set PWM
 		#ifdef NF_BUFSZ_SetDrivesPWM
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetDrivesPWM){			
-				if(rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress) {
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
 					combufDataIter = 0;
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesPWM;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesPWM)) {
-						NFComBuf.SetDrivesPWM.data[combufDataIter] = ((NF_STRUCT_SetDrivesPWM*)paramsPt)->data[rxDataIter];
+						u8TempPt = &(NFComBuf->SetDrivesPWM.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesPWM){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesPWM + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetDrivesPWM.data[combufDataIter] = ((NF_STRUCT_SetDrivesPWM*)dataPt)->data[rxDataIter];
 						combufDataIter++;						
 						rxDataIter++;
 					}
-					NFComBuf.SetDrivesPWM.updated = 1;
+					NFComBuf->SetDrivesPWM.updated = 1;
 				}
 			}
 			else
@@ -149,16 +179,22 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 		// ####		Set Max Current
 		#ifdef NF_BUFSZ_SetDrivesMaxCurrent
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetDrivesMaxCurrent){				
-				if(rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress) {
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
 					combufDataIter = 0;
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesMaxCurrent;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesMaxCurrent)) {
-						NFComBuf.SetDrivesMaxCurrent.data[combufDataIter] = ((NF_STRUCT_SetDrivesMaxCurrent*)paramsPt)->data[rxDataIter];
+						u8TempPt = &(NFComBuf->SetDrivesMaxCurrent.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesMaxCurrent){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesMaxCurrent + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetDrivesMaxCurrent.data[combufDataIter] = ((NF_STRUCT_SetDrivesMaxCurrent*)dataPt)->data[rxDataIter];
 						combufDataIter++;						
 						rxDataIter++;
 					}
-					NFComBuf.SetDrivesMaxCurrent.updated = 1;
+					NFComBuf->SetDrivesMaxCurrent.updated = 1;
 				}
 			}
 			else
@@ -166,16 +202,22 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 		// ####		Set Misc
 		#ifdef NF_BUFSZ_SetDrivesMisc
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetDrivesMisc){				
-				if(rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress) {
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
 					combufDataIter = 0;
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesMisc;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesMisc)) {
-						NFComBuf.SetDrivesMisc.data[combufDataIter] = ((NF_STRUCT_SetDrivesMisc*)paramsPt)->data[rxDataIter];
+						u8TempPt = &(NFComBuf->SetDrivesMisc.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesMisc){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesMisc + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetDrivesMisc.data[combufDataIter] = ((NF_STRUCT_SetDrivesMisc*)dataPt)->data[rxDataIter];
 						combufDataIter++;						
 						rxDataIter++;
 					}
-					NFComBuf.SetDrivesMisc.updated = 1;
+					NFComBuf->SetDrivesMisc.updated = 1;
 				}
 			}
 			else
@@ -185,16 +227,22 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 		// ####		Set Mode
 		#ifdef NF_BUFSZ_SetServosMode
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetServosMode){		
-				if(rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress) {
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
 					combufDataIter = 0;
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetServosMode;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetServosMode)) {
-						NFComBuf.SetServosMode.data[combufDataIter] = ((NF_STRUCT_SetServosMode*)paramsPt)->data[rxDataIter];
+						u8TempPt = &(NFComBuf->SetServosMode.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetServosMode){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetServosMode + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetServosMode.data[combufDataIter] = ((NF_STRUCT_SetServosMode*)dataPt)->data[rxDataIter];
 						combufDataIter++;						
 						rxDataIter++;
 					}
-					NFComBuf.SetServosMode.updated = 1;
+					NFComBuf->SetServosMode.updated = 1;
 				}
 			}
 			else
@@ -202,16 +250,22 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 		// ####		Set Position
 		#ifdef NF_BUFSZ_SetServosPosition
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetServosPosition){		
-				if(rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress) {
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
 					combufDataIter = 0;
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetServosPosition;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetServosPosition)) {
-						NFComBuf.SetServosPosition.data[combufDataIter] = ((NF_STRUCT_SetServosPosition*)paramsPt)->data[rxDataIter];
+						u8TempPt = &(NFComBuf->SetServosPosition.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetServosPosition){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetServosPosition + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetServosPosition.data[combufDataIter] = ((NF_STRUCT_SetServosPosition*)dataPt)->data[rxDataIter];
 						combufDataIter++;						
 						rxDataIter++;
 					}
-					NFComBuf.SetServosPosition.updated = 1;
+					NFComBuf->SetServosPosition.updated = 1;
 				}
 			}
 			else
@@ -219,16 +273,22 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 		// ####		Set Speed
 		#ifdef NF_BUFSZ_SetServosSpeed
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetServosSpeed){		
-				if(rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress) {
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
 					combufDataIter = 0;
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetServosSpeed;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetServosSpeed)) {
-						NFComBuf.SetServosSpeed.data[combufDataIter] = ((NF_STRUCT_SetServosSpeed*)paramsPt)->data[rxDataIter];
+						u8TempPt = &(NFComBuf->SetServosSpeed.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetServosSpeed){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetServosSpeed + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetServosSpeed.data[combufDataIter] = ((NF_STRUCT_SetServosSpeed*)dataPt)->data[rxDataIter];
 						combufDataIter++;						
 						rxDataIter++;
 					}
-					NFComBuf.SetServosSpeed.updated = 1;
+					NFComBuf->SetServosSpeed.updated = 1;
 				}
 			}
 			else
@@ -238,25 +298,31 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 		// ####		Set Outputs
 		#ifdef NF_BUFSZ_SetDigitalOutputs
 			if(rxBuf[rxBufIter] == NF_COMMAND_SetDigitalOutputs){		
-				if(rxAddress == NFComBuf.myAddress || rxAddress == NF_BroadcastAddress) {
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
 					combufDataIter = 0;
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDigitalOutputs;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDigitalOutputs)) {
-						NFComBuf.SetDigitalOutputs.data[combufDataIter] = ((NF_STRUCT_SetDigitalOutputs*)paramsPt)->data[rxDataIter];
+						u8TempPt = &(NFComBuf->SetDigitalOutputs.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDigitalOutputs){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDigitalOutputs + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetDigitalOutputs.data[combufDataIter] = ((NF_STRUCT_SetDigitalOutputs*)dataPt)->data[rxDataIter];
 						combufDataIter++;						
 						rxDataIter++;
 					}
-					NFComBuf.SetDigitalOutputs.updated = 1;
+					NFComBuf->SetDigitalOutputs.updated = 1;
 				}
 			}
 			else
 		#endif
 		
 		// ############### "READ" Type Commands
-		// if rxParamsCnt == 0 && rxAddress == NFComBuf.myAddress
+		// if rxParamsCnt == 0 && rxAddress == NFComBuf->myAddress
 		//		Master wants to acquire data from me (slave)
-		// if rxParamsCnt > 0  && rxAddress == NFComBuf.xxx.addr[i]
+		// if rxParamsCnt > 0  && rxAddress == NFComBuf->xxx.addr[i]
 		//		Slave returns data that I (master) asked for
 
 		// ########	Drives
@@ -265,7 +331,7 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 			if(rxBuf[rxBufIter] == NF_COMMAND_ReadDrivesCurrent){
 				rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_ReadDrivesCurrent;
 				// Master wants to acquire data from me (slave)
-				if((rxParamsCnt == 0) && (rxAddress == NFComBuf.myAddress)){
+				if((rxParamsCnt == 0) && (rxAddress == NFComBuf->myAddress)){
 					commandArray[*commandCnt] = NF_COMMAND_ReadDrivesCurrent;
 					(*commandCnt) ++;
 				}
@@ -274,8 +340,14 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 					combufDataIter = 0;
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDrivesCurrent)) {
-						if(NFComBuf.ReadDrivesCurrent.addr[combufDataIter] == rxAddress) {
-							NFComBuf.ReadDrivesCurrent.data[combufDataIter] = ((NF_STRUCT_ReadDrivesCurrent*)paramsPt)->data[rxDataIter];
+						if(NFComBuf->ReadDrivesCurrent.addr[combufDataIter] == rxAddress) {
+							u8TempPt = &(NFComBuf->ReadDrivesCurrent.data[combufDataIter]);
+							dataBytesIter = 0;
+							while(dataBytesIter < NF_DATABYTES_ReadDrivesCurrent){
+								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDrivesCurrent + dataBytesIter);
+								dataBytesIter++;
+							}
+							//NFComBuf->ReadDrivesCurrent.data[combufDataIter] = ((NF_STRUCT_ReadDrivesCurrent*)dataPt)->data[rxDataIter];
 							rxDataIter++;
 						}
 						combufDataIter++;
@@ -289,7 +361,7 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 			if(rxBuf[rxBufIter] == NF_COMMAND_ReadDrivesPosition){
 				rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_ReadDrivesPosition;
 				// Master wants to acquire data from me (slave)
-				if((rxParamsCnt == 0) && (rxAddress == NFComBuf.myAddress)){
+				if((rxParamsCnt == 0) && (rxAddress == NFComBuf->myAddress)){
 					commandArray[*commandCnt] = NF_COMMAND_ReadDrivesPosition;
 					(*commandCnt) ++;
 				}
@@ -298,8 +370,14 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 					combufDataIter = 0;
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDrivesPosition)) {
-						if(NFComBuf.ReadDrivesPosition.addr[combufDataIter] == rxAddress) {
-							NFComBuf.ReadDrivesPosition.data[combufDataIter] = ((NF_STRUCT_ReadDrivesPosition*)paramsPt)->data[rxDataIter];
+						if(NFComBuf->ReadDrivesPosition.addr[combufDataIter] == rxAddress) {
+							u8TempPt = &(NFComBuf->ReadDrivesPosition.data[combufDataIter]);
+							dataBytesIter = 0;
+							while(dataBytesIter < NF_DATABYTES_ReadDrivesPosition){
+								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDrivesPosition + dataBytesIter);
+								dataBytesIter++;
+							}
+							//NFComBuf->ReadDrivesPosition.data[combufDataIter] = ((NF_STRUCT_ReadDrivesPosition*)dataPt)->data[rxDataIter];
 							rxDataIter++;
 						}
 						combufDataIter++;
@@ -313,7 +391,7 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 			if(rxBuf[rxBufIter] == NF_COMMAND_ReadDrivesStatus){
 				rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_ReadDrivesStatus;
 				// Master wants to acquire data from me (slave)
-				if((rxParamsCnt == 0) && (rxAddress == NFComBuf.myAddress)){
+				if((rxParamsCnt == 0) && (rxAddress == NFComBuf->myAddress)){
 					commandArray[*commandCnt] = NF_COMMAND_ReadDrivesStatus;
 					(*commandCnt) ++;
 				}
@@ -322,8 +400,14 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 					combufDataIter = 0;
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDrivesStatus)) {
-						if(NFComBuf.ReadDrivesStatus.addr[combufDataIter] == rxAddress) {
-							NFComBuf.ReadDrivesStatus.data[combufDataIter] = ((NF_STRUCT_ReadDrivesStatus*)paramsPt)->data[rxDataIter];
+						if(NFComBuf->ReadDrivesStatus.addr[combufDataIter] == rxAddress) {
+							u8TempPt = &(NFComBuf->ReadDrivesStatus.data[combufDataIter]);
+							dataBytesIter = 0;
+							while(dataBytesIter < NF_DATABYTES_ReadDrivesStatus){
+								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDrivesStatus + dataBytesIter);
+								dataBytesIter++;
+							}
+							//NFComBuf->ReadDrivesStatus.data[combufDataIter] = ((NF_STRUCT_ReadDrivesStatus*)dataPt)->data[rxDataIter];
 							rxDataIter++;
 						}
 						combufDataIter++;
@@ -339,7 +423,7 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 			if(rxBuf[rxBufIter] == NF_COMMAND_ReadDigitalInputs){
 				rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_ReadDigitalInputs;
 				// Master wants to acquire data from me (slave)
-				if((rxParamsCnt == 0) && (rxAddress == NFComBuf.myAddress)){
+				if((rxParamsCnt == 0) && (rxAddress == NFComBuf->myAddress)){
 					commandArray[*commandCnt] = NF_COMMAND_ReadDigitalInputs;
 					(*commandCnt) ++;
 				}
@@ -348,8 +432,14 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 					combufDataIter = 0;
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDigitalInputs)) {
-						if(NFComBuf.ReadDigitalInputs.addr[combufDataIter] == rxAddress) {
-							NFComBuf.ReadDigitalInputs.data[combufDataIter] = ((NF_STRUCT_ReadDigitalInputs*)paramsPt)->data[rxDataIter];
+						if(NFComBuf->ReadDigitalInputs.addr[combufDataIter] == rxAddress) {
+							u8TempPt = &(NFComBuf->ReadDigitalInputs.data[combufDataIter]);
+							dataBytesIter = 0;
+							while(dataBytesIter < NF_DATABYTES_ReadDigitalInputs){
+								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDigitalInputs + dataBytesIter);
+								dataBytesIter++;
+							}
+							//NFComBuf->ReadDigitalInputs.data[combufDataIter] = ((NF_STRUCT_ReadDigitalInputs*)dataPt)->data[rxDataIter];
 							rxDataIter++;						
 						}
 						combufDataIter++;
@@ -365,7 +455,7 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 			if(rxBuf[rxBufIter] == NF_COMMAND_ReadAnalogInputs){
 				rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_ReadAnalogInputs;
 				// Master wants to acquire data from me (slave)
-				if((rxParamsCnt == 0) && (rxAddress == NFComBuf.myAddress)){
+				if((rxParamsCnt == 0) && (rxAddress == NFComBuf->myAddress)){
 					commandArray[*commandCnt] = NF_COMMAND_ReadAnalogInputs;
 					(*commandCnt) ++;
 				}
@@ -374,8 +464,14 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 					combufDataIter = 0;
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadAnalogInputs)) {
-						if(NFComBuf.ReadAnalogInputs.addr[combufDataIter] == rxAddress) {
-							NFComBuf.ReadAnalogInputs.data[combufDataIter] = ((NF_STRUCT_ReadAnalogInputs*)paramsPt)->data[rxDataIter];
+						if(NFComBuf->ReadAnalogInputs.addr[combufDataIter] == rxAddress) {
+							u8TempPt = &(NFComBuf->ReadAnalogInputs.data[combufDataIter]);
+							dataBytesIter = 0;
+							while(dataBytesIter < NF_DATABYTES_ReadAnalogInputs){
+								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadAnalogInputs + dataBytesIter);
+								dataBytesIter++;
+							}
+							//NFComBuf->ReadAnalogInputs.data[combufDataIter] = ((NF_STRUCT_ReadAnalogInputs*)dataPt)->data[rxDataIter];
 							rxDataIter++;						
 						}
 						combufDataIter++;
@@ -391,7 +487,7 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 			if(rxBuf[rxBufIter] == NF_COMMAND_ReadDeviceStatus){
 				rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_ReadDeviceStatus;
 				// Master wants to acquire data from me (slave)
-				if((rxParamsCnt == 0) && (rxAddress == NFComBuf.myAddress)){
+				if((rxParamsCnt == 0) && (rxAddress == NFComBuf->myAddress)){
 					commandArray[*commandCnt] = NF_COMMAND_ReadDeviceStatus;
 					(*commandCnt) ++;
 				}
@@ -400,8 +496,14 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 					combufDataIter = 0;
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDeviceStatus)) {
-						if(NFComBuf.ReadDeviceStatus.addr[combufDataIter] == rxAddress) {
-							NFComBuf.ReadDeviceStatus.data[combufDataIter] = ((NF_STRUCT_ReadDeviceStatus*)paramsPt)->data[rxDataIter];
+						if(NFComBuf->ReadDeviceStatus.addr[combufDataIter] == rxAddress) {
+							u8TempPt = &(NFComBuf->ReadDeviceStatus.data[combufDataIter]);
+							dataBytesIter = 0;
+							while(dataBytesIter < NF_DATABYTES_ReadDeviceStatus){
+								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDeviceStatus + dataBytesIter);
+								dataBytesIter++;
+							}
+							//NFComBuf->ReadDeviceStatus.data[combufDataIter] = ((NF_STRUCT_ReadDeviceStatus*)dataPt)->data[rxDataIter];
 							rxDataIter++;						
 						}
 						combufDataIter++;
@@ -415,7 +517,7 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 			if(rxBuf[rxBufIter] == NF_COMMAND_ReadDeviceVitals){
 				rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_ReadDeviceVitals;
 				// Master wants to acquire data from me (slave)
-				if((rxParamsCnt == 0) && (rxAddress == NFComBuf.myAddress)){
+				if((rxParamsCnt == 0) && (rxAddress == NFComBuf->myAddress)){
 					commandArray[*commandCnt] = NF_COMMAND_ReadDeviceVitals;
 					(*commandCnt) ++;
 				}
@@ -424,8 +526,14 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 					combufDataIter = 0;
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDeviceVitals)) {
-						if(NFComBuf.ReadDeviceVitals.addr[combufDataIter] == rxAddress) {
-							NFComBuf.ReadDeviceVitals.data[combufDataIter] = ((NF_STRUCT_ReadDeviceVitals*)paramsPt)->data[rxDataIter];
+						if(NFComBuf->ReadDeviceVitals.addr[combufDataIter] == rxAddress) {
+							u8TempPt = &(NFComBuf->ReadDeviceVitals.data[combufDataIter]);
+							dataBytesIter = 0;
+							while(dataBytesIter < NF_DATABYTES_ReadDeviceVitals){
+								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDeviceVitals + dataBytesIter);
+								dataBytesIter++;
+							}
+							//NFComBuf->ReadDeviceVitals.data[combufDataIter] = ((NF_STRUCT_ReadDeviceVitals*)dataPt)->data[rxDataIter];
 							rxDataIter++;						
 						}
 						combufDataIter++;
@@ -434,7 +542,7 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 			}
 			else
 		#endif
-				NFComBuf.unknownCommandRec = 1;
+				NFComBuf->unknownCommandRec = 1;
 			
 		
 		rxBufIter += rxBuf[rxBufIter+1]+2;
@@ -443,9 +551,23 @@ uint8_t NF_Interpreter(	volatile uint8_t *rxBuf,
 	return rxBufIter;
 }
 
-uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t commandCnt, uint8_t txAddress){
-	uint8_t txBufIter, commandIter, txDataIter, combufDataIter;	
-
+/*
+* Funkcja buduje ramke komunikatu na podstawie danych w buforze komunikacji oraz listy zadanych polecen.
+* NFComBuf - wskaznik do bufora komunikacyjnego, w ktorej automatycznie beda umieszczane odebrane dane.
+* txBuf - wskaznik do tablicy, w ktorej zostanie utworzona wiadomosc.
+* commandArray - wskaznik do tablicy polecen, ktore maja byc zawarte w komunikacie.
+* commandCnt - ilosc polecen w tablicy commandArray[].
+* Funkcja zwraca dlugosc zbudowanego komunikatu, zapisanego w txBuf.
+*/
+uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
+							uint8_t *txBuf,
+							const uint8_t *commandArray,
+							uint8_t commandCnt,
+							uint8_t txAddress){
+	uint8_t txBufIter, commandIter, txDataIter, combufDataIter, dataBytesIter;	
+	
+	uint8_t *dataPt;
+	uint8_t *u8TempPt;
 	 
 	txBuf[0] = '#';
 	txBuf[3] = txAddress;
@@ -464,8 +586,14 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 				combufDataIter = 0;
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDrivesMode) {
-					if(NFComBuf.SetDrivesMode.addr[combufDataIter] == txAddress) {
-						((NF_STRUCT_SetDrivesMode*)dataPt)->data[txDataIter] = NFComBuf.SetDrivesMode.data[combufDataIter];
+					if(NFComBuf->SetDrivesMode.addr[combufDataIter] == txAddress) {
+						u8TempPt = &(NFComBuf->SetDrivesMode.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesMode){
+							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesMode + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetDrivesMode*)dataPt)->data[txDataIter] = NFComBuf->SetDrivesMode.data[combufDataIter];
 						txDataIter++;						
 					}
 					combufDataIter++;
@@ -484,8 +612,14 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 				combufDataIter = 0;
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDrivesSpeed) {
-					if(NFComBuf.SetDrivesSpeed.addr[combufDataIter] == txAddress) {
-						((NF_STRUCT_SetDrivesSpeed*)dataPt)->data[txDataIter] = NFComBuf.SetDrivesSpeed.data[combufDataIter];
+					if(NFComBuf->SetDrivesSpeed.addr[combufDataIter] == txAddress) {
+						u8TempPt = &(NFComBuf->SetDrivesSpeed.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesSpeed){
+							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesSpeed + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetDrivesSpeed*)dataPt)->data[txDataIter] = NFComBuf->SetDrivesSpeed.data[combufDataIter];
 						txDataIter++;						
 					}
 					combufDataIter++;
@@ -504,8 +638,14 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 				combufDataIter = 0;
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDrivesCurrent) {
-					if(NFComBuf.SetDrivesCurrent.addr[combufDataIter] == txAddress) {
-						((NF_STRUCT_SetDrivesCurrent*)dataPt)->data[txDataIter] = NFComBuf.SetDrivesCurrent.data[combufDataIter];
+					if(NFComBuf->SetDrivesCurrent.addr[combufDataIter] == txAddress) {
+						u8TempPt = &(NFComBuf->SetDrivesCurrent.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesCurrent){
+							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesCurrent + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetDrivesCurrent*)dataPt)->data[txDataIter] = NFComBuf->SetDrivesCurrent.data[combufDataIter];
 						txDataIter++;						
 					}
 					combufDataIter++;
@@ -524,8 +664,14 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 				combufDataIter = 0;
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDrivesPosition) {
-					if(NFComBuf.SetDrivesPosition.addr[combufDataIter] == txAddress) {
-						((NF_STRUCT_SetDrivesPosition*)dataPt)->data[txDataIter] = NFComBuf.SetDrivesPosition.data[combufDataIter];
+					if(NFComBuf->SetDrivesPosition.addr[combufDataIter] == txAddress) {
+						u8TempPt = &(NFComBuf->SetDrivesPosition.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesPosition){
+							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesPosition + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetDrivesPosition*)dataPt)->data[txDataIter] = NFComBuf->SetDrivesPosition.data[combufDataIter];
 						txDataIter++;						
 					}
 					combufDataIter++;
@@ -538,6 +684,84 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 			}
 			else
 		#endif	
+		// ####		Set PWM
+		#ifdef NF_BUFSZ_SetDrivesPWM
+			if(commandArray[commandIter] == NF_COMMAND_SetDrivesPWM){
+				combufDataIter = 0;
+				txDataIter = 0;
+				while(combufDataIter < NF_BUFSZ_SetDrivesPWM) {
+					if(NFComBuf->SetDrivesPWM.addr[combufDataIter] == txAddress) {
+						u8TempPt = &(NFComBuf->SetDrivesPWM.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesPWM){
+							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesPWM + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetDrivesPosition*)dataPt)->data[txDataIter] = NFComBuf->SetDrivesPosition.data[combufDataIter];
+						txDataIter++;						
+					}
+					combufDataIter++;
+				}
+				if(txDataIter > 0){
+					txBuf[txBufIter] = NF_COMMAND_SetDrivesPWM;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_SetDrivesPWM;	
+					txBufIter += txBuf[txBufIter+1]+2;			
+				}
+			}
+			else
+		#endif	
+		// ####		Set Max Current
+		#ifdef NF_BUFSZ_SetDrivesMaxCurrent
+			if(commandArray[commandIter] == NF_COMMAND_SetDrivesMaxCurrent){
+				combufDataIter = 0;
+				txDataIter = 0;
+				while(combufDataIter < NF_BUFSZ_SetDrivesMaxCurrent) {
+					if(NFComBuf->SetDrivesMaxCurrent.addr[combufDataIter] == txAddress) {
+						u8TempPt = &(NFComBuf->SetDrivesMaxCurrent.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesMaxCurrent){
+							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesMaxCurrent + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetDrivesPosition*)dataPt)->data[txDataIter] = NFComBuf->SetDrivesPosition.data[combufDataIter];
+						txDataIter++;						
+					}
+					combufDataIter++;
+				}
+				if(txDataIter > 0){
+					txBuf[txBufIter] = NF_COMMAND_SetDrivesMaxCurrent;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_SetDrivesMaxCurrent;	
+					txBufIter += txBuf[txBufIter+1]+2;			
+				}
+			}
+			else
+		#endif	
+		// ####		Set Misc
+		#ifdef NF_BUFSZ_SetDrivesMisc
+			if(commandArray[commandIter] == NF_COMMAND_SetDrivesMisc){
+				combufDataIter = 0;
+				txDataIter = 0;
+				while(combufDataIter < NF_BUFSZ_SetDrivesMisc) {
+					if(NFComBuf->SetDrivesMisc.addr[combufDataIter] == txAddress) {
+						u8TempPt = &(NFComBuf->SetDrivesMisc.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDrivesMisc){
+							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesMisc + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetDrivesPosition*)dataPt)->data[txDataIter] = NFComBuf->SetDrivesPosition.data[combufDataIter];
+						txDataIter++;						
+					}
+					combufDataIter++;
+				}
+				if(txDataIter > 0){
+					txBuf[txBufIter] = NF_COMMAND_SetDrivesMisc;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_SetDrivesMisc;	
+					txBufIter += txBuf[txBufIter+1]+2;			
+				}
+			}
+			else
+		#endif
 
 		// ########	Servos
 		// ####		Set Mode
@@ -546,8 +770,14 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 				combufDataIter = 0;
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetServosMode) {
-					if(NFComBuf.SetServosMode.addr[combufDataIter] == txAddress) {
-						((NF_STRUCT_SetServosMode*)dataPt)->data[txDataIter] = NFComBuf.SetServosMode.data[combufDataIter];
+					if(NFComBuf->SetServosMode.addr[combufDataIter] == txAddress) {
+						u8TempPt = &(NFComBuf->SetServosMode.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetServosMode){
+							*(dataPt + txDataIter*NF_DATABYTES_SetServosMode + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetServosMode*)dataPt)->data[txDataIter] = NFComBuf->SetServosMode.data[combufDataIter];
 						txDataIter++;						
 					}
 					combufDataIter++;
@@ -566,8 +796,14 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 				combufDataIter = 0;
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetServosPosition) {
-					if(NFComBuf.SetServosPosition.addr[combufDataIter] == txAddress) {
-						((NF_STRUCT_SetServosPosition*)dataPt)->data[txDataIter] = NFComBuf.SetServosPosition.data[combufDataIter];
+					if(NFComBuf->SetServosPosition.addr[combufDataIter] == txAddress) {
+						u8TempPt = &(NFComBuf->SetServosPosition.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetServosPosition){
+							*(dataPt + txDataIter*NF_DATABYTES_SetServosPosition + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetServosPosition*)dataPt)->data[txDataIter] = NFComBuf->SetServosPosition.data[combufDataIter];
 						txDataIter++;						
 					}
 					combufDataIter++;
@@ -586,8 +822,14 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 				combufDataIter = 0;
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetServosSpeed) {
-					if(NFComBuf.SetServosSpeed.addr[combufDataIter] == txAddress) {
-						((NF_STRUCT_SetServosSpeed*)dataPt)->data[txDataIter] = NFComBuf.SetServosSpeed.data[combufDataIter];
+					if(NFComBuf->SetServosSpeed.addr[combufDataIter] == txAddress) {
+						u8TempPt = &(NFComBuf->SetServosSpeed.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetServosSpeed){
+							*(dataPt + txDataIter*NF_DATABYTES_SetServosSpeed + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetServosSpeed*)dataPt)->data[txDataIter] = NFComBuf->SetServosSpeed.data[combufDataIter];
 						txDataIter++;						
 					}
 					combufDataIter++;
@@ -608,8 +850,14 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 				combufDataIter = 0;
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDigitalOutputs) {
-					if(NFComBuf.SetDigitalOutputs.addr[combufDataIter] == txAddress) {
-						((NF_STRUCT_SetDigitalOutputs*)dataPt)->data[txDataIter] = NFComBuf.SetDigitalOutputs.data[combufDataIter];
+					if(NFComBuf->SetDigitalOutputs.addr[combufDataIter] == txAddress) {
+						u8TempPt = &(NFComBuf->SetDigitalOutputs.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetDigitalOutputs){
+							*(dataPt + txDataIter*NF_DATABYTES_SetDigitalOutputs + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetDigitalOutputs*)dataPt)->data[txDataIter] = NFComBuf->SetDigitalOutputs.data[combufDataIter];
 						txDataIter++;						
 					}
 					combufDataIter++;
@@ -624,9 +872,9 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 		#endif 
 		
 		// ############### "READ" Type Commands
-		// if txAddress == NFComBuf.myAddress
+		// if txAddress == NFComBuf->myAddress
 		//		I (slave) return data that master asked for
-		// if rxAddress == NFComBuf.xxx.addr[i]
+		// if rxAddress == NFComBuf->xxx.addr[i]
 		//		I (master) want to acquire data from slave
 		
 		// ########	Device
@@ -634,11 +882,16 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 		#ifdef NF_BUFSZ_ReadDeviceStatus
 			if(commandArray[commandIter] == NF_COMMAND_ReadDeviceStatus){
 				// I (slave) return data that master asked for
-				if(txAddress == NFComBuf.myAddress){					
+				if(txAddress == NFComBuf->myAddress){					
 					combufDataIter = 0;
 					txDataIter = 0;
 					while(combufDataIter < NF_BUFSZ_ReadDeviceStatus) {
-						((NF_STRUCT_ReadDeviceStatus*)dataPt)->data[txDataIter] = NFComBuf.ReadDeviceStatus.data[combufDataIter];
+						u8TempPt = &(NFComBuf->ReadDeviceStatus.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_ReadDeviceStatus){
+							*(dataPt + txDataIter*NF_DATABYTES_ReadDeviceStatus + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
 						txDataIter++;						
 						combufDataIter++;
 					}
@@ -660,11 +913,16 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 		#ifdef NF_BUFSZ_ReadDeviceVitals
 			if(commandArray[commandIter] == NF_COMMAND_ReadDeviceVitals){
 				// I (slave) return data that master asked for
-				if(txAddress == NFComBuf.myAddress){					
+				if(txAddress == NFComBuf->myAddress){					
 					combufDataIter = 0;
 					txDataIter = 0;
 					while(combufDataIter < NF_BUFSZ_ReadDeviceVitals) {
-						((NF_STRUCT_ReadDeviceVitals*)dataPt)->data[txDataIter] = NFComBuf.ReadDeviceVitals.data[combufDataIter];
+						u8TempPt = &(NFComBuf->ReadDeviceVitals.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_ReadDeviceVitals){
+							*(dataPt + txDataIter*NF_DATABYTES_ReadDeviceVitals + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
 						txDataIter++;						
 						combufDataIter++;
 					}
@@ -684,19 +942,82 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 		#endif
 		
 		// ########	Drives
+		// ####		Read Current
+		#ifdef NF_BUFSZ_ReadDrivesCurrent
+			if(commandArray[commandIter] == NF_COMMAND_ReadDrivesCurrent){
+				// I (slave) return data that master asked for
+				if(txAddress == NFComBuf->myAddress){
+					combufDataIter = 0;
+					txDataIter = 0;
+					while(combufDataIter < NF_BUFSZ_ReadDrivesCurrent) {
+						u8TempPt = &(NFComBuf->ReadDrivesCurrent.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_ReadDrivesCurrent){
+							*(dataPt + txDataIter*NF_DATABYTES_ReadDrivesCurrent + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						txDataIter++;
+						combufDataIter++;
+					}
+					txBuf[txBufIter] = NF_COMMAND_ReadDrivesCurrent;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_ReadDrivesCurrent;
+					txBufIter += txBuf[txBufIter+1]+2;
+				}
+				// I (master) want to acquire data from slave
+				else{
+					txBuf[txBufIter] = NF_COMMAND_ReadDrivesCurrent;
+					txBuf[txBufIter+1] = 0;
+					txBufIter += 2;
+
+				}
+			}
+			else
+		#endif
+		// ####		Read Position
+		#ifdef NF_BUFSZ_ReadDrivesPosition
+			if(commandArray[commandIter] == NF_COMMAND_ReadDrivesPosition){
+				// I (slave) return data that master asked for
+				if(txAddress == NFComBuf->myAddress){
+					combufDataIter = 0;
+					txDataIter = 0;
+					while(combufDataIter < NF_BUFSZ_ReadDrivesPosition) {
+						u8TempPt = &(NFComBuf->ReadDrivesPosition.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_ReadDrivesPosition){
+							*(dataPt + txDataIter*NF_DATABYTES_ReadDrivesPosition + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						txDataIter++;
+						combufDataIter++;
+					}
+					txBuf[txBufIter] = NF_COMMAND_ReadDrivesPosition;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_ReadDrivesPosition;
+					txBufIter += txBuf[txBufIter+1]+2;
+				}
+				// I (master) want to acquire data from slave
+				else{
+					txBuf[txBufIter] = NF_COMMAND_ReadDrivesPosition;
+					txBuf[txBufIter+1] = 0;
+					txBufIter += 2;
+
+				}
+			}
+			else
+		#endif
 		// ####		Read Status
 		#ifdef NF_BUFSZ_ReadDrivesStatus
 			if(commandArray[commandIter] == NF_COMMAND_ReadDrivesStatus){
 				// I (slave) return data that master asked for
-				if(txAddress == NFComBuf.myAddress){					
+				if(txAddress == NFComBuf->myAddress){					
 					combufDataIter = 0;
 					txDataIter = 0;
 					while(combufDataIter < NF_BUFSZ_ReadDrivesStatus) {
-						//*dataPt = NFComBuf.ReadDrivesStatus.data[combufDataIter];
-												
-						dummy = &(((NF_STRUCT_ReadDrivesStatus*)dataPt)->data[0]);
-						*dummy = NFComBuf.ReadDrivesStatus.data[combufDataIter];
-						//((NF_STRUCT_ReadDrivesStatus*)dataPt)->data[txDataIter] = NFComBuf.ReadDrivesStatus.data[combufDataIter];
+						u8TempPt = &(NFComBuf->ReadDrivesStatus.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_ReadDrivesStatus){
+							*(dataPt + txDataIter*NF_DATABYTES_ReadDrivesStatus + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
 						txDataIter++;						
 						combufDataIter++;
 					}
@@ -720,11 +1041,16 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 		#ifdef NF_BUFSZ_ReadAnalogInputs
 			if(commandArray[commandIter] == NF_COMMAND_ReadAnalogInputs){
 				// I (slave) return data that master asked for
-				if(txAddress == NFComBuf.myAddress){					
+				if(txAddress == NFComBuf->myAddress){					
 					combufDataIter = 0;
 					txDataIter = 0;
 					while(combufDataIter < NF_BUFSZ_ReadAnalogInputs) {
-						((NF_STRUCT_ReadAnalogInputs*)dataPt)->data[txDataIter] = NFComBuf.ReadAnalogInputs.data[combufDataIter];
+						u8TempPt = &(NFComBuf->ReadAnalogInputs.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_ReadAnalogInputs){
+							*(dataPt + txDataIter*NF_DATABYTES_ReadAnalogInputs + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
 						txDataIter++;						
 						combufDataIter++;
 					}
@@ -744,7 +1070,7 @@ uint8_t NF_MakeCommandFrame(uint8_t *txBuf, const uint8_t *commandArray, uint8_t
 		#endif
 		
 			{
-				NFComBuf.unknownCommandSend = 1;  
+				NFComBuf->unknownCommandSend = 1;  
 				commandIter++;
 				continue;
 			}

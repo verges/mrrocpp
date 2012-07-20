@@ -17,7 +17,7 @@
 
 	#define NF_BUFSZ_SetDrivesMode			8
 //	#define NF_BUFSZ_SetDrivesSpeed			8
-//	#define NF_BUFSZ_SetDrivesCurrent		8
+	#define NF_BUFSZ_SetDrivesCurrent		8
 //	#define NF_BUFSZ_SetDrivesPosition		8
 	#define NF_BUFSZ_SetDrivesPWM			8
 	#define NF_BUFSZ_SetDrivesMaxCurrent	8

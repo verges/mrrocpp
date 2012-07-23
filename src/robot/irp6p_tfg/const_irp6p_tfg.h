@@ -53,6 +53,12 @@ const int MAX_CURRENT_0 = 200;
  */
 const double MAX_INCREMENT[] = { 1000 };
 
+/*!
+ * @brief IRp6 postument two finger gripper motor driver cards addresses
+ * @ingroup irp6p_tfg
+ */
+const unsigned int CARD_ADDRESSES[] = { 6 };
+
 }
 } // namespace lib
 } // namespace mrrocpp

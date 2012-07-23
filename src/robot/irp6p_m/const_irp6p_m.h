@@ -61,6 +61,12 @@ const int MAX_CURRENT_5 = 10000;
  */
 const double MAX_INCREMENT[] = { 1000, 1000, 1000, 1000, 1000, 1000 };
 
+/*!
+ * @brief IRp6 postument motor driver cards addresses
+ * @ingroup irp6p_m
+ */
+const unsigned int CARD_ADDRESSES[] = { 0, 1, 2, 3, 4, 5 };
+
 } // namespace irp6p_m
 } // namespace lib
 } // namespace mrrocpp

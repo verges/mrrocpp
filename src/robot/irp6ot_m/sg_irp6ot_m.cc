@@ -60,7 +60,7 @@ void servo_buffer::load_hardware_interface(void)
 	const std::vector <std::string> ports_vector(mrrocpp::lib::irp6ot_m::ports_strings, mrrocpp::lib::irp6ot_m::ports_strings
 			+ mrrocpp::lib::irp6ot_m::LAST_MOXA_PORT_NUM + 1);
 	hi =
-			new hi_moxa::HI_moxa(master, mrrocpp::lib::irp6ot_m::LAST_MOXA_PORT_NUM, ports_vector, mrrocpp::lib::irp6ot_m::MAX_INCREMENT);
+			new hi_moxa::HI_moxa(master, mrrocpp::lib::irp6ot_m::LAST_MOXA_PORT_NUM, ports_vector, mrrocpp::lib::irp6ot_m::CARD_ADDRESSES, mrrocpp::lib::irp6ot_m::MAX_INCREMENT);
 	hi->init();
 
 	hi->set_parameter_now(0, hi_moxa::PARAM_MAXCURRENT, mrrocpp::lib::irp6ot_m::MAX_CURRENT_0);

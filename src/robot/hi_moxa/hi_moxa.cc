@@ -26,10 +26,11 @@ namespace edp {
 namespace hi_moxa {
 
 
-HI_moxa::HI_moxa(common::motor_driven_effector &_master, int last_drive_n, std::vector <std::string> ports, const double* max_increments) :
+HI_moxa::HI_moxa(common::motor_driven_effector &_master, int last_drive_n, std::vector <std::string> ports, const unsigned int* card_addresses, const double* max_increments) :
 		common::HardwareInterface(_master),
 		last_drive_number(last_drive_n),
 		port_names(ports),
+		drives_addresses(card_addresses),
 		ridiculous_increment(max_increments),
 		ptimer(COMMCYCLE_TIME_NS / 1000000)
 {
@@ -59,15 +60,13 @@ void HI_moxa::init()
 #endif
 	// inicjalizacja crcTable[]
 	crcInit();
-
+	// zerowanie danych i ustawienie neutralnych adresow
+	NF_ComBufReset(&NFComBuf);
 
 	// inicjalizacja zmiennych
-	NFComBuf.myAddress = NF_TerminalAddress;
+	NFComBuf.myAddress = NF_MasterAddress;
 
 	for (unsigned int drive_number = 0; drive_number <= last_drive_number; drive_number++) {
-
-		// TODO: Ta linia to ZUO!!!!!
-		drives_addresses[drive_number] = 0x10 + drive_number;
 
 		NFComBuf.ReadDeviceStatus.addr[drive_number] = drives_addresses[drive_number];
 		NFComBuf.ReadDeviceVitals.addr[drive_number] = drives_addresses[drive_number];
@@ -241,9 +240,7 @@ uint64_t HI_moxa::read_write_hardware(void)
 	const int synchro_switch_filter_th = 2;
 	bool robot_synchronized = true;
 	bool power_fault;
-	bool hardware_read_ok = true;
 	bool all_hardware_read = true;
-	std::size_t bytes_received[MOXA_SERVOS_NR];
 	uint64_t ret = 0;
 	uint8_t drive_number;
 	static int status_disp_cnt = 0;
@@ -306,7 +303,7 @@ uint64_t HI_moxa::read_write_hardware(void)
 	receive_attempts++;
 
 	struct timespec delay;
-	delay.tv_nsec = 700000;
+	delay.tv_nsec = 1200000;
 	delay.tv_sec = 0;
 
 	nanosleep(&delay, NULL);
@@ -342,7 +339,7 @@ uint64_t HI_moxa::read_write_hardware(void)
 					all_hardware_read = false;
 					std::cout << "[error] timeout in " << (int) receive_attempts << " communication cycle on drives";
 				}
-				std::cout << " " << (int) drive_number << "(" << port_names[drive_number].c_str() << ")" << std::endl;
+				std::cout << " " << (int) drive_number << "(" << port_names[drive_number].c_str() << ")";
 				break;
 			}
 		}
@@ -359,7 +356,6 @@ uint64_t HI_moxa::read_write_hardware(void)
 			comm_timeouts[drive_number] = 0;
 	} else {
 		std::cout << std::endl;
-		hardware_read_ok = false;
 	}
 
 	// Inicjalizacja flag
@@ -369,11 +365,9 @@ uint64_t HI_moxa::read_write_hardware(void)
 	for (drive_number = 0; drive_number <= last_drive_number; drive_number++) {
 
 		// Wypelnienie pol odebranymi danymi
-		if (bytes_received[drive_number] >= READ_BYTES) {
-			servo_data[drive_number].previous_absolute_position = servo_data[drive_number].current_absolute_position;
-			servo_data[drive_number].current_absolute_position = NFComBuf.ReadDrivesPosition.data[drive_number];
-			//std::cout << "Current Absolute Position = " << servo_data[drive_number].current_absolute_position << std::endl;
-		}
+		// NFComBuf.ReadDrivesPosition.data[] contains last received value
+		servo_data[drive_number].previous_absolute_position = servo_data[drive_number].current_absolute_position;
+		servo_data[drive_number].current_absolute_position = NFComBuf.ReadDrivesPosition.data[drive_number];
 
 		// Ustawienie flagi wlaczonej mocy
 		if ((NFComBuf.ReadDrivesStatus.data[drive_number] & NF_DrivesStatus_PowerStageFault) != 0) {
@@ -527,6 +521,18 @@ int HI_moxa::set_parameter_now(int drive_number, const int parameter, uint32_t n
 	//commandArray[commandCnt++] = NF_COMMAND_ReadDeviceVitals;
 	// Make command frame
 	txCnt = NF_MakeCommandFrame(&NFComBuf, txBuf+5, (const uint8_t*)setParamCommandArray, setParamCommandCnt, drives_addresses[drive_number]);
+
+	#ifdef NFV2_TX_DEBUG
+	std::cout << "[debug] setParamCommandArray: ";
+	for(int k=0; k<setParamCommandCnt; k++)
+		std::cout << (unsigned int)setParamCommandArray[k] << ";";
+	std::cout << std::endl;
+	std::cout << "[debug] txBuf: ";
+	for(int k=0; k<txCnt; k++)
+		std::cout << (unsigned int)txBuf[k+5] << ";";
+	std::cout << std::endl;
+	#endif //NFV2_DEBUG
+
 	// Clear communication request
 	setParamCommandCnt = 0;
 
@@ -602,10 +608,11 @@ bool HI_moxa::robot_synchronized()
 {
 	bool ret = true;
 	for (std::size_t drive_number = 0; drive_number <= last_drive_number; drive_number++) {
-		if ((NFComBuf.ReadDrivesStatus.data[drive_number] & NF_DrivesStatus_SynchroSwitch) == 0) {
+		if ((NFComBuf.ReadDrivesStatus.data[drive_number] & NF_DrivesStatus_Synchronized) == 0) {
 			ret = false;
 		}
 	}
+	std::cout << "[func] HI_moxa::robot_synchronized()" << std::endl;
 	return ret;
 }
 

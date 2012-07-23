@@ -49,10 +49,16 @@ const std::string ports_strings[] = { "/dev/ttyMI7" };
 const int MAX_CURRENT_0 = 20000;
 
 /*!
- * @brief IRp6 postument two finger gripper overcurrent threshold [mA]
+ * @brief Sarkofag max increment
  * @ingroup sarkofag
  */
 const double MAX_INCREMENT[] = { 0 };
+
+/*!
+ * @brief Sarkofag motor driver cards addresses
+ * @ingroup sarkofag
+ */
+const unsigned int CARD_ADDRESSES[] = { 0 };
 
 }
 } // namespace lib

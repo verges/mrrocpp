@@ -326,6 +326,7 @@ typedef struct{
 
 uint8_t NF_Interpreter(NF_STRUCT_ComBuf *NFComBuf, volatile uint8_t *rxBuf, volatile uint8_t *rxPt, volatile uint8_t *commandArray, volatile uint8_t *commandCnt);
 uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf, uint8_t *txBuf, const uint8_t *commandArray, uint8_t commandCnt, uint8_t addr);
+void NF_ComBufReset(NF_STRUCT_ComBuf *NFComBuf);
 
 #ifdef __cplusplus
 }

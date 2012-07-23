@@ -40,12 +40,14 @@ void servo_buffer::load_hardware_interface(void)
 	const std::vector <std::string> ports_vector(mrrocpp::lib::conveyor::ports_strings, mrrocpp::lib::conveyor::ports_strings
 			+ mrrocpp::lib::conveyor::LAST_MOXA_PORT_NUM + 1);
 	hi =
-			new hi_moxa::HI_moxa(master, mrrocpp::lib::conveyor::LAST_MOXA_PORT_NUM, ports_vector, mrrocpp::lib::conveyor::MAX_INCREMENT);
+			new hi_moxa::HI_moxa(master, mrrocpp::lib::conveyor::LAST_MOXA_PORT_NUM, ports_vector, mrrocpp::lib::conveyor::CARD_ADDRESSES, mrrocpp::lib::conveyor::MAX_INCREMENT);
 
 	hi->init();
 
 	// conveyor uruchamia sie jako zsynchronizowany - ustawic parametr na karcie sterownika
-	hi->set_parameter_now(0, hi_moxa::PARAM_SYNCHRONIZED, 1);
+	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMisc, NF_DrivesMisc_SetSynchronized);
+	//hi->set_parameter_now(0, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::conveyor::MAX_CURRENT_0);
+	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_PWM);
 
 	// utworzenie tablicy regulatorow
 

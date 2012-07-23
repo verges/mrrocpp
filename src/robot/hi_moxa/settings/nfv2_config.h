@@ -4,9 +4,9 @@
 * to be supported by module:
 */
 
-#define NF_BroadcastAddress 0
-#define NF_RobotAddress     0x01
-#define NF_TerminalAddress  123
+#define NF_BroadcastAddress 0xff
+#define NF_RobotAddress     0x00
+#define NF_MasterAddress  	0xfe
 
 /*
 * Uncomment and update buffers' size [no of param set instances] for commands

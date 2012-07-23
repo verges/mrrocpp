@@ -54,6 +54,12 @@ const int MAX_CURRENT_0 = 200;
  */
 const double MAX_INCREMENT[] = { 0 };
 
+/*!
+ * @brief Conveyor motor driver cards addresses
+ * @ingroup conveyor
+ */
+const unsigned int CARD_ADDRESSES[] = { 7 };
+
 } // namespace conveyor
 } // namespace lib
 } // namespace mrrocpp

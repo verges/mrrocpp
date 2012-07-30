@@ -71,6 +71,10 @@ protected:
 	 * Vector of read energy. (used in optimization)
 	 */
 	std::vector <std::vector <double> > energy_vector;
+        /**
+         * Vector of trajectory execution time. (used in optimization)
+         */
+        //std::vector <std::vector <double> > time_vector;
 	/**
 	 * Energy vector iterator.
 	 */

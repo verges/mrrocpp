@@ -22,11 +22,6 @@ enum ERROR_TYPE
 	NO_ERROR, Fatal_erroR, NonFatal_erroR_2, NonFatal_erroR_3, NonFatal_erroR_4, System_erroR
 };
 
-enum TRANSLATION_ENUM
-{
-	WITH_TRANSLATION, WITHOUT_TRANSLATION
-};
-
 } // namespace common
 } // namespace edp
 } // namespace mrrocpp

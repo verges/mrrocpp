@@ -72,7 +72,7 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 	double current_error;
 	double current_desired;
 	double current_measured;
-	static int low_measure_counter;
+//	static int low_measure_counter;
 
 	alg_par_status = common::ALGORITHM_AND_PARAMETERS_OK;
 
@@ -201,14 +201,14 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 	//b1=15.984375;
 
 #define PROP_I_REG 0.0
-#define INT_I_REG 0.4
-#define MAX_REG_CURRENT 15.0
-#define CURRENT_PRESCALER 0.08
+#define INT_I_REG 0.04
+#define MAX_REG_CURRENT 150.0
+#define CURRENT_PRESCALER 1.0
 
 	switch (algorithm_no)
 	{
 		case 0: // algorytm nr 0
-			//	if (measured_current != 0) fprintf(stdout,"alg 0: %d\n", measured_current);
+		//	if (measured_current != 0) fprintf(stdout,"alg 0: %d\n", measured_current);
 
 			set_value_new = (1 + a) * set_value_old - a * set_value_very_old + b0 * delta_eint - b1 * delta_eint_old;
 
@@ -229,7 +229,6 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 			//				current_measured = (float) (-measured_current);
 
 			// HI_MOXA zwraca prad w mA, ze znakiem odpowiadajacym kierunkowi przeplywu
-			// Przeskalowanie na przedzial -15..15 = -150mA..150mA
 			current_measured = -((float) measured_current) * CURRENT_PRESCALER;
 
 			// wyznaczenie uchybu
@@ -245,6 +244,10 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 			if (int_current_error < -MAX_PWM)
 				int_current_error = -MAX_PWM;
 
+		//	 fprintf(stdout,"alg 0: %f, %f, %f\n", current_measured, current_desired, int_current_error);
+
+
+/*
 			if (current_desired >= 1) {
 				low_measure_counter = 0;
 				// 	if (int_current_error<0) int_current_error = 0;
@@ -256,7 +259,7 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 				low_measure_counter = 0;
 				//	if (int_current_error>0) int_current_error = 0;
 			}
-
+*/
 			// wyznaczenie nowego sterowania
 			set_value_new = PROP_I_REG * current_error + int_current_error;
 

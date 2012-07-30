@@ -164,7 +164,8 @@ bool haptic::next_step_inside()
 		irp6p->mp_command.instruction.instruction_type = lib::SET_GET;
 
 	}
-
+	irp6ot->mp_command.instruction.set_type = ARM_DEFINITION;
+	irp6p->mp_command.instruction.set_type = ARM_DEFINITION;
 	const lib::Homog_matrix & irp6ot_current_arm_frame = irp6ot->ecp_reply_package.reply_package.arm.pf_def.arm_frame;
 
 	// not used

@@ -66,8 +66,10 @@ void servo_buffer::compute_current_measurement_statistics()
 	// zakladam spadek napiecia 1V na 40W mocy
 
 	for (int k = 0; k < master.number_of_servos; k++) {
-		// pomiar pradu dla osi
+                //============ pomiar pradu dla osi
 		int measured_current = regulator_ptr[k]->get_measured_current();
+
+                //===========energia dla osi
 		float step_energy = ((float) abs(measured_current)) / 1000.0
 				* fabs(regulator_ptr[k]->get_previous_pwm() / 255.0) * (hi->get_voltage(k) - (total_power / 40.0))
 				* ((float) lib::EDP_STEP);
@@ -80,7 +82,7 @@ void servo_buffer::compute_current_measurement_statistics()
 			master.reply.arm.measured_current.maximum_module[k] = abs(measured_current);
 			master.reply.arm.measured_current.minimum_module[k] = abs(measured_current);
 
-			// RAFAL TULWIN
+                        //======== RAFAL TULWIN
 			master.reply.arm.measured_current.energy[k] = step_energy;
 
 			// dla pozostalych krokow
@@ -110,7 +112,7 @@ void servo_buffer::compute_current_measurement_statistics()
 			master.reply.arm.measured_current.maximum_module[k] = maximum_module;
 			master.reply.arm.measured_current.minimum_module[k] = minimum_module;
 
-			// RAFAL TULWIN
+                        //========== RAFAL TULWIN
 			master.reply.arm.measured_current.energy[k] += step_energy;
 		}
 	}

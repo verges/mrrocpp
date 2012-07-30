@@ -669,12 +669,15 @@ bool newsmooth::optimize_energy_cost(std::vector<double> max_current, std::vecto
     }
 
     energy_cost.push_back(energySum);
+    //time_vector.push_back(timeSum);
 
     printf("optimal vector size: %d\n", optimal_pose_vector.size());
 
     if (check_if_lowest_energy_cost(energySum) == true)
+  //if (check_if_lowest_objective_function_value(energySum, timeSum) == true)
     {
         printf("lowest cost\n");
+        //printf("lowerst obj function");
         if (optimal_pose_vector.size() == pose_vector.size())
         {
             optimal_pose_vector_iterator = optimal_pose_vector.begin();

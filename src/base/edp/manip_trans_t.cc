@@ -29,9 +29,11 @@ manip_trans_t::manip_trans_t(motor_driven_effector& _master) :
 
 void manip_trans_t::operator()()
 {
-	if(!master.robot_test_mode) {
+	if (!master.robot_test_mode) {
 		lib::set_thread_priority(lib::PTHREAD_MAX_PRIORITY);
 	}
+
+	static int error_existed = 0;
 
 	while (!boost::this_thread::interruption_requested()) {
 
@@ -57,31 +59,37 @@ void manip_trans_t::operator()()
 				case MT_GET_CONTROLLER_STATE:
 					master.get_controller_state(current_cmd.instruction);
 					trans_t_to_master_synchroniser.command();
+				//	error_existed = 0;
 					break;
 				case MT_SET_ROBOT_MODEL:
 					master.set_robot_model(current_cmd.instruction);
 					trans_t_to_master_synchroniser.command();
+				//	error_existed = 0;
 					break;
 				case MT_GET_ARM_POSITION:
 					master.get_arm_position(current_cmd.trans_t_tryb, current_cmd.instruction);
 					trans_t_to_master_synchroniser.command();
-					break;
+				//	 error_existed = 0;
+						break;
 				case MT_GET_ALGORITHMS:
 					master.get_algorithms();
 					trans_t_to_master_synchroniser.command();
+				//	error_existed = 0;
 					break;
 				case MT_SYNCHRONISE:
 					master.synchronise();
 					trans_t_to_master_synchroniser.command();
+				//	error_existed = 0;
 					break;
 				case MT_MOVE_ARM:
 					master.move_arm(current_cmd.instruction); // wariant dla watku edp_trans_t
+				//	error_existed = 0;
 					break;
-				default: // blad: z reply_type wynika, e odpowied nie ma zawiera narzedzia
+				default: // blad: z reply_type wynika, ze odpowied nie ma zawiera narzedzia
 					//dodac rzucanie wyjatku
 					break;
 			}
-
+			error_existed = 0;
 		}
 
 		// sekcja przechwytujaca bledy i przygotowujaca do ich rzucania w watku master
@@ -95,14 +103,21 @@ void manip_trans_t::operator()()
 				// zostanei wyslany wyjatek z drugiej fazy move_arm
 				master_to_trans_synchroniser.wait();
 				error = boost::current_exception();
-				printf("transformation thread error\n");
+				trans_t_to_master_synchroniser.command();
+				printf("transformation thread error sp\n");
+				flushall();
 
 			} else {
 				error = boost::current_exception();
-				printf("transformation thread error\n");
+				trans_t_to_master_synchroniser.command();
+				error_existed++;
+				if (error_existed <= 3) {
+					printf("transformation thread error pp: %d\n", error_existed);
+					flushall();
+				}
 			}
 
-			trans_t_to_master_synchroniser.command();
+	//		trans_t_to_master_synchroniser.command();
 			// Wylapywanie niezdefiniowanych bledow
 			// printf("zlapane cos");// by Y&W
 		}

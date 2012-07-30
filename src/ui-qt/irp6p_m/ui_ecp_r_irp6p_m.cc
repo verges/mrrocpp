@@ -22,13 +22,8 @@ EcpRobot::EcpRobot(common::UiRobot& _ui_robot) :
 		JOINT_STEP[j] = 0.0004;
 	}
 
-	for (int j = 0; j < 3; j++) {
-		END_EFFECTOR_STEP[j] = 0.00002;
-	}
-
-	for (int j = 3; j < 6; j++) {
-		END_EFFECTOR_STEP[j] = 0.0002;
-	}
+	END_EFFECTOR_LINEAR_STEP = 0.00002;
+	END_EFFECTOR_ANGULAR_STEP = 0.0002;
 
 	init();
 }

@@ -89,19 +89,6 @@ void HI_moxa::init()
 		NFComBuf.ReadDrivesStatus.data[drive_number] = 0;
 
 		servo_data[drive_number].first_hardware_reads = FIRST_HARDWARE_READS_WITH_ZERO_INCREMENT;
-		servo_data[drive_number].command_params = 0;
-		servo_data[drive_number].drive_status.sw1 = 0;
-		servo_data[drive_number].drive_status.sw2 = 0;
-		servo_data[drive_number].drive_status.swSynchr = 0;
-		servo_data[drive_number].drive_status.synchroZero = 0;
-		servo_data[drive_number].drive_status.powerStageFault = 0;
-		servo_data[drive_number].drive_status.overcurrent = 0;
-		servo_data[drive_number].drive_status.error = 0;
-		servo_data[drive_number].drive_status.isSynchronized = 0;
-		servo_data[drive_number].drive_status.current = 0;
-		servo_data[drive_number].drive_status.position = 0;
-		for (int j = 0; j < SERVO_ST_BUF_LEN; j++)
-			servo_data[drive_number].buf[j] = 0;
 	}
 	hardware_panic = false;
 
@@ -144,7 +131,7 @@ void HI_moxa::init()
 void HI_moxa::set_pwm(int drive_number, double set_value)
 {
 	NFComBuf.SetDrivesPWM.data[drive_number] = set_value * (1000.0 / 255.0);
-	commandArray[commandCnt++] = NF_COMMAND_SetDrivesPWM;
+	servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_SetDrivesPWM;
 
 #ifdef T_INFO_FUNC
 	std::cout << "[func] HI_moxa::set_pwm(" << drive_number << ", " << set_value << ")" << std::endl;
@@ -154,7 +141,7 @@ void HI_moxa::set_pwm(int drive_number, double set_value)
 void HI_moxa::set_current(int drive_number, double set_value)
 {
 	NFComBuf.SetDrivesCurrent.data[drive_number] = (int)set_value * (1000.0 / 255.0);
-	commandArray[commandCnt++] = NF_COMMAND_SetDrivesCurrent;
+	servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_SetDrivesCurrent;
 
 #ifdef T_INFO_FUNC
 	std::cout << "[func] HI_moxa::set_current(" << drive_number << ", " << set_value << ")" << std::endl;
@@ -166,15 +153,15 @@ void HI_moxa::set_parameter(int drive_number, const int parameter, uint32_t new_
 	{
 		case NF_COMMAND_SetDrivesMisc:
 			NFComBuf.SetDrivesMisc.data[drive_number] = (uint32_t) new_value;
-			commandArray[commandCnt++] = NF_COMMAND_SetDrivesMisc;
+			servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_SetDrivesMisc;
 			break;
 		case NF_COMMAND_SetDrivesMaxCurrent:
 			NFComBuf.SetDrivesMaxCurrent.data[drive_number] = (int16_t) new_value;
-			commandArray[commandCnt++] = NF_COMMAND_SetDrivesMaxCurrent;
+			servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_SetDrivesMaxCurrent;
 			break;
 		case NF_COMMAND_SetDrivesMode:
 			NFComBuf.SetDrivesMode.data[drive_number] = (uint8_t) new_value;
-			commandArray[commandCnt++] = NF_COMMAND_SetDrivesMode;
+			servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_SetDrivesMode;
 			break;
 		default:
 			std::cout << "[error] HI_moxa::set_parameter() invalid parameter" << std::endl;
@@ -186,7 +173,7 @@ void HI_moxa::set_parameter(int drive_number, const int parameter, uint32_t new_
 int HI_moxa::get_current(int drive_number)
 {
 	int ret;
-	ret = servo_data[drive_number].drive_status.current;
+	ret = NFComBuf.ReadDrivesCurrent.data[drive_number];
 
 #ifdef T_INFO_FUNC
 	std::cout << "[func] HI_moxa::get_current(" << drive_number << ") = " << ret << std::endl;
@@ -255,12 +242,12 @@ uint64_t HI_moxa::read_write_hardware(void)
 	if (hardware_panic) {
 		for (drive_number = 0; drive_number <= last_drive_number; drive_number++) {
 			// only set error parameter, do not wait for answer
-			commandCnt = 0;
+			servo_data[drive_number].commandCnt = 0;
 			NFComBuf.SetDrivesMode.data[drive_number] = NF_DrivesMode_ERROR;
-			commandArray[commandCnt++] = NF_COMMAND_SetDrivesMode;
-			txCnt = NF_MakeCommandFrame(&NFComBuf, txBuf+5, (const uint8_t*)commandArray, commandCnt, drives_addresses[drive_number]);
+			servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_SetDrivesMode;
+			txCnt = NF_MakeCommandFrame(&NFComBuf, txBuf+5, (const uint8_t*)servo_data[drive_number].commandArray, servo_data[drive_number].commandCnt, drives_addresses[drive_number]);
 			// Clear communication request
-			commandCnt = 0;
+			servo_data[drive_number].commandCnt = 0;
 			// Send command frame
 			SerialPort[drive_number]->write(txBuf, txCnt+5);
 
@@ -276,16 +263,16 @@ uint64_t HI_moxa::read_write_hardware(void)
 		// Make command frames and send them to drives
 		for (drive_number = 0; drive_number <= last_drive_number; drive_number++) {
 			// Set communication requests
-			commandArray[commandCnt++] = NF_COMMAND_ReadDrivesPosition;
-			commandArray[commandCnt++] = NF_COMMAND_ReadDrivesCurrent;
-			commandArray[commandCnt++] = NF_COMMAND_ReadDrivesStatus;
+			servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_ReadDrivesPosition;
+			servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_ReadDrivesCurrent;
+			servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_ReadDrivesStatus;
 			// Make command frame
-			txCnt = NF_MakeCommandFrame(&NFComBuf, txBuf+5, (const uint8_t*)commandArray, commandCnt, drives_addresses[drive_number]);
+			servo_data[drive_number].txCnt = NF_MakeCommandFrame(&NFComBuf, servo_data[drive_number].txBuf, (const uint8_t*)servo_data[drive_number].commandArray, servo_data[drive_number].commandCnt, drives_addresses[drive_number]);
 
 			#ifdef NFV2_TX_DEBUG
-			std::cout << "[debug] commandArray: ";
-			for(int k=0; k<commandCnt; k++)
-				std::cout << (unsigned int)commandArray[k] << ";";
+			std::cout << "[debug] servo_data[drive_number].commandArray: ";
+			for(int k=0; k<servo_data[drive_number].commandCnt; k++)
+				std::cout << (unsigned int)servo_data[drive_number].commandArray[k] << ";";
 			std::cout << std::endl;
 			std::cout << "[debug] txBuf: ";
 			for(int k=0; k<txCnt; k++)
@@ -294,16 +281,18 @@ uint64_t HI_moxa::read_write_hardware(void)
 			#endif //NFV2_DEBUG
 
 			// Clear communication requests
-			commandCnt = 0;
+			servo_data[drive_number].commandCnt = 0;
+		}
+		for (drive_number = 0; drive_number <= last_drive_number; drive_number++) {
 			// Send command frame
-			SerialPort[drive_number]->write(txBuf, txCnt+5);
+			SerialPort[drive_number]->write(servo_data[drive_number].txBuf, servo_data[drive_number].txCnt);
 		}
 	}
 
 	receive_attempts++;
 
 	struct timespec delay;
-	delay.tv_nsec = 1200000;
+	delay.tv_nsec = 800000;
 	delay.tv_sec = 0;
 
 	nanosleep(&delay, NULL);
@@ -416,7 +405,7 @@ uint64_t HI_moxa::read_write_hardware(void)
 				master.msg->message(lib::NON_FATAL_ERROR, "Overcurrent");
 				std::cout << "[error] overcurrent on drive " << (int) drive_number << ", "
 						<< port_names[drive_number].c_str() << ": read = "
-						<< servo_data[drive_number].drive_status.current << "mA" << std::endl;
+						<< NFComBuf.ReadDrivesCurrent.data[drive_number] << "mA" << std::endl;
 				error_msg_overcurrent++;
 			}
 		}
@@ -518,7 +507,7 @@ int HI_moxa::set_parameter_now(int drive_number, const int parameter, uint32_t n
 
 	// Add Read Drive Status request
 	setParamCommandArray[setParamCommandCnt++] = NF_COMMAND_ReadDrivesStatus;
-	//commandArray[commandCnt++] = NF_COMMAND_ReadDeviceVitals;
+	//servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_ReadDeviceVitals;
 	// Make command frame
 	txCnt = NF_MakeCommandFrame(&NFComBuf, txBuf+5, (const uint8_t*)setParamCommandArray, setParamCommandCnt, drives_addresses[drive_number]);
 
@@ -545,7 +534,7 @@ int HI_moxa::set_parameter_now(int drive_number, const int parameter, uint32_t n
 			return 0;
 
 		// Give some time for a response to return
-		delay.tv_nsec = 500000;
+		delay.tv_nsec = 1000000;
 		delay.tv_sec = 0;
 		nanosleep(&delay, NULL);
 
@@ -584,7 +573,7 @@ void HI_moxa::reset_counters(void)
 void HI_moxa::start_synchro(int drive_number)
 {
 	NFComBuf.SetDrivesMode.data[drive_number] = NF_DrivesMode_SYNC_PWM0;
-	commandArray[commandCnt++] = NF_COMMAND_SetDrivesMode;
+	servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_SetDrivesMode;
 	//#ifdef T_INFO_FUNC
 	std::cout << "[func] HI_moxa::start_synchro(" << drive_number << ")" << std::endl;
 	//#endif
@@ -593,7 +582,7 @@ void HI_moxa::start_synchro(int drive_number)
 void HI_moxa::finish_synchro(int drive_number)
 {
 	NFComBuf.SetDrivesMode.data[drive_number] = NF_DrivesMode_PWM;
-	commandArray[commandCnt++] = NF_COMMAND_SetDrivesMode;
+	servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_SetDrivesMode;
 	//#ifdef T_INFO_FUNC
 	std::cout << "[func] HI_moxa::finish_synchro(" << drive_number << ")" << std::endl;
 	//#endif

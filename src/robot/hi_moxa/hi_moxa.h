@@ -215,8 +215,6 @@ private:
 	uint8_t txCnt;
 	uint8_t rxBuf[256];
 	uint8_t rxCnt;
-	uint8_t commandArray[256];
-	uint8_t commandCnt;
 	uint8_t rxCommandArray[256];
 	uint8_t rxCommandCnt;
 };

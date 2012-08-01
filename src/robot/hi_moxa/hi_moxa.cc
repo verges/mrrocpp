@@ -479,7 +479,7 @@ uint64_t HI_moxa::read_write_hardware(void)
 	return ret;
 }
 
-int HI_moxa::set_parameter_now(int drive_number, const int parameter, uint32_t new_value)
+int HI_moxa::set_parameter_now(int drive_number, const int parameter, uint64_t new_value)
 {
 	struct timespec delay;
 	uint8_t setParamCommandCnt = 0;
@@ -498,6 +498,10 @@ int HI_moxa::set_parameter_now(int drive_number, const int parameter, uint32_t n
 		case NF_COMMAND_SetDrivesMode:
 			NFComBuf.SetDrivesMode.data[drive_number] = (uint8_t) new_value;
 			setParamCommandArray[setParamCommandCnt++] = NF_COMMAND_SetDrivesMode;
+			break;
+		case NF_COMMAND_SetCurrentRegulator:
+			NFComBuf.SetCurrentRegulator.data[drive_number] = (uint64_t) new_value;
+			setParamCommandArray[setParamCommandCnt++] = NF_COMMAND_SetCurrentRegulator;
 			break;
 		default:
 			std::cout << "[error] HI_moxa::set_parameter_now() invalid parameter" << std::endl;

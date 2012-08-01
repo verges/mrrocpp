@@ -10,10 +10,10 @@
 * Funkcja zwraca 1, jesli zostala poprawnie odebrana ramka adresowana do naszego modulu, 0 w pozostalych przypadkach.
 */
 uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
-						volatile uint8_t *rxBuf,
-						volatile uint8_t *rxPt,
-						volatile uint8_t *commandArray,
-						volatile uint8_t *commandCnt){
+						uint8_t *rxBuf,
+						uint8_t *rxPt,
+						uint8_t *commandArray,
+						uint8_t *commandCnt){
 	static uint8_t n;	
 	uint8_t rxAddress, rxParamsCnt;
 	uint8_t rxBufIter, combufDataIter, rxDataIter, dataBytesIter;
@@ -69,7 +69,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesMode;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesMode)) {
-						u8TempPt = &(NFComBuf->SetDrivesMode.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesMode.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesMode){
 							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesMode + dataBytesIter);
@@ -92,7 +92,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesSpeed;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesSpeed)) {
-						u8TempPt = &(NFComBuf->SetDrivesSpeed.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesSpeed.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesSpeed){
 							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesSpeed + dataBytesIter);
@@ -115,7 +115,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesCurrent;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesCurrent)) {
-						u8TempPt = &(NFComBuf->SetDrivesCurrent.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesCurrent.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesCurrent){
 							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesCurrent + dataBytesIter);
@@ -138,7 +138,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesPosition;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesPosition)) {
-						u8TempPt = &(NFComBuf->SetDrivesPosition.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesPosition.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesPosition){
 							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesPosition + dataBytesIter);
@@ -161,7 +161,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesPWM;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesPWM)) {
-						u8TempPt = &(NFComBuf->SetDrivesPWM.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesPWM.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesPWM){
 							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesPWM + dataBytesIter);
@@ -184,7 +184,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesMaxCurrent;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesMaxCurrent)) {
-						u8TempPt = &(NFComBuf->SetDrivesMaxCurrent.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesMaxCurrent.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesMaxCurrent){
 							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesMaxCurrent + dataBytesIter);
@@ -207,7 +207,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDrivesMisc;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDrivesMisc)) {
-						u8TempPt = &(NFComBuf->SetDrivesMisc.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesMisc.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesMisc){
 							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDrivesMisc + dataBytesIter);
@@ -223,6 +223,77 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 			else
 		#endif
 		
+		// ########	Regulators
+		// ####		Set Current Regulator
+		#ifdef NF_BUFSZ_SetCurrentRegulator
+			if(rxBuf[rxBufIter] == NF_COMMAND_SetCurrentRegulator){		
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
+					combufDataIter = 0;
+					rxDataIter = 0;
+					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetCurrentRegulator;
+					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetCurrentRegulator)) {
+						u8TempPt = (uint8_t*) &(NFComBuf->SetCurrentRegulator.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetCurrentRegulator){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetCurrentRegulator + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetCurrentRegulator.data[combufDataIter] = ((NF_STRUCT_SetCurrentRegulator*)dataPt)->data[rxDataIter];
+						combufDataIter++;						
+						rxDataIter++;
+					}
+					NFComBuf->SetCurrentRegulator.updated = 1;
+				}
+			}
+			else
+		#endif
+		// ####		Set Speed Regulator
+		#ifdef NF_BUFSZ_SetSpeedRegulator
+			if(rxBuf[rxBufIter] == NF_COMMAND_SetSpeedRegulator){		
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
+					combufDataIter = 0;
+					rxDataIter = 0;
+					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetSpeedRegulator;
+					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetSpeedRegulator)) {
+						u8TempPt = (uint8_t*) &(NFComBuf->SetSpeedRegulator.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetSpeedRegulator){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetSpeedRegulator + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetSpeedRegulator.data[combufDataIter] = ((NF_STRUCT_SetSpeedRegulator*)dataPt)->data[rxDataIter];
+						combufDataIter++;						
+						rxDataIter++;
+					}
+					NFComBuf->SetSpeedRegulator.updated = 1;
+				}
+			}
+			else
+		#endif
+		// ####		Set Position Regulator
+		#ifdef NF_BUFSZ_SetPositionRegulator
+			if(rxBuf[rxBufIter] == NF_COMMAND_SetPositionRegulator){		
+				if(rxAddress == NFComBuf->myAddress || rxAddress == NF_BroadcastAddress) {
+					combufDataIter = 0;
+					rxDataIter = 0;
+					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetPositionRegulator;
+					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetPositionRegulator)) {
+						u8TempPt = (uint8_t*) &(NFComBuf->SetPositionRegulator.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetPositionRegulator){
+							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetPositionRegulator + dataBytesIter);
+							dataBytesIter++;
+						}
+						//NFComBuf->SetPositionRegulator.data[combufDataIter] = ((NF_STRUCT_SetPositionRegulator*)dataPt)->data[rxDataIter];
+						combufDataIter++;						
+						rxDataIter++;
+					}
+					NFComBuf->SetPositionRegulator.updated = 1;
+				}
+			}
+			else
+		#endif
+		
 		// ########	Servos
 		// ####		Set Mode
 		#ifdef NF_BUFSZ_SetServosMode
@@ -232,7 +303,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetServosMode;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetServosMode)) {
-						u8TempPt = &(NFComBuf->SetServosMode.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetServosMode.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetServosMode){
 							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetServosMode + dataBytesIter);
@@ -255,7 +326,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetServosPosition;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetServosPosition)) {
-						u8TempPt = &(NFComBuf->SetServosPosition.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetServosPosition.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetServosPosition){
 							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetServosPosition + dataBytesIter);
@@ -278,7 +349,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetServosSpeed;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetServosSpeed)) {
-						u8TempPt = &(NFComBuf->SetServosSpeed.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetServosSpeed.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetServosSpeed){
 							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetServosSpeed + dataBytesIter);
@@ -303,7 +374,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					rxParamsCnt = rxBuf[rxBufIter+1] / NF_DATABYTES_SetDigitalOutputs;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_SetDigitalOutputs)) {
-						u8TempPt = &(NFComBuf->SetDigitalOutputs.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDigitalOutputs.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDigitalOutputs){
 							*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_SetDigitalOutputs + dataBytesIter);
@@ -341,7 +412,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDrivesCurrent)) {
 						if(NFComBuf->ReadDrivesCurrent.addr[combufDataIter] == rxAddress) {
-							u8TempPt = &(NFComBuf->ReadDrivesCurrent.data[combufDataIter]);
+							u8TempPt = (uint8_t*) &(NFComBuf->ReadDrivesCurrent.data[combufDataIter]);
 							dataBytesIter = 0;
 							while(dataBytesIter < NF_DATABYTES_ReadDrivesCurrent){
 								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDrivesCurrent + dataBytesIter);
@@ -371,7 +442,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDrivesPosition)) {
 						if(NFComBuf->ReadDrivesPosition.addr[combufDataIter] == rxAddress) {
-							u8TempPt = &(NFComBuf->ReadDrivesPosition.data[combufDataIter]);
+							u8TempPt = (uint8_t*) &(NFComBuf->ReadDrivesPosition.data[combufDataIter]);
 							dataBytesIter = 0;
 							while(dataBytesIter < NF_DATABYTES_ReadDrivesPosition){
 								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDrivesPosition + dataBytesIter);
@@ -401,7 +472,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDrivesStatus)) {
 						if(NFComBuf->ReadDrivesStatus.addr[combufDataIter] == rxAddress) {
-							u8TempPt = &(NFComBuf->ReadDrivesStatus.data[combufDataIter]);
+							u8TempPt = (uint8_t*) &(NFComBuf->ReadDrivesStatus.data[combufDataIter]);
 							dataBytesIter = 0;
 							while(dataBytesIter < NF_DATABYTES_ReadDrivesStatus){
 								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDrivesStatus + dataBytesIter);
@@ -433,7 +504,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDigitalInputs)) {
 						if(NFComBuf->ReadDigitalInputs.addr[combufDataIter] == rxAddress) {
-							u8TempPt = &(NFComBuf->ReadDigitalInputs.data[combufDataIter]);
+							u8TempPt = (uint8_t*) &(NFComBuf->ReadDigitalInputs.data[combufDataIter]);
 							dataBytesIter = 0;
 							while(dataBytesIter < NF_DATABYTES_ReadDigitalInputs){
 								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDigitalInputs + dataBytesIter);
@@ -465,7 +536,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadAnalogInputs)) {
 						if(NFComBuf->ReadAnalogInputs.addr[combufDataIter] == rxAddress) {
-							u8TempPt = &(NFComBuf->ReadAnalogInputs.data[combufDataIter]);
+							u8TempPt = (uint8_t*) &(NFComBuf->ReadAnalogInputs.data[combufDataIter]);
 							dataBytesIter = 0;
 							while(dataBytesIter < NF_DATABYTES_ReadAnalogInputs){
 								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadAnalogInputs + dataBytesIter);
@@ -497,7 +568,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDeviceStatus)) {
 						if(NFComBuf->ReadDeviceStatus.addr[combufDataIter] == rxAddress) {
-							u8TempPt = &(NFComBuf->ReadDeviceStatus.data[combufDataIter]);
+							u8TempPt = (uint8_t*) &(NFComBuf->ReadDeviceStatus.data[combufDataIter]);
 							dataBytesIter = 0;
 							while(dataBytesIter < NF_DATABYTES_ReadDeviceStatus){
 								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDeviceStatus + dataBytesIter);
@@ -527,7 +598,7 @@ uint8_t NF_Interpreter(	NF_STRUCT_ComBuf *NFComBuf,
 					rxDataIter = 0;
 					while((rxDataIter < rxParamsCnt) && (combufDataIter < NF_BUFSZ_ReadDeviceVitals)) {
 						if(NFComBuf->ReadDeviceVitals.addr[combufDataIter] == rxAddress) {
-							u8TempPt = &(NFComBuf->ReadDeviceVitals.data[combufDataIter]);
+							u8TempPt = (uint8_t*) &(NFComBuf->ReadDeviceVitals.data[combufDataIter]);
 							dataBytesIter = 0;
 							while(dataBytesIter < NF_DATABYTES_ReadDeviceVitals){
 								*(u8TempPt + dataBytesIter) = *(dataPt + rxDataIter*NF_DATABYTES_ReadDeviceVitals + dataBytesIter);
@@ -587,7 +658,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDrivesMode) {
 					if(NFComBuf->SetDrivesMode.addr[combufDataIter] == txAddress) {
-						u8TempPt = &(NFComBuf->SetDrivesMode.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesMode.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesMode){
 							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesMode + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -613,7 +684,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDrivesSpeed) {
 					if(NFComBuf->SetDrivesSpeed.addr[combufDataIter] == txAddress) {
-						u8TempPt = &(NFComBuf->SetDrivesSpeed.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesSpeed.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesSpeed){
 							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesSpeed + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -639,7 +710,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDrivesCurrent) {
 					if(NFComBuf->SetDrivesCurrent.addr[combufDataIter] == txAddress) {
-						u8TempPt = &(NFComBuf->SetDrivesCurrent.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesCurrent.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesCurrent){
 							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesCurrent + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -665,7 +736,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDrivesPosition) {
 					if(NFComBuf->SetDrivesPosition.addr[combufDataIter] == txAddress) {
-						u8TempPt = &(NFComBuf->SetDrivesPosition.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesPosition.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesPosition){
 							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesPosition + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -691,7 +762,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDrivesPWM) {
 					if(NFComBuf->SetDrivesPWM.addr[combufDataIter] == txAddress) {
-						u8TempPt = &(NFComBuf->SetDrivesPWM.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesPWM.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesPWM){
 							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesPWM + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -717,7 +788,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDrivesMaxCurrent) {
 					if(NFComBuf->SetDrivesMaxCurrent.addr[combufDataIter] == txAddress) {
-						u8TempPt = &(NFComBuf->SetDrivesMaxCurrent.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesMaxCurrent.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesMaxCurrent){
 							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesMaxCurrent + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -743,7 +814,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDrivesMisc) {
 					if(NFComBuf->SetDrivesMisc.addr[combufDataIter] == txAddress) {
-						u8TempPt = &(NFComBuf->SetDrivesMisc.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDrivesMisc.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDrivesMisc){
 							*(dataPt + txDataIter*NF_DATABYTES_SetDrivesMisc + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -763,6 +834,86 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 			else
 		#endif
 
+		// ########	Regulators
+		// ####		Set Current Regulator
+		#ifdef NF_BUFSZ_SetCurrentRegulator
+			if(commandArray[commandIter] == NF_COMMAND_SetCurrentRegulator){
+				combufDataIter = 0;
+				txDataIter = 0;
+				while(combufDataIter < NF_BUFSZ_SetCurrentRegulator) {
+					if(NFComBuf->SetCurrentRegulator.addr[combufDataIter] == txAddress) {
+						u8TempPt = (uint8_t*) &(NFComBuf->SetCurrentRegulator.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetCurrentRegulator){
+							*(dataPt + txDataIter*NF_DATABYTES_SetCurrentRegulator + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetCurrentRegulator*)dataPt)->data[txDataIter] = NFComBuf->SetCurrentRegulator.data[combufDataIter];
+						txDataIter++;						
+					}
+					combufDataIter++;
+				}
+				if(txDataIter > 0){
+					txBuf[txBufIter] = NF_COMMAND_SetCurrentRegulator;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_SetCurrentRegulator;	
+					txBufIter += txBuf[txBufIter+1]+2;			
+				}
+			}
+			else
+		#endif
+		// ####		Set Speed Regulator
+		#ifdef NF_BUFSZ_SetSpeedRegulator
+			if(commandArray[commandIter] == NF_COMMAND_SetSpeedRegulator){
+				combufDataIter = 0;
+				txDataIter = 0;
+				while(combufDataIter < NF_BUFSZ_SetSpeedRegulator) {
+					if(NFComBuf->SetSpeedRegulator.addr[combufDataIter] == txAddress) {
+						u8TempPt = (uint8_t*) &(NFComBuf->SetSpeedRegulator.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetSpeedRegulator){
+							*(dataPt + txDataIter*NF_DATABYTES_SetSpeedRegulator + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetSpeedRegulator*)dataPt)->data[txDataIter] = NFComBuf->SetSpeedRegulator.data[combufDataIter];
+						txDataIter++;						
+					}
+					combufDataIter++;
+				}
+				if(txDataIter > 0){
+					txBuf[txBufIter] = NF_COMMAND_SetSpeedRegulator;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_SetSpeedRegulator;	
+					txBufIter += txBuf[txBufIter+1]+2;			
+				}
+			}
+			else
+		#endif
+		// ####		Set Position Regulator
+		#ifdef NF_BUFSZ_SetPositionRegulator
+			if(commandArray[commandIter] == NF_COMMAND_SetPositionRegulator){
+				combufDataIter = 0;
+				txDataIter = 0;
+				while(combufDataIter < NF_BUFSZ_SetPositionRegulator) {
+					if(NFComBuf->SetPositionRegulator.addr[combufDataIter] == txAddress) {
+						u8TempPt = (uint8_t*) &(NFComBuf->SetPositionRegulator.data[combufDataIter]);
+						dataBytesIter = 0;
+						while(dataBytesIter < NF_DATABYTES_SetPositionRegulator){
+							*(dataPt + txDataIter*NF_DATABYTES_SetPositionRegulator + dataBytesIter) = *(u8TempPt + dataBytesIter);
+							dataBytesIter++;
+						}
+						//((NF_STRUCT_SetPositionRegulator*)dataPt)->data[txDataIter] = NFComBuf->SetPositionRegulator.data[combufDataIter];
+						txDataIter++;						
+					}
+					combufDataIter++;
+				}
+				if(txDataIter > 0){
+					txBuf[txBufIter] = NF_COMMAND_SetPositionRegulator;
+					txBuf[txBufIter+1] = txDataIter * NF_DATABYTES_SetPositionRegulator;	
+					txBufIter += txBuf[txBufIter+1]+2;			
+				}
+			}
+			else
+		#endif
+		
 		// ########	Servos
 		// ####		Set Mode
 		#ifdef NF_BUFSZ_SetServosMode
@@ -771,7 +922,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetServosMode) {
 					if(NFComBuf->SetServosMode.addr[combufDataIter] == txAddress) {
-						u8TempPt = &(NFComBuf->SetServosMode.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetServosMode.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetServosMode){
 							*(dataPt + txDataIter*NF_DATABYTES_SetServosMode + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -797,7 +948,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetServosPosition) {
 					if(NFComBuf->SetServosPosition.addr[combufDataIter] == txAddress) {
-						u8TempPt = &(NFComBuf->SetServosPosition.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetServosPosition.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetServosPosition){
 							*(dataPt + txDataIter*NF_DATABYTES_SetServosPosition + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -823,7 +974,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetServosSpeed) {
 					if(NFComBuf->SetServosSpeed.addr[combufDataIter] == txAddress) {
-						u8TempPt = &(NFComBuf->SetServosSpeed.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetServosSpeed.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetServosSpeed){
 							*(dataPt + txDataIter*NF_DATABYTES_SetServosSpeed + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -851,7 +1002,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 				txDataIter = 0;
 				while(combufDataIter < NF_BUFSZ_SetDigitalOutputs) {
 					if(NFComBuf->SetDigitalOutputs.addr[combufDataIter] == txAddress) {
-						u8TempPt = &(NFComBuf->SetDigitalOutputs.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->SetDigitalOutputs.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_SetDigitalOutputs){
 							*(dataPt + txDataIter*NF_DATABYTES_SetDigitalOutputs + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -886,7 +1037,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 					combufDataIter = 0;
 					txDataIter = 0;
 					while(combufDataIter < NF_BUFSZ_ReadDeviceStatus) {
-						u8TempPt = &(NFComBuf->ReadDeviceStatus.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->ReadDeviceStatus.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_ReadDeviceStatus){
 							*(dataPt + txDataIter*NF_DATABYTES_ReadDeviceStatus + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -917,7 +1068,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 					combufDataIter = 0;
 					txDataIter = 0;
 					while(combufDataIter < NF_BUFSZ_ReadDeviceVitals) {
-						u8TempPt = &(NFComBuf->ReadDeviceVitals.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->ReadDeviceVitals.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_ReadDeviceVitals){
 							*(dataPt + txDataIter*NF_DATABYTES_ReadDeviceVitals + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -950,7 +1101,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 					combufDataIter = 0;
 					txDataIter = 0;
 					while(combufDataIter < NF_BUFSZ_ReadDrivesCurrent) {
-						u8TempPt = &(NFComBuf->ReadDrivesCurrent.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->ReadDrivesCurrent.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_ReadDrivesCurrent){
 							*(dataPt + txDataIter*NF_DATABYTES_ReadDrivesCurrent + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -981,7 +1132,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 					combufDataIter = 0;
 					txDataIter = 0;
 					while(combufDataIter < NF_BUFSZ_ReadDrivesPosition) {
-						u8TempPt = &(NFComBuf->ReadDrivesPosition.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->ReadDrivesPosition.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_ReadDrivesPosition){
 							*(dataPt + txDataIter*NF_DATABYTES_ReadDrivesPosition + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -1012,7 +1163,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 					combufDataIter = 0;
 					txDataIter = 0;
 					while(combufDataIter < NF_BUFSZ_ReadDrivesStatus) {
-						u8TempPt = &(NFComBuf->ReadDrivesStatus.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->ReadDrivesStatus.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_ReadDrivesStatus){
 							*(dataPt + txDataIter*NF_DATABYTES_ReadDrivesStatus + dataBytesIter) = *(u8TempPt + dataBytesIter);
@@ -1045,7 +1196,7 @@ uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf,
 					combufDataIter = 0;
 					txDataIter = 0;
 					while(combufDataIter < NF_BUFSZ_ReadAnalogInputs) {
-						u8TempPt = &(NFComBuf->ReadAnalogInputs.data[combufDataIter]);
+						u8TempPt = (uint8_t*) &(NFComBuf->ReadAnalogInputs.data[combufDataIter]);
 						dataBytesIter = 0;
 						while(dataBytesIter < NF_DATABYTES_ReadAnalogInputs){
 							*(dataPt + txDataIter*NF_DATABYTES_ReadAnalogInputs + dataBytesIter) = *(u8TempPt + dataBytesIter);

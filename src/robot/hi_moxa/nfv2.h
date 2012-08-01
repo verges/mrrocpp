@@ -27,6 +27,10 @@ extern "C" {
 #define NF_COMMAND_SetDrivesMisc		0x1E
 #define NF_COMMAND_ReadDrivesStatus		0x1F
 
+#define NF_COMMAND_SetCurrentRegulator	0x40
+#define NF_COMMAND_SetSpeedRegulator	0x41
+#define NF_COMMAND_SetPositionRegulator	0x42
+
 #define NF_COMMAND_SetServosMode		0x20
 #define NF_COMMAND_SetServosPosition	0x21
 #define NF_COMMAND_SetServosSpeed		0x22
@@ -173,6 +177,45 @@ typedef struct{
 #define NF_DrivesStatus_Error				(1 << 15)
 #endif
 	
+// ########	Regulators
+// ####		Set Current Regulator
+//#if (defined NF_BUFSZ_SetCurrentRegulator) || (defined NF_BUFSZ_SetSpeedRegulator) || (defined NF_BUFSZ_SetPositionRegulator)
+typedef struct{
+	uint16_t	p;
+	uint16_t	i;
+	uint16_t	d;
+	uint16_t	t;
+} NF_STRUCT_Regulator;
+typedef union{
+	NF_STRUCT_Regulator params;
+	uint32_t			intValue;
+} NF_UNION_Regulator;
+//#endif
+#ifdef NF_BUFSZ_SetCurrentRegulator
+typedef struct{
+	#define NF_DATABYTES_SetCurrentRegulator	8
+	uint32_t data[NF_BUFSZ_SetCurrentRegulator];
+	uint8_t addr[NF_BUFSZ_SetCurrentRegulator];
+	uint8_t updated;
+} NF_STRUCT_SetCurrentRegulator;
+#endif
+#ifdef NF_BUFSZ_SetSpeedRegulator
+typedef struct{
+	#define NF_DATABYTES_SetSpeedRegulator		8
+	uint64_t data[NF_BUFSZ_SetSpeedRegulator];
+	uint8_t addr[NF_BUFSZ_SetSpeedRegulator];
+	uint8_t updated;
+} NF_STRUCT_SetSpeedRegulator;
+#endif
+#ifdef NF_BUFSZ_SetPositionRegulator
+typedef struct{
+	#define NF_DATABYTES_SetPositionRegulator	8
+	uint64_t data[NF_BUFSZ_SetPositionRegulator];
+	uint8_t addr[NF_BUFSZ_SetPositionRegulator];
+	uint8_t updated;
+} NF_STRUCT_SetPositionRegulator;
+#endif
+	
 // ########	Servos
 // ####		Set Mode
 #ifdef NF_BUFSZ_SetServosMode
@@ -284,6 +327,21 @@ typedef struct{
 	#ifdef NF_BUFSZ_ReadDrivesStatus
 		NF_STRUCT_ReadDrivesStatus	ReadDrivesStatus;
 	#endif
+
+	// ########	Regulators
+	// ####		Set Current Regulator
+	#ifdef NF_BUFSZ_SetCurrentRegulator
+		NF_STRUCT_SetCurrentRegulator	SetCurrentRegulator;
+	#endif
+	// ####		Set Speed Regulator
+	#ifdef NF_BUFSZ_SetSpeedRegulator
+		NF_STRUCT_SetSpeedRegulator		SetSpeedRegulator;
+	#endif
+	// ####		Set Position Regulator
+	#ifdef NF_BUFSZ_SetPositionRegulator
+		NF_STRUCT_SetPositionRegulator	SetPositionRegulator;
+	#endif
+
 	// ########	Servos
 	// ####		Set Mode
 	#ifdef NF_BUFSZ_SetServosMode
@@ -324,7 +382,7 @@ typedef struct{
 
 
 
-uint8_t NF_Interpreter(NF_STRUCT_ComBuf *NFComBuf, volatile uint8_t *rxBuf, volatile uint8_t *rxPt, volatile uint8_t *commandArray, volatile uint8_t *commandCnt);
+uint8_t NF_Interpreter(NF_STRUCT_ComBuf *NFComBuf, uint8_t *rxBuf, uint8_t *rxPt, uint8_t *commandArray, uint8_t *commandCnt);
 uint8_t NF_MakeCommandFrame(NF_STRUCT_ComBuf *NFComBuf, uint8_t *txBuf, const uint8_t *commandArray, uint8_t commandCnt, uint8_t addr);
 void NF_ComBufReset(NF_STRUCT_ComBuf *NFComBuf);
 

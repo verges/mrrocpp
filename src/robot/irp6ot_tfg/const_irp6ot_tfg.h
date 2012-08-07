@@ -45,7 +45,7 @@ const std::string ports_strings[] = //{ "/dev/ttyMUE6" };
  * @brief IRp6 on track two finger gripper overcurrent threshold [mA]
  * @ingroup irp6p_tfg
  */
-const int MAX_CURRENT_0 = 200;
+const int16_t MAX_CURRENT_0 = 200;
 
 /*!
  * @brief IRp6 on track two finger gripper overcurrent threshold [mA]

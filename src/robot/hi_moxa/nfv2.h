@@ -181,20 +181,17 @@ typedef struct{
 // ####		Set Current Regulator
 //#if (defined NF_BUFSZ_SetCurrentRegulator) || (defined NF_BUFSZ_SetSpeedRegulator) || (defined NF_BUFSZ_SetPositionRegulator)
 typedef struct{
+	#define NF_DATABYTES_Regulator	8
 	uint16_t	p;
 	uint16_t	i;
 	uint16_t	d;
 	uint16_t	t;
 } NF_STRUCT_Regulator;
-typedef union{
-	NF_STRUCT_Regulator params;
-	uint32_t			intValue;
-} NF_UNION_Regulator;
 //#endif
 #ifdef NF_BUFSZ_SetCurrentRegulator
 typedef struct{
 	#define NF_DATABYTES_SetCurrentRegulator	8
-	uint32_t data[NF_BUFSZ_SetCurrentRegulator];
+	NF_STRUCT_Regulator data[NF_BUFSZ_SetCurrentRegulator];
 	uint8_t addr[NF_BUFSZ_SetCurrentRegulator];
 	uint8_t updated;
 } NF_STRUCT_SetCurrentRegulator;
@@ -202,7 +199,7 @@ typedef struct{
 #ifdef NF_BUFSZ_SetSpeedRegulator
 typedef struct{
 	#define NF_DATABYTES_SetSpeedRegulator		8
-	uint64_t data[NF_BUFSZ_SetSpeedRegulator];
+	NF_STRUCT_Regulator data[NF_BUFSZ_SetSpeedRegulator];
 	uint8_t addr[NF_BUFSZ_SetSpeedRegulator];
 	uint8_t updated;
 } NF_STRUCT_SetSpeedRegulator;
@@ -210,7 +207,7 @@ typedef struct{
 #ifdef NF_BUFSZ_SetPositionRegulator
 typedef struct{
 	#define NF_DATABYTES_SetPositionRegulator	8
-	uint64_t data[NF_BUFSZ_SetPositionRegulator];
+	NF_STRUCT_Regulator data[NF_BUFSZ_SetPositionRegulator];
 	uint8_t addr[NF_BUFSZ_SetPositionRegulator];
 	uint8_t updated;
 } NF_STRUCT_SetPositionRegulator;

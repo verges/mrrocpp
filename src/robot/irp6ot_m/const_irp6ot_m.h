@@ -47,13 +47,13 @@ const std::string ports_strings[] =
  * @brief IRp6 on track overcurrent threshold [mA]
  * @ingroup irp6ot_m
  */
-const int MAX_CURRENT_0 = 25000;
-const int MAX_CURRENT_1 = 15000;
-const int MAX_CURRENT_2 = 18000;
-const int MAX_CURRENT_3 = 10000;
-const int MAX_CURRENT_4 = 10000;
-const int MAX_CURRENT_5 = 10000;
-const int MAX_CURRENT_6 = 10000;
+const int16_t MAX_CURRENT_0 = 25000;
+const int16_t MAX_CURRENT_1 = 15000;
+const int16_t MAX_CURRENT_2 = 18000;
+const int16_t MAX_CURRENT_3 = 10000;
+const int16_t MAX_CURRENT_4 = 10000;
+const int16_t MAX_CURRENT_5 = 10000;
+const int16_t MAX_CURRENT_6 = 10000;
 
 /*!
  * @brief IRp6 on track max encoder increment

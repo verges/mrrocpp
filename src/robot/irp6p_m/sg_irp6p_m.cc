@@ -67,7 +67,6 @@ void servo_buffer::load_hardware_interface(void)
 	//		HI_RYDZ_INTR_TIMEOUT_HIGH, FIRST_SERVO_PTR,
 	//		INTERRUPT_GENERATOR_SERVO_PTR, ISA_CARD_OFFSET, max_current);
 
-
 	const std::vector <std::string>
 			ports_vector(mrrocpp::lib::irp6p_m::ports_strings, mrrocpp::lib::irp6p_m::ports_strings
 					+ mrrocpp::lib::irp6p_m::LAST_MOXA_PORT_NUM + 1);
@@ -88,6 +87,16 @@ void servo_buffer::load_hardware_interface(void)
 	hi->set_parameter_now(3, NF_COMMAND_SetDrivesMode, NF_DrivesMode_PWM);
 	hi->set_parameter_now(4, NF_COMMAND_SetDrivesMode, NF_DrivesMode_PWM);
 	hi->set_parameter_now(5, NF_COMMAND_SetDrivesMode, NF_DrivesMode_PWM);
+
+	NF_STRUCT_Regulator tmpReg = {0x1010, 0x2020, 0x3030, 0x4040};
+
+	hi->set_parameter_now(0, NF_COMMAND_SetCurrentRegulator, tmpReg);
+	hi->set_parameter_now(1, NF_COMMAND_SetCurrentRegulator, tmpReg);
+	hi->set_parameter_now(2, NF_COMMAND_SetCurrentRegulator, tmpReg);
+	hi->set_parameter_now(3, NF_COMMAND_SetCurrentRegulator, tmpReg);
+	hi->set_parameter_now(4, NF_COMMAND_SetCurrentRegulator, tmpReg);
+	hi->set_parameter_now(5, NF_COMMAND_SetCurrentRegulator, tmpReg);
+
 
 	// utworzenie tablicy regulatorow
 	// Serwomechanizm 1

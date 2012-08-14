@@ -7,12 +7,14 @@
 
 using boost::lexical_cast;
 
-IMU::IMU(const std::string& port, int baud) {
+IMU::IMU(const std::string& port, int baud)
+{
 	connected = false;
-	
+	dlen = 0;
+
 	gyro_factor = 14.375;
 	acc_factor = 256;
-	
+
 	fd = open(port.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
 	if (fd >= 0) {
 		tcgetattr(fd, &oldtio);
@@ -20,7 +22,7 @@ IMU::IMU(const std::string& port, int baud) {
 		// set up new settings
 		struct termios newtio;
 		memset(&newtio, 0, sizeof(newtio));
-		newtio.c_cflag = CBAUD | CS8 | CLOCAL | CREAD | CSTOPB;
+		newtio.c_cflag = CBAUD | CS8 | CLOCAL | CREAD;
 		newtio.c_iflag = INPCK; //IGNPAR;
 		newtio.c_oflag = 0;
 		newtio.c_lflag = 0;
@@ -38,55 +40,118 @@ IMU::IMU(const std::string& port, int baud) {
 	}
 }
 
-IMU::~IMU() {
+IMU::~IMU()
+{
 	// restore old port settings
 	if (fd > 0)
 		tcsetattr(fd, TCSANOW, &oldtio);
 	close(fd);
 }
 
-void IMU::setFactors(double gf, double af) {
+void IMU::setFactors(double gf, double af)
+{
 	gyro_factor = gf;
 	acc_factor = af;
 }
 
-ImuData IMU::getReading() {
-	ImuData ret;
-	std::string buf;
-	int retcode;
-	char c = ' ';
-	
-	// ignore everything before start character
-	while (c != '$')
-		read(fd, &c, 1);
-		
-	// remember everything up to end character
-	while (c != '#') {
-		retcode = read(fd, &c, 1);
-		if (retcode == 0)
-			continue;
-			
-		if (retcode < 0)
-			throw "Can't read data from serial port!";
-			
-		if (c != '#')
-			buf += c;
-	}
+ImuData IMU::getReading()
+{
+	for (;;) {
+		fd_set rfds;
 
-	tcflush(fd, TCIFLUSH);
+		FD_ZERO(&rfds);
+		FD_SET(fd, &rfds);
 
-	std::vector<std::string> strs;
-	boost::split(strs, buf, boost::is_any_of(","));
-	
-	if (strs.size() != 6) 
-		throw "Bad measurements count!";
-	
-	for (int i = 0; i < 3; ++i) {
-		ret.angularVelocity[i] = lexical_cast<double>(strs[i+3]) / gyro_factor;
-		ret.linearAcceleration[i] = lexical_cast<double>(strs[i]) / acc_factor;
+		// timeout
+		struct timeval timeout;
+		timeout.tv_sec = (time_t) 0;
+		timeout.tv_usec = 50000;
+
+		int select_retval = select(fd + 1, &rfds, NULL, NULL, &timeout);
+
+		if (select_retval == 0) {
+			printf("timeout !!! \n");
+		} else {
+			int ret = read(fd, data + dlen, 50 - dlen);
+			if (ret <= 0)
+				continue;
+			dlen += ret;
+			for (unsigned int i = 0; i < dlen; i++) {
+				if (data[i] == '\n') {
+					if (i > 21)
+						interpret(data + i - 22);
+					unsigned int k = 0;
+
+					for (unsigned int j = i + 1; j < dlen; j++) {
+						data[k++] = data[j];
+					}
+
+					dlen = k;
+
+					i = 0;
+				}
+			}
+			return imu_data;
+		}
 	}
-	
-	//std::cout << "Ang:\n" << ret.angularVelocity << "\nLin:\n" << ret.linearAcceleration << "\n";
-	
-	return ret;
+}
+
+int16_t IMU::getShort14(char * dat)
+{
+	int16_t val = 0;
+
+	((char *) &val)[0] = dat[1];
+	((char *) &val)[1] = dat[0];
+
+	val = val & 0x3FFF;
+
+	if (val > (16383 / 2 - 1))
+		val = val - 16383;
+	return val;
+}
+
+int16_t IMU::getShort12(char * dat)
+{
+	int16_t val = 0;
+
+	((char *) &val)[0] = dat[1];
+	((char *) &val)[1] = dat[0];
+
+	val = val & 0x0FFF;
+
+	if (val > (4095 / 2 - 1))
+		val = val - 4095;
+	return val;
+}
+
+void IMU::interpret(char * dat)
+{
+	int16_t sup, gyroX, gyroY, gyroZ, acclX, acclY, acclZ, tempX, tempY, tempZ;
+
+	sup = getShort12(&dat[0]);
+
+	gyroX = getShort14(&dat[2]);
+	gyroY = getShort14(&dat[4]);
+	gyroZ = getShort14(&dat[6]);
+
+	acclX = getShort14(&dat[8]);
+	acclY = getShort14(&dat[10]);
+	acclZ = getShort14(&dat[12]);
+
+	tempX = getShort12(&dat[14]);
+	tempY = getShort12(&dat[16]);
+	tempZ = getShort12(&dat[18]);
+
+	imu_data.angularVelocity[0] = gyroX * 0.05 * M_PI / 180.0;
+	imu_data.angularVelocity[1] = gyroY * 0.05 * M_PI / 180.0;
+	imu_data.angularVelocity[2] = gyroZ * 0.05 * M_PI / 180.0;
+
+	imu_data.linearAcceleration[0] = acclX * 0.000333;
+	imu_data.linearAcceleration[1] = acclY * 0.000333;
+	imu_data.linearAcceleration[2] = acclZ * 0.000333;
+
+//	imu.tempX = 25.0 + tempX * 0.136;
+//	imu.tempY = 25.0 + tempY * 0.136;
+//	imu.tempZ = 25.0 + tempZ * 0.136;
+
 }

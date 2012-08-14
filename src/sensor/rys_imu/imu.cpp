@@ -20,7 +20,7 @@ IMU::IMU(const std::string& port, int baud) {
 		// set up new settings
 		struct termios newtio;
 		memset(&newtio, 0, sizeof(newtio));
-		newtio.c_cflag = CBAUD | CS8 | CLOCAL | CREAD | CSTOPB;
+		newtio.c_cflag = CBAUD | CS8 | CLOCAL | CREAD;
 		newtio.c_iflag = INPCK; //IGNPAR;
 		newtio.c_oflag = 0;
 		newtio.c_lflag = 0;

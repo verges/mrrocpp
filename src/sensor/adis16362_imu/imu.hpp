@@ -14,14 +14,15 @@
 
 #include "base/lib/imudata.hpp"
 
-class IMU {
+class IMU
+{
 public:
-	IMU(const std::string& port = "/dev/ttyUSB0", int baud = B57600);
+	IMU(const std::string& port = "/dev/ttyUSB0", int baud = B500000);
 	~IMU();
 
 	// Block until new measurement is avalible
-	ImuData getReading();	
-	
+	ImuData getReading();
+
 	void setFactors(double gf, double af);
 
 protected:
@@ -29,11 +30,21 @@ protected:
 private:
 	int fd;
 	struct termios oldtio;
-	
+
 	bool connected;
-	
+
 	double gyro_factor;
 	double acc_factor;
+
+	char data[50];
+	int dlen;
+
+	ImuData imu_data;
+
+	int16_t getShort14(char * dat);
+	int16_t getShort12(char * dat);
+	void interpret(char * dat);
+
 };
 
 #endif /* IMU_HPP */

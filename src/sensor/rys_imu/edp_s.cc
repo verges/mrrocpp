@@ -30,6 +30,7 @@ rys_imu::rys_imu(common::manip_effector &_master) :
 		imu(_master)
 {
 	printf("rys_imu created !!! \n");
+	sr_msg->message("RYS IMU sensor being created");
 
 }
 

@@ -58,7 +58,7 @@ void adis16362_imu::configure_particular_sensor(void)
 
 void adis16362_imu::wait_for_particular_event()
 {
-	usleep(12000);
+//	usleep(1000);
 }
 
 void adis16362_imu::get_particular_reading(void)

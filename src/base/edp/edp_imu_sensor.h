@@ -1,6 +1,6 @@
 // -------------------------------------------------------------------------
 //
-// Definicje klasy edp_force_sensor
+// Definicje klasy edp_imu_sensor
 //
 // Autor: yoyek
 // -------------------------------------------------------------------------
@@ -52,10 +52,10 @@ protected:
 	virtual void connect_to_hardware(void) = 0;
 	virtual void disconnect_from_hardware(void) = 0;
 
-	// particular force sensor configuration
+	// particular imu sensor configuration
 	virtual void configure_particular_sensor(void) = 0;
 
-	// particular force sensor get reading
+	// particular imu sensor get reading
 	virtual void get_particular_reading(void) = 0;
 
 	virtual void wait_for_particular_event(void) = 0; // oczekiwanie na zdarzenie
@@ -83,7 +83,7 @@ public:
 	void set_command_execution_finish();
 
 };
-// end: class edp_force_sensor
+// end: class edp_imu_sensor
 
 // Zwrocenie stworzonego obiektu - czujnika. Funkcja implementowana w plikach klas dziedziczacych.
 imu* return_created_edp_imu_sensor(common::manip_effector &_master);

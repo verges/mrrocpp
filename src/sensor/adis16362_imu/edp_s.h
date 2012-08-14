@@ -1,6 +1,6 @@
 /*!
  * @file
- * @brief File containing the declaration of the RYS IMU sensor class.
+ * @brief File containing the declaration of the ADIS16362 IMU sensor class.
  *
  * @author yoyek
  *
@@ -9,16 +9,12 @@
 #if !defined(_EDP_S_ADIS16362_IMU_H)
 #define _EDP_S_ADIS16362_IMU_H
 
-
 #include "base/edp/edp_imu_sensor.h"
 #include "imu.hpp"
 
 namespace mrrocpp {
 namespace edp {
 namespace sensor {
-
-
-
 
 class adis16362_imu : public imu
 {
@@ -40,7 +36,6 @@ private:
 } // namespace sensor
 } // namespace edp
 } // namespace mrrocpp
-
 
 #endif
 

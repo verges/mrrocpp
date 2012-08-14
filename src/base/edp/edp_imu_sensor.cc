@@ -28,7 +28,7 @@ void imu::operator()()
 	}
 
 	catch (lib::exception::se_sensor & error) {
-		std::cerr << "sensor_error w force thread EDP" << std::endl;
+		std::cerr << "sensor_error w imu thread EDP" << std::endl;
 
 		uint64_t error0 = 0;
 
@@ -50,13 +50,13 @@ void imu::operator()()
 	}
 
 	catch (std::exception & e) {
-		printf("force sensor exception: %s\n", e.what());
+		printf("imu sensor exception: %s\n", e.what());
 		sr_msg->message(lib::FATAL_ERROR, e.what());
 		exit(EXIT_SUCCESS);
 	}
 
 	catch (...) {
-		std::cerr << "unidentified error force thread w EDP" << std::endl;
+		std::cerr << "unidentified error imu thread w EDP" << std::endl;
 	}
 
 	while (!boost::this_thread::interruption_requested()) {
@@ -88,7 +88,7 @@ void imu::operator()()
 		} //!< koniec TRY
 
 		catch (lib::exception::se_sensor & error) {
-			std::cerr << "sensor_error w force thread EDP" << std::endl;
+			std::cerr << "sensor_error w imu thread EDP" << std::endl;
 
 			uint64_t error0 = 0;
 
@@ -110,7 +110,7 @@ void imu::operator()()
 		}
 
 		catch (...) {
-			std::cerr << "unidentified error in EDP force thread" << std::endl;
+			std::cerr << "unidentified error in EDP imu thread" << std::endl;
 		}
 
 		//	sr_msg->message("imu operator() in while");

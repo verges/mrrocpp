@@ -23,6 +23,8 @@
 // Klasa edp_irp6ot_effector.
 #include "robot/irp6p_m/edp_irp6p_m_effector.h"
 #include "base/edp/edp_force_sensor.h"
+#include "base/edp/edp_imu_sensor.h"
+
 // Kinematyki.
 #include "robot/irp6p_m/kinematic_model_irp6p_with_wrist.h"
 #include "robot/irp6p_m/kinematic_model_irp6p_5dof.h"
@@ -71,6 +73,12 @@ void effector::create_threads()
 	//vs->thread_started.wait();
 	//zeby miec pewnosc, ze zostal wykonany pierwszy pomiar
 	vs->first_measure_synchroniser.wait();
+
+	imu_sen = (boost::shared_ptr <sensor::imu>) sensor::return_created_edp_imu_sensor(*this);
+	imu_tid = boost::thread(boost::bind(&sensor::imu::operator(), imu_sen));
+	imu_sen->first_measure_synchroniser.wait();
+	//imu_sen->thread_started.wait();
+
 	motor_driven_effector::hi_create_threads();
 }
 

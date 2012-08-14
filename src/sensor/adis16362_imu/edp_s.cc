@@ -29,8 +29,8 @@ namespace sensor {
 adis16362_imu::adis16362_imu(common::manip_effector &_master) :
 		imu(_master)
 {
-	printf("rys_imu created !!! \n");
-
+	printf("ADIS16362 IMU created !!! \n");
+	sr_msg->message("ADIS16362 IMU sensor being created");
 }
 
 void adis16362_imu::connect_to_hardware(void)
@@ -43,7 +43,7 @@ adis16362_imu::~adis16362_imu(void)
 	if (!imu_sensor_test_mode) {
 		disconnect_from_hardware();
 	}
-	printf("Destruktor rys sensor\n");
+	printf("Destruktor ADIS16362 IMU sensor\n");
 }
 
 void adis16362_imu::disconnect_from_hardware(void)
@@ -53,7 +53,7 @@ void adis16362_imu::disconnect_from_hardware(void)
 
 void adis16362_imu::configure_particular_sensor(void)
 {
-	sr_msg->message("RYS IMU sensor being configured");
+	sr_msg->message("ADIS16362 IMU sensor being configured");
 }
 
 void adis16362_imu::wait_for_particular_event()

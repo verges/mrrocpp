@@ -32,6 +32,13 @@ sr::sr(process_type_t _process_type, const std::string & _process_name, const st
 		hostname[0] = '\0';
 	}
 
+	for (int i = 0; i < sizeof(hostname); i++) {
+		if (hostname[i] == '.') {
+			hostname[i] = '\0';
+			break;
+		}
+	}
+
 	previous_sr_message.tv.tv_sec = 0;
 	previous_sr_message.tv.tv_usec = 0;
 	previous_sr_message.message_type = lib::NON_FATAL_ERROR;
@@ -61,7 +68,7 @@ void sr::send_package(sr_package_t & sr_message)
 	if ((current_time - previous_time < MIN_MESSAGE_INTERVAL)
 			&& (sr_message.message_type == previous_sr_message.message_type)
 			&& (strcmp(sr_message.description, previous_sr_message.description) == 0)) {
-	//	std::cout << "srlib	overflow" << std::endl;
+		//	std::cout << "srlib	overflow" << std::endl;
 	}
 
 	else {

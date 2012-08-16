@@ -62,14 +62,14 @@ void servo_buffer::compute_current_measurement_statistics()
 		total_power += axis_power;
 	}
 
-        //printf("total power: %f\n", total_power);
+	//printf("total power: %f\n", total_power);
 	// zakladam spadek napiecia 1V na 40W mocy
 
 	for (int k = 0; k < master.number_of_servos; k++) {
-                //============ pomiar pradu dla osi
+		//============ pomiar pradu dla osi
 		int measured_current = regulator_ptr[k]->get_measured_current();
 
-                //===========energia dla osi
+		//===========energia dla osi
 		float step_energy = ((float) abs(measured_current)) / 1000.0
 				* fabs(regulator_ptr[k]->get_previous_pwm() / 255.0) * (hi->get_voltage(k) - (total_power / 40.0))
 				* ((float) lib::EDP_STEP);
@@ -82,7 +82,7 @@ void servo_buffer::compute_current_measurement_statistics()
 			master.reply.arm.measured_current.maximum_module[k] = abs(measured_current);
 			master.reply.arm.measured_current.minimum_module[k] = abs(measured_current);
 
-                        //======== RAFAL TULWIN
+			//======== RAFAL TULWIN
 			master.reply.arm.measured_current.energy[k] = step_energy;
 
 			// dla pozostalych krokow
@@ -112,7 +112,7 @@ void servo_buffer::compute_current_measurement_statistics()
 			master.reply.arm.measured_current.maximum_module[k] = maximum_module;
 			master.reply.arm.measured_current.minimum_module[k] = minimum_module;
 
-                        //========== RAFAL TULWIN
+			//========== RAFAL TULWIN
 			master.reply.arm.measured_current.energy[k] += step_energy;
 		}
 	}
@@ -130,7 +130,7 @@ uint8_t servo_buffer::Move_a_step(void)
 		// by Y - do dokonczenia
 		if (!(master.robot_test_mode)) {
 			for (int i = 0; i < master.number_of_servos; i++) {
-					master.update_servo_current_motor_pos_abs(hi->get_position(i) * (2 * M_PI) / axe_inc_per_revolution[i], i);
+				master.update_servo_current_motor_pos_abs(hi->get_position(i) * (2 * M_PI) / axe_inc_per_revolution[i], i);
 			}
 		}
 
@@ -246,8 +246,7 @@ void servo_buffer::operator()()
 
 	try {
 		load_hardware_interface();
-	}
-	catch (std::exception & e) {
+	} catch (std::exception & e) {
 		printf("servo group exception: %s\n", e.what());
 		master.msg->message(lib::FATAL_ERROR, e.what());
 		exit(EXIT_SUCCESS);
@@ -263,7 +262,7 @@ void servo_buffer::operator()()
 	master.sb_loaded.wait();
 	/* BEGIN SERVO_GROUP */
 
-	while(!boost::this_thread::interruption_requested()) {
+	while (!boost::this_thread::interruption_requested()) {
 		// komunikacja z transformation
 		if (!get_command()) {
 			// scoped-locked reader data update

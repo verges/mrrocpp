@@ -84,6 +84,8 @@ uint64_t servo_buffer::compute_all_set_values(void)
 		status |= ((uint64_t) regulator_ptr[j]->compute_set_value()) << 2 * j;
 		// przepisanie obliczonej wartosci zadanej do hardware interface
 		hi->set_pwm(j, regulator_ptr[j]->get_set_value());
+		//hi->set_current(j, regulator_ptr[j]->get_set_value() * 1);
+		//std::cout << "des current: " << regulator_ptr[j]->get_set_value() * 1 << std::endl;
 	}
 	return status;
 }

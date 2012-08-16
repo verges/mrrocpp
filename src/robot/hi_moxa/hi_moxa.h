@@ -65,7 +65,7 @@ public:
 	 * @param ports				vector of serial port names
 	 * @param *max_increments	tab of max allowed motor increments
 	 */
-	HI_moxa(common::motor_driven_effector &_master, int last_drive_n, std::vector <std::string> ports, const unsigned int* card_addresses, const double* max_increments); // Konstruktor
+	HI_moxa(common::motor_driven_effector &_master, int last_drive_n, std::vector <std::string> ports, const unsigned int* card_addresses, const double* max_increments, int tx_prefix_len); // Konstruktor
 
 	/**
 	 * @brief destructor
@@ -190,6 +190,7 @@ private:
 #else
 	static const speed_t BAUD = 921600;
 #endif
+	const int howMuchItSucks;
 	/// (number of drives)-1
 	const std::size_t last_drive_number;
 	/// vector of serial port names

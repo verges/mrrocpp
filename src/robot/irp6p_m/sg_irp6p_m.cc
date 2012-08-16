@@ -71,7 +71,7 @@ void servo_buffer::load_hardware_interface(void)
 			ports_vector(mrrocpp::lib::irp6p_m::ports_strings, mrrocpp::lib::irp6p_m::ports_strings
 					+ mrrocpp::lib::irp6p_m::LAST_MOXA_PORT_NUM + 1);
 	hi
-			= new hi_moxa::HI_moxa(master, mrrocpp::lib::irp6p_m::LAST_MOXA_PORT_NUM, ports_vector, mrrocpp::lib::irp6p_m::CARD_ADDRESSES, mrrocpp::lib::irp6p_m::MAX_INCREMENT);
+			= new hi_moxa::HI_moxa(master, mrrocpp::lib::irp6p_m::LAST_MOXA_PORT_NUM, ports_vector, mrrocpp::lib::irp6p_m::CARD_ADDRESSES, mrrocpp::lib::irp6p_m::MAX_INCREMENT, mrrocpp::lib::irp6p_m::TX_PREFIX_LEN);
 	hi->init();
 
 	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::irp6p_m::MAX_CURRENT_0);

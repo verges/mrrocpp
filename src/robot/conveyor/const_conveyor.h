@@ -60,6 +60,12 @@ const double MAX_INCREMENT[] = { 0 };
  */
 const unsigned int CARD_ADDRESSES[] = { 7 };
 
+/*!
+ * @brief Number of command prefix bytes
+ * @ingroup conveyor
+ */
+const int TX_PREFIX_LEN = 0;
+
 } // namespace conveyor
 } // namespace lib
 } // namespace mrrocpp

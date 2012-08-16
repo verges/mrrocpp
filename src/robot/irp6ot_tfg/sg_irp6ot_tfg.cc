@@ -43,7 +43,7 @@ void servo_buffer::load_hardware_interface(void)
 				ports_vector(mrrocpp::lib::irp6ot_tfg::ports_strings, mrrocpp::lib::irp6ot_tfg::ports_strings
 						+ mrrocpp::lib::irp6ot_tfg::LAST_MOXA_PORT_NUM + 1);
 		hi
-				= new hi_moxa::HI_moxa(master, mrrocpp::lib::irp6ot_tfg::LAST_MOXA_PORT_NUM, ports_vector, mrrocpp::lib::irp6ot_tfg::CARD_ADDRESSES, mrrocpp::lib::irp6ot_tfg::MAX_INCREMENT);
+				= new hi_moxa::HI_moxa(master, mrrocpp::lib::irp6ot_tfg::LAST_MOXA_PORT_NUM, ports_vector, mrrocpp::lib::irp6ot_tfg::CARD_ADDRESSES, mrrocpp::lib::irp6ot_tfg::MAX_INCREMENT, mrrocpp::lib::irp6ot_tfg::TX_PREFIX_LEN);
 		hi->init();
 
 		//Ustawienie zwlocznego ograniczenia pradowego - dlugotrwale przekroczenie ustawionej wartosci

@@ -67,6 +67,12 @@ const double MAX_INCREMENT[] = { 1000, 1000, 1000, 1000, 1000, 1000, 1000 };
  */
 const unsigned int CARD_ADDRESSES[] = { 15, 8, 9, 10, 11, 12, 13 };
 
+/*!
+ * @brief Number of command prefix bytes
+ * @ingroup irp6ot_m
+ */
+const int TX_PREFIX_LEN = 0;
+
 } // namespace irp6ot_m
 } // namespace lib
 } // namespace mrrocpp

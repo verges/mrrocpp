@@ -26,8 +26,9 @@ namespace mrrocpp {
 namespace edp {
 namespace hi_moxa {
 
-HI_moxa::HI_moxa(common::motor_driven_effector &_master, int last_drive_n, std::vector <std::string> ports, const unsigned int* card_addresses, const double* max_increments) :
+HI_moxa::HI_moxa(common::motor_driven_effector &_master, int last_drive_n, std::vector <std::string> ports, const unsigned int* card_addresses, const double* max_increments, int tx_prefix_len) :
 		common::HardwareInterface(_master),
+		howMuchItSucks(tx_prefix_len),
 		last_drive_number(last_drive_n),
 		port_names(ports),
 		drives_addresses(card_addresses),
@@ -277,9 +278,7 @@ uint64_t HI_moxa::read_write_hardware(void)
 			servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_ReadDrivesStatus;
 			// Make command frame
 			servo_data[drive_number].txCnt =
-					NF_MakeCommandFrame(&NFComBuf, servo_data[drive_number].txBuf+5, (const uint8_t*) servo_data[drive_number].commandArray, servo_data[drive_number].commandCnt, drives_addresses[drive_number]);
-			for(int i=0; i<5; i++)
-				servo_data[drive_number].txBuf[i] = 0;
+					NF_MakeCommandFrame(&NFComBuf, servo_data[drive_number].txBuf + howMuchItSucks, (const uint8_t*) servo_data[drive_number].commandArray, servo_data[drive_number].commandCnt, drives_addresses[drive_number]);
 
 #ifdef NFV2_TX_DEBUG
 			std::cout << "[debug] servo_data[drive_number].commandArray: ";
@@ -287,7 +286,7 @@ uint64_t HI_moxa::read_write_hardware(void)
 			std::cout << (unsigned int)servo_data[drive_number].commandArray[k] << ";";
 			std::cout << std::endl;
 			std::cout << "[debug] txBuf: ";
-			for(int k=0; k<servo_data[drive_number].txCnt+5; k++)
+			for(int k=0; k<servo_data[drive_number].txCnt + howMuchItSucks; k++)
 			std::cout << (unsigned int)servo_data[drive_number].txBuf[k] << ";";
 			std::cout << std::endl;
 #endif //NFV2_DEBUG
@@ -296,7 +295,7 @@ uint64_t HI_moxa::read_write_hardware(void)
 		}
 		for (drive_number = 0; drive_number <= last_drive_number; drive_number++) {
 			// Send command frame
-			SerialPort[drive_number]->write(servo_data[drive_number].txBuf, servo_data[drive_number].txCnt+5);
+			SerialPort[drive_number]->write(servo_data[drive_number].txBuf, servo_data[drive_number].txCnt + howMuchItSucks);
 		}
 	}
 

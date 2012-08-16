@@ -51,7 +51,7 @@ void servo_buffer::load_hardware_interface(void)
 			ports_vector(mrrocpp::lib::sarkofag::ports_strings, mrrocpp::lib::sarkofag::ports_strings
 					+ mrrocpp::lib::sarkofag::LAST_MOXA_PORT_NUM + 1);
 	hi = new hi_moxa::HI_moxa(master, mrrocpp::lib::sarkofag::LAST_MOXA_PORT_NUM,
-			ports_vector, mrrocpp::lib::sarkofag::CARD_ADDRESSES, mrrocpp::lib::sarkofag::MAX_INCREMENT);
+			ports_vector, mrrocpp::lib::sarkofag::CARD_ADDRESSES, mrrocpp::lib::sarkofag::MAX_INCREMENT, mrrocpp::lib::sarkofag::TX_PREFIX_LEN);
 	hi->init();
 	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::sarkofag::MAX_CURRENT_0);
 	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_PWM);

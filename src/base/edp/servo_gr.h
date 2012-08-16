@@ -229,7 +229,7 @@ public:
 	int synchro_move_to_encoder_zero(common::regulator* &crp, int j);
 
 	//! obliczenie nastepnej wartosci zadanej dla wszystkich napedow
-	uint64_t compute_all_set_values(void);
+	virtual uint64_t compute_all_set_values(void);
 
 	//! wydruk - do celow uruchomieniowych !!!
 	void ppp(void) const;

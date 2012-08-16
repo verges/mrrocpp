@@ -28,7 +28,7 @@ namespace sarkofag {
 
 /*-----------------------------------------------------------------------*/
 servo_buffer::servo_buffer(effector &_master) :
-	common::servo_buffer(_master), master(_master)
+		common::servo_buffer(_master), master(_master)
 {
 
 	synchro_axis_order[0] = 0;
@@ -47,14 +47,14 @@ void servo_buffer::load_hardware_interface(void)
 	// tablica pradow maksymalnych dla poszczegolnych osi
 	//	int max_current[NUM_OF_SERVOS] = { SARKOFAG_AXIS_7_MAX_CURRENT };
 
-	const std::vector <std::string>
-			ports_vector(mrrocpp::lib::sarkofag::ports_strings, mrrocpp::lib::sarkofag::ports_strings
-					+ mrrocpp::lib::sarkofag::LAST_MOXA_PORT_NUM + 1);
-	hi = new hi_moxa::HI_moxa(master, mrrocpp::lib::sarkofag::LAST_MOXA_PORT_NUM,
-			ports_vector, mrrocpp::lib::sarkofag::CARD_ADDRESSES, mrrocpp::lib::sarkofag::MAX_INCREMENT, mrrocpp::lib::sarkofag::TX_PREFIX_LEN);
+	const std::vector <std::string> ports_vector(mrrocpp::lib::sarkofag::ports_strings, mrrocpp::lib::sarkofag::ports_strings
+			+ mrrocpp::lib::sarkofag::LAST_MOXA_PORT_NUM + 1);
+	hi =
+			new hi_moxa::HI_moxa(master, mrrocpp::lib::sarkofag::LAST_MOXA_PORT_NUM, ports_vector, mrrocpp::lib::sarkofag::CARD_ADDRESSES, mrrocpp::lib::sarkofag::MAX_INCREMENT, mrrocpp::lib::sarkofag::TX_PREFIX_LEN);
 	hi->init();
 	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::sarkofag::MAX_CURRENT_0);
 	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_PWM);
+//	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_CURRENT);
 	// utworzenie tablicy regulatorow
 	// Serwomechanizm 1
 
@@ -65,6 +65,29 @@ void servo_buffer::load_hardware_interface(void)
 	common::servo_buffer::load_hardware_interface();
 
 }
+
+/*-----------------------------------------------------------------------*/
+uint64_t servo_buffer::compute_all_set_values(void)
+{
+	// obliczenie nastepnej wartosci zadanej dla wszystkich napedow
+	uint64_t status = OK; // kumuluje numer bledu
+
+	for (int j = 0; j < master.number_of_servos; j++) {
+		if (master.robot_test_mode) {
+			regulator_ptr[j]->insert_new_pos_increment(regulator_ptr[j]->return_new_step() * axe_inc_per_revolution[j]
+					/ (2 * M_PI));
+		} else {
+			regulator_ptr[j]->insert_measured_current(hi->get_current(j));
+			regulator_ptr[j]->insert_new_pos_increment(hi->get_increment(j));
+		}
+		// obliczenie nowej wartosci zadanej dla napedu
+		status |= ((uint64_t) regulator_ptr[j]->compute_set_value()) << 2 * j;
+		// przepisanie obliczonej wartosci zadanej do hardware interface
+		hi->set_pwm(j, regulator_ptr[j]->get_set_value());
+	}
+	return status;
+}
+/*-----------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------*/
 void servo_buffer::get_all_positions(void)

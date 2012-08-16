@@ -303,7 +303,7 @@ uint64_t HI_moxa::read_write_hardware(void)
 	receive_attempts++;
 
 	struct timespec delay;
-	delay.tv_nsec = 1200000;
+	delay.tv_nsec = 1500000;
 	delay.tv_sec = 0;
 
 	nanosleep(&delay, NULL);

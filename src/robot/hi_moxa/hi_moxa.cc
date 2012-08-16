@@ -277,7 +277,9 @@ uint64_t HI_moxa::read_write_hardware(void)
 			servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_ReadDrivesStatus;
 			// Make command frame
 			servo_data[drive_number].txCnt =
-					NF_MakeCommandFrame(&NFComBuf, servo_data[drive_number].txBuf, (const uint8_t*) servo_data[drive_number].commandArray, servo_data[drive_number].commandCnt, drives_addresses[drive_number]);
+					NF_MakeCommandFrame(&NFComBuf, servo_data[drive_number].txBuf+5, (const uint8_t*) servo_data[drive_number].commandArray, servo_data[drive_number].commandCnt, drives_addresses[drive_number]);
+			for(int i=0; i<5; i++)
+				servo_data[drive_number].txBuf[i] = 0;
 
 #ifdef NFV2_TX_DEBUG
 			std::cout << "[debug] servo_data[drive_number].commandArray: ";
@@ -285,8 +287,8 @@ uint64_t HI_moxa::read_write_hardware(void)
 			std::cout << (unsigned int)servo_data[drive_number].commandArray[k] << ";";
 			std::cout << std::endl;
 			std::cout << "[debug] txBuf: ";
-			for(int k=0; k<txCnt; k++)
-			std::cout << (unsigned int)txBuf[k+5] << ";";
+			for(int k=0; k<servo_data[drive_number].txCnt+5; k++)
+			std::cout << (unsigned int)servo_data[drive_number].txBuf[k] << ";";
 			std::cout << std::endl;
 #endif //NFV2_DEBUG
 			// Clear communication requests
@@ -294,14 +296,14 @@ uint64_t HI_moxa::read_write_hardware(void)
 		}
 		for (drive_number = 0; drive_number <= last_drive_number; drive_number++) {
 			// Send command frame
-			SerialPort[drive_number]->write(servo_data[drive_number].txBuf, servo_data[drive_number].txCnt);
+			SerialPort[drive_number]->write(servo_data[drive_number].txBuf, servo_data[drive_number].txCnt+5);
 		}
 	}
 
 	receive_attempts++;
 
 	struct timespec delay;
-	delay.tv_nsec = 1500000;
+	delay.tv_nsec = 1200000;
 	delay.tv_sec = 0;
 
 	nanosleep(&delay, NULL);

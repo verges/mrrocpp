@@ -208,8 +208,8 @@ uint8_t NL_regulator_8_irp6p::compute_set_value(void)
 
 #define PROP_I_REG 0.0
 #define INT_I_REG 0.04
-#define MAX_REG_CURRENT 200.0
-#define CURRENT_PRESCALER 1.0
+#define MAX_REG_CURRENT 80.0
+#define CURRENT_KP 3.0
 
 #define NEWIMP 1
 
@@ -228,7 +228,7 @@ uint8_t NL_regulator_8_irp6p::compute_set_value(void)
 			set_value_old = set_value_new;
 
 			// wyznaczenie wartosci zadanej pradu
-			current_desired = (MAX_REG_CURRENT * set_value_new) / MAX_PWM;
+			current_desired = set_value_new / CURRENT_KP;
 
 			// ustalenie znaku pradu zmierzonego na podstawie znaku pwm
 			//			if (set_value_new > 0)
@@ -238,7 +238,7 @@ uint8_t NL_regulator_8_irp6p::compute_set_value(void)
 
 			// HI_MOXA zwraca prad w mA, ze znakiem odpowiadajacym kierunkowi przeplywu
 
-			current_measured = ((float) measured_current) * CURRENT_PRESCALER;
+			current_measured = ((float) measured_current);
 
 			// wyznaczenie uchybu
 			current_error = current_desired - current_measured;
@@ -361,11 +361,21 @@ uint8_t NL_regulator_8_irp6p::compute_set_value(void)
 			break;
 	}
 
+#ifdef NEWIMP
+	// ograniczenie na sterowanie
+	if (set_value_new > MAX_REG_CURRENT
+	)
+		set_value_new = MAX_REG_CURRENT;
+	if (set_value_new < -MAX_REG_CURRENT
+	)
+		set_value_new = -MAX_REG_CURRENT;
+#else
 	// ograniczenie na sterowanie
 	if (set_value_new > MAX_PWM)
-		set_value_new = MAX_PWM;
+	set_value_new = MAX_PWM;
 	if (set_value_new < -MAX_PWM)
-		set_value_new = -MAX_PWM;
+	set_value_new = -MAX_PWM;
+#endif
 
 	/*
 	 #define MAXX_PWM 250

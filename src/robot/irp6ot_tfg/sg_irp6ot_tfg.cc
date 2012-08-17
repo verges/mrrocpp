@@ -85,7 +85,7 @@ uint64_t servo_buffer::compute_all_set_values(void)
 		// przepisanie obliczonej wartosci zadanej do hardware interface
 #ifdef CCM
 		hi->set_current(j, regulator_ptr[j]->get_set_value());
-		//	std::cout << "des current: " << regulator_ptr[j]->get_set_value() << std::endl;
+		std::cout << "des current: " << regulator_ptr[j]->get_set_value() << std::endl;
 #else
 		hi->set_pwm(j, regulator_ptr[j]->get_set_value());
 #endif

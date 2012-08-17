@@ -242,8 +242,7 @@ uint8_t NL_regulator_2_irp6p::compute_set_value(void)
 						algorithm_parameters_no = current_algorithm_parameters_no;
 						alg_par_status = common::UNIDENTIFIED_ALGORITHM_PARAMETERS_NO;
 						break;
-				}
-				; // end: switch (algorithm_parameters_no)
+				} // end: switch (algorithm_parameters_no)
 				break;
 			case 2: // algorytm nr 2 - sterowanie pradowe
 				current_algorithm_parameters_no = algorithm_parameters_no;
@@ -322,7 +321,7 @@ uint8_t NL_regulator_2_irp6p::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }
@@ -458,8 +457,7 @@ uint8_t NL_regulator_3_irp6p::compute_set_value(void)
 						algorithm_parameters_no = current_algorithm_parameters_no;
 						alg_par_status = common::UNIDENTIFIED_ALGORITHM_PARAMETERS_NO;
 						break;
-				}
-				; // end: switch (algorithm_parameters_no)
+				} // end: switch (algorithm_parameters_no)
 				break;
 			case 2: // algorytm nr 2 - sterowanie pradowe
 				current_algorithm_parameters_no = algorithm_parameters_no;
@@ -535,7 +533,7 @@ uint8_t NL_regulator_3_irp6p::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }
@@ -752,7 +750,7 @@ uint8_t NL_regulator_4_irp6p::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }
@@ -968,7 +966,7 @@ uint8_t NL_regulator_5_irp6p::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }
@@ -1182,7 +1180,7 @@ uint8_t NL_regulator_6_irp6p::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }
@@ -1319,8 +1317,7 @@ uint8_t NL_regulator_7_irp6p::compute_set_value(void)
 						algorithm_parameters_no = current_algorithm_parameters_no;
 						alg_par_status = common::UNIDENTIFIED_ALGORITHM_PARAMETERS_NO;
 						break;
-				}
-				; // end: switch (algorithm_parameters_no)
+				} // end: switch (algorithm_parameters_no)
 				break;
 			case 2: // algorytm nr 2 - sterowanie pradowe
 				current_algorithm_parameters_no = algorithm_parameters_no;
@@ -1409,7 +1406,7 @@ uint8_t NL_regulator_7_irp6p::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }

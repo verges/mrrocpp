@@ -247,7 +247,7 @@ uint8_t NL_regulator_8_sarkofag::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }

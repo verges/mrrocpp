@@ -71,7 +71,7 @@ regulator::~regulator()
 double regulator::get_set_value(void) const
 {
 	// odczytanie aktualnej wartosci zadanej  - metoda konkretna
-	return set_value_new;
+	return output_value;
 }
 
 void regulator::insert_new_step(double ns)

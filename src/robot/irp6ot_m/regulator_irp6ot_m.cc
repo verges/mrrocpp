@@ -232,8 +232,7 @@ uint8_t NL_regulator_1_irp6ot::compute_set_value(void)
 						algorithm_parameters_no = current_algorithm_parameters_no;
 						alg_par_status = common::UNIDENTIFIED_ALGORITHM_PARAMETERS_NO;
 						break;
-				}
-				; // end: switch (algorithm_parameters_no)
+				} // end: switch (algorithm_parameters_no)
 				break;
 			case 2: // algorytm nr 2 - sterowanie pradowe
 				current_algorithm_parameters_no = algorithm_parameters_no;
@@ -255,9 +254,9 @@ uint8_t NL_regulator_1_irp6ot::compute_set_value(void)
 	switch (algorithm_no)
 	{
 		case 0: // algorytm nr 0
-			// obliczenie nowej wartosci wypelnienia PWM algorytm PD + I
+
 			set_value_new = (1 + a) * set_value_old - a * set_value_very_old + b0 * delta_eint - b1 * delta_eint_old;
-			// cout<<a<<" "<<b0<<" "<<b1<<"\n";
+
 			break;
 		case 1: // algorytm nr 1
 			// obliczenie nowej wartosci wypelnienia PWM algorytm PD + I
@@ -312,7 +311,7 @@ uint8_t NL_regulator_1_irp6ot::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }
@@ -451,8 +450,7 @@ uint8_t NL_regulator_2_irp6ot::compute_set_value(void)
 						algorithm_parameters_no = current_algorithm_parameters_no;
 						alg_par_status = common::UNIDENTIFIED_ALGORITHM_PARAMETERS_NO;
 						break;
-				}
-				; // end: switch (algorithm_parameters_no)
+				} // end: switch (algorithm_parameters_no)
 				break;
 			case 2: // algorytm nr 2 - sterowanie pradowe
 				current_algorithm_parameters_no = algorithm_parameters_no;
@@ -471,12 +469,31 @@ uint8_t NL_regulator_2_irp6ot::compute_set_value(void)
 	b0 = 2.594932 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO; //stara z przelicz rezolwer/enkoder 15.219541375872
 	b1 = 2.504769 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO; //
 
+#define MAX_REG_CURRENT 15000
+#define CURRENT_KP 0.005
+
 	switch (algorithm_no)
 	{
 		case 0: // algorytm nr 0
 			// obliczenie nowej wartosci wypelnienia PWM algorytm PD + I
-			set_value_new = (1 + a) * set_value_old - a * set_value_very_old + b0 * delta_eint - b1 * delta_eint_old;
 			// cout<<a<<" "<<b0<<" "<<b1<<"\n";
+
+			switch (reg_output)
+			{
+				case common::REG_OUTPUT::PWM_OUTPUT: {
+					set_value_new = (1 + a) * set_value_old - a * set_value_very_old + b0 * delta_eint
+							- b1 * delta_eint_old;
+
+				}
+					break;
+				case common::REG_OUTPUT::CURRENT_OUTPUT: {
+					set_value_new = (1 + a) * set_value_old - a * set_value_very_old + b0 * delta_eint
+							- b1 * delta_eint_old;
+
+				}
+					break;
+			}
+
 			break;
 		case 1: // algorytm nr 1
 			// obliczenie nowej wartosci wypelnienia PWM algorytm PD + I
@@ -518,11 +535,43 @@ uint8_t NL_regulator_2_irp6ot::compute_set_value(void)
 
 	//  	set_value_new=set_value_new;
 
-	// ograniczenie na sterowanie
-	if (set_value_new > MAX_PWM)
-		set_value_new = MAX_PWM;
-	if (set_value_new < -MAX_PWM)
-		set_value_new = -MAX_PWM;
+	switch (reg_output)
+	{
+		case common::REG_OUTPUT::PWM_OUTPUT: {
+
+			// ograniczenie na sterowanie
+			if (set_value_new > MAX_PWM)
+				set_value_new = MAX_PWM;
+			if (set_value_new < -MAX_PWM)
+				set_value_new = -MAX_PWM;
+			output_value = set_value_new;
+			//	std::cout << "meassured_current: " << measured_current << " desired pwm: " << output_value << std::endl;
+
+		}
+			break;
+		case common::REG_OUTPUT::CURRENT_OUTPUT: {
+			// ograniczenie na sterowanie
+
+			if (set_value_new > MAX_PWM)
+				set_value_new = MAX_PWM;
+			if (set_value_new < -MAX_PWM)
+				set_value_new = -MAX_PWM;
+
+			output_value = set_value_new / CURRENT_KP;
+
+			if (output_value > MAX_REG_CURRENT)
+			{
+				output_value = MAX_REG_CURRENT;
+			} else if (output_value < -MAX_REG_CURRENT)
+			{
+				output_value = -MAX_REG_CURRENT;
+			}
+
+			std::cout << "meassured_current: " << measured_current << " desired current: " << output_value << std::endl;
+
+		}
+			break;
+	}
 
 	// przepisanie nowych wartosci zmiennych do zmiennych przechowujacych wartosci poprzednie
 	position_increment_old = position_increment_new;
@@ -744,7 +793,7 @@ uint8_t NL_regulator_3_irp6ot::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }
@@ -961,7 +1010,7 @@ uint8_t NL_regulator_4_irp6ot::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }
@@ -1177,7 +1226,7 @@ uint8_t NL_regulator_5_irp6ot::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }
@@ -1391,7 +1440,7 @@ uint8_t NL_regulator_6_irp6ot::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }
@@ -1618,7 +1667,7 @@ uint8_t NL_regulator_7_irp6ot::compute_set_value(void)
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
-
+	output_value = set_value_new;
 	return alg_par_status;
 
 }

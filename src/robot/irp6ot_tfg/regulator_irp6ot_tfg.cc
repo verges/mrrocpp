@@ -467,6 +467,7 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 
 	 prev_reg_state = reg_state;
 	 */
+	output_value = set_value_new;
 	return alg_par_status;
 
 }

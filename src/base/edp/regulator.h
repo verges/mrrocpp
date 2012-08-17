@@ -59,6 +59,7 @@ protected:
 
 	double step_new_over_constraint_sum;
 
+	double output_value; // wyjscie, z reguly set_value_new
 	double set_value_new; // wielkosc kroku do realizacji przez HI (wypelnienie PWM -- u[k])
 	double set_value_old; // wielkosc kroku do realizacji przez HI (wypelnienie PWM -- u[k-1])
 	double set_value_very_old; // wielkosc kroku do realizacji przez HI (wypelnienie PWM -- u[k-2])

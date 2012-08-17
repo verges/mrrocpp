@@ -62,7 +62,6 @@ uint8_t NL_regulator_1_conv::compute_set_value(void)
 	// set_value_very_old     - wielkosc kroku do realizacji przez HIP
 	//                         (wypelnienie PWM -- u[k-2]): czas trwania jedynki
 
-	double step_new_pulse; // nastepna wartosc zadana dla jednego kroku regulacji
 	// (przyrost wartosci zadanej polozenia --
 	// delta r[k-1] -- mierzone w impulsach)
 	uint8_t alg_par_status; // okresla prawidlowosc numeru algorytmu regulacji
@@ -170,8 +169,7 @@ uint8_t NL_regulator_1_conv::compute_set_value(void)
 						algorithm_parameters_no = current_algorithm_parameters_no;
 						alg_par_status = common::UNIDENTIFIED_ALGORITHM_PARAMETERS_NO;
 						break;
-				}
-				; // end: switch (algorithm_parameters_no)
+				} // end: switch (algorithm_parameters_no)
 				break;
 			default: // blad - nie ma takiego algorytmu
 				// => przywrocic stary algorytm i j stary zestaw parametrow
@@ -185,6 +183,8 @@ uint8_t NL_regulator_1_conv::compute_set_value(void)
 	a = 0.548946716233;
 	b0 = 1.576266 * CONVEYOR35V_TO_CONVEYOR_VOLTAGE_RATIO; //9.244959545156;
 	b1 = 1.468599 * CONVEYOR35V_TO_CONVEYOR_VOLTAGE_RATIO; //8.613484947882;
+	max_output_current = 15000;
+	current_reg_kp = 0.005;
 
 	switch (algorithm_no)
 	{
@@ -213,31 +213,8 @@ uint8_t NL_regulator_1_conv::compute_set_value(void)
 			break;
 	}
 
-	// scope-locked reader data update
-	{
-		boost::mutex::scoped_lock lock(master.rb_obj->reader_mutex);
+	compute_set_value_final_computations();
 
-		master.rb_obj->step_data.desired_inc[0] = (float) step_new_pulse; // pozycja osi 0
-		master.rb_obj->step_data.current_inc[0] = (short int) position_increment_new;
-		master.rb_obj->step_data.pwm[0] = (float) set_value_new;
-		master.rb_obj->step_data.uchyb[0] = (float) (step_new_pulse - position_increment_new);
-		master.rb_obj->step_data.measured_current[0] = measured_current;
-	}
-
-	// ograniczenie na sterowanie
-	if (set_value_new > MAX_PWM)
-		set_value_new = MAX_PWM;
-	if (set_value_new < -MAX_PWM)
-		set_value_new = -MAX_PWM;
-
-	// przepisanie nowych wartosci zmiennych do zmiennych przechowujacych wartosci poprzednie
-	position_increment_old = position_increment_new;
-	delta_eint_old = delta_eint;
-	step_old_pulse = step_new_pulse;
-	set_value_very_old = set_value_old;
-	set_value_old = set_value_new;
-	PWM_value = (int) set_value_new;
-	output_value = set_value_new;
 	return alg_par_status;
 
 }

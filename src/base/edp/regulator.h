@@ -147,6 +147,10 @@ protected:
 	double int_current_error;
 	int display;
 
+	double max_output_current;
+	double current_reg_kp;
+	double step_new_pulse; // nastepna wartosc zadana dla jednego kroku regulacji
+
 public:
 
 	NL_regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, motor_driven_effector &_master, REG_OUTPUT _reg_output);
@@ -155,6 +159,9 @@ public:
 	// obliczenie nastepnej wartosci zadanej dla napedu - metoda abstrakcyjna
 
 	virtual ~NL_regulator();
+
+	void compute_set_value_final_computations();
+
 };
 // ----------------------------------------------------------------------
 

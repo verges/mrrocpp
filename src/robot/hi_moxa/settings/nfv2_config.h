@@ -1,32 +1,33 @@
 /*
-* External config file.
-* Uncomment and update buffers' size [no of param set instances] for commands
-* to be supported by module:
-*/
+ * External config file.
+ * Uncomment and update buffers' size [no of param set instances] for commands
+ * to be supported by module:
+ */
 
 #define NF_BroadcastAddress 0xff
 #define NF_RobotAddress     0x00
 #define NF_MasterAddress  	0xfe
 
 /*
-* Uncomment and update buffers' size [no of param set instances] for commands
-* to be supported by module:
-*/
-	#define NF_BUFSZ_ReadDeviceStatus	8
-	#define NF_BUFSZ_ReadDeviceVitals	8
+ * Uncomment and update buffers' size [no of param set instances] for commands
+ * to be supported by module:
+ */
 
-	#define NF_BUFSZ_SetDrivesMode			8
+#define NF_BUFSZ_ReadDeviceStatus	8
+#define NF_BUFSZ_ReadDeviceVitals	8
+
+#define NF_BUFSZ_SetDrivesMode			8
 //	#define NF_BUFSZ_SetDrivesSpeed			8
-	#define NF_BUFSZ_SetDrivesCurrent		8
+#define NF_BUFSZ_SetDrivesCurrent		8
 //	#define NF_BUFSZ_SetDrivesPosition		8
-	#define NF_BUFSZ_SetDrivesPWM			8
-	#define NF_BUFSZ_SetDrivesMaxCurrent	8
-	#define NF_BUFSZ_ReadDrivesCurrent		8
-	#define NF_BUFSZ_ReadDrivesPosition		8
-	#define NF_BUFSZ_SetDrivesMisc			8
-	#define NF_BUFSZ_ReadDrivesStatus		8
+#define NF_BUFSZ_SetDrivesPWM			8
+#define NF_BUFSZ_SetDrivesMaxCurrent	8
+#define NF_BUFSZ_ReadDrivesCurrent		8
+#define NF_BUFSZ_ReadDrivesPosition		8
+#define NF_BUFSZ_SetDrivesMisc			8
+#define NF_BUFSZ_ReadDrivesStatus		8
 
-	#define NF_BUFSZ_SetCurrentRegulator	8
+#define NF_BUFSZ_SetCurrentRegulator	8
 //	#define NF_BUFSZ_SetSpeedRegulator		8
 //	#define NF_BUFSZ_SetPositionRegulator	8
 
@@ -39,6 +40,6 @@
 //	#define NF_BUFSZ_ReadAnalogInputs	8
 
 /*
-* Remember to declare:
-* extern NF_STRUCT_ComBuf	NFComBuf;
-*/
+ * Remember to declare:
+ * extern NF_STRUCT_ComBuf	NFComBuf;
+ */

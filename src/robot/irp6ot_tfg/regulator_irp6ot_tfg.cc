@@ -63,7 +63,7 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 	// set_value_very_old     - wielkosc kroku do realizacji przez HIP
 	//                         (wypelnienie PWM -- u[k-2]): czas trwania jedynki
 
-	double step_new_pulse; // nastepna wartosc zadana dla jednego kroku regulacji
+	//double step_new_pulse; // nastepna wartosc zadana dla jednego kroku regulacji
 	// (przyrost wartosci zadanej polozenia --
 	// delta r[k-1] -- mierzone w impulsach)
 	uint8_t alg_par_status; // okresla prawidlowosc numeru algorytmu regulacji
@@ -202,8 +202,9 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 
 #define PROP_I_REG 0.0
 #define INT_I_REG 0.04
-#define MAX_REG_CURRENT 80.0
-#define CURRENT_KP 3.0
+
+	max_output_current = 80.0;
+	current_reg_kp = 3.0;
 
 	switch (algorithm_no)
 	{
@@ -220,7 +221,7 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 			set_value_old = set_value_new;
 			//	std::cout << "zeus\n";
 			// wyznaczenie wartosci zadanej pradu
-			current_desired = set_value_new / CURRENT_KP;
+			current_desired = set_value_new / current_reg_kp;
 
 			// ustalenie znaku pradu zmierzonego na podstawie znaku pwm
 			//			if (set_value_new > 0)
@@ -372,12 +373,10 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 			break;
 		case common::REG_OUTPUT::CURRENT_OUTPUT: {
 			// ograniczenie na sterowanie
-			if (set_value_new > MAX_REG_CURRENT
-			)
-				set_value_new = MAX_REG_CURRENT;
-			if (set_value_new < -MAX_REG_CURRENT
-			)
-				set_value_new = -MAX_REG_CURRENT;
+			if (set_value_new > max_output_current)
+				set_value_new = max_output_current;
+			if (set_value_new < -max_output_current)
+				set_value_new = -max_output_current;
 		}
 			break;
 	}

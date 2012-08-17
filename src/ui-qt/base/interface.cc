@@ -1346,7 +1346,6 @@ void Interface::unload_all()
 
 void Interface::slay_all()
 {
-
 	// program unload
 
 	unload_all();
@@ -1383,6 +1382,7 @@ void Interface::slay_all()
 	}
 	printf("slay_all end\n");
 	manage_interface();
+	ui_msg->message(lib::NON_FATAL_ERROR, "slay_all executed and finished");
 }
 
 }

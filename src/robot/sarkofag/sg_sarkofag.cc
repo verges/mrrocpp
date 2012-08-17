@@ -26,6 +26,8 @@ namespace mrrocpp {
 namespace edp {
 namespace sarkofag {
 
+//#define CCM 1
+
 /*-----------------------------------------------------------------------*/
 servo_buffer::servo_buffer(effector &_master) :
 		common::servo_buffer(_master), master(_master)
@@ -53,8 +55,12 @@ void servo_buffer::load_hardware_interface(void)
 			new hi_moxa::HI_moxa(master, mrrocpp::lib::sarkofag::LAST_MOXA_PORT_NUM, ports_vector, mrrocpp::lib::sarkofag::CARD_ADDRESSES, mrrocpp::lib::sarkofag::MAX_INCREMENT, mrrocpp::lib::sarkofag::TX_PREFIX_LEN);
 	hi->init();
 	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::sarkofag::MAX_CURRENT_0);
+#ifdef CCM
+	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_CURRENT);
+#else
 	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_PWM);
-//	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_CURRENT);
+#endif
+
 	// utworzenie tablicy regulatorow
 	// Serwomechanizm 1
 
@@ -83,9 +89,12 @@ uint64_t servo_buffer::compute_all_set_values(void)
 		// obliczenie nowej wartosci zadanej dla napedu
 		status |= ((uint64_t) regulator_ptr[j]->compute_set_value()) << 2 * j;
 		// przepisanie obliczonej wartosci zadanej do hardware interface
+#ifdef CCM
+		hi->set_current(j, regulator_ptr[j]->get_set_value() * 80);
+		std::cout << "des current: " << regulator_ptr[j]->get_set_value() * 80 << std::endl;
+#else
 		hi->set_pwm(j, regulator_ptr[j]->get_set_value());
-		//hi->set_current(j, regulator_ptr[j]->get_set_value() * 1);
-		//std::cout << "des current: " << regulator_ptr[j]->get_set_value() * 1 << std::endl;
+#endif
 	}
 	return status;
 }

@@ -132,7 +132,9 @@ void HI_moxa::init()
 
 void HI_moxa::set_pwm(int drive_number, double set_value)
 {
+	// sklaowanie w celu dostosowania do starych regulatorow pozycyjnych
 	NFComBuf.SetDrivesPWM.data[drive_number] = set_value * (1000.0 / 255.0);
+
 	servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_SetDrivesPWM;
 
 #ifdef T_INFO_FUNC
@@ -142,7 +144,7 @@ void HI_moxa::set_pwm(int drive_number, double set_value)
 
 void HI_moxa::set_current(int drive_number, double set_value)
 {
-	NFComBuf.SetDrivesCurrent.data[drive_number] = (int) set_value * (1000.0 / 255.0);
+	NFComBuf.SetDrivesCurrent.data[drive_number] = (int) set_value;
 	servo_data[drive_number].commandArray[servo_data[drive_number].commandCnt++] = NF_COMMAND_SetDrivesCurrent;
 
 #ifdef T_INFO_FUNC
@@ -186,9 +188,9 @@ int HI_moxa::get_current(int drive_number)
 	int ret;
 	ret = NFComBuf.ReadDrivesCurrent.data[drive_number];
 
-#ifdef T_INFO_FUNC
+// #ifdef T_INFO_FUNC
 	std::cout << "[func] HI_moxa::get_current(" << drive_number << ") = " << ret << std::endl;
-#endif
+// #endif
 	return ret;
 }
 

@@ -469,8 +469,8 @@ uint8_t NL_regulator_2_irp6ot::compute_set_value(void)
 	b0 = 2.594932 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO; //stara z przelicz rezolwer/enkoder 15.219541375872
 	b1 = 2.504769 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO; //
 
-#define MAX_REG_CURRENT 15000
-#define CURRENT_KP 0.005
+#define MAX_REG2_CURRENT 15000
+#define CURRENT2_KP 0.005
 
 	switch (algorithm_no)
 	{
@@ -557,17 +557,17 @@ uint8_t NL_regulator_2_irp6ot::compute_set_value(void)
 			if (set_value_new < -MAX_PWM)
 				set_value_new = -MAX_PWM;
 
-			output_value = set_value_new / CURRENT_KP;
+			output_value = set_value_new / CURRENT2_KP;
 
-			if (output_value > MAX_REG_CURRENT)
+			if (output_value > MAX_REG2_CURRENT)
 			{
-				output_value = MAX_REG_CURRENT;
-			} else if (output_value < -MAX_REG_CURRENT)
+				output_value = MAX_REG2_CURRENT;
+			} else if (output_value < -MAX_REG2_CURRENT)
 			{
-				output_value = -MAX_REG_CURRENT;
+				output_value = -MAX_REG2_CURRENT;
 			}
 
-			std::cout << "meassured_current: " << measured_current << " desired current: " << output_value << std::endl;
+			//	std::cout << "meassured_current: " << measured_current << " desired current: " << output_value << std::endl;
 
 		}
 			break;

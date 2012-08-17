@@ -34,6 +34,19 @@ namespace common {
 
 void servo_buffer::load_hardware_interface(void)
 {
+
+	for (int j = 0; j < master.number_of_servos; j++) {
+		switch (regulator_ptr[j]->reg_output)
+		{
+			case common::REG_OUTPUT::PWM_OUTPUT:
+				hi->set_pwm_mode(j);
+				break;
+			case common::REG_OUTPUT::CURRENT_OUTPUT:
+				hi->set_current_mode(j);
+				break;
+		}
+	}
+
 	send_after_last_step = false;
 	clear_reply_status();
 	clear_reply_status_tmp();
@@ -346,7 +359,7 @@ SERVO_COMMAND servo_buffer::command_type() const
 	return command.instruction_code;
 }
 
-servo_buffer::servo_buffer(motor_driven_effector &_master) :
+servo_buffer::servo_buffer(motor_driven_effector & _master) :
 		servo_command_rdy(false), sg_reply_rdy(false), step_number_in_macrostep(0), thread_started(), master(_master)
 {
 

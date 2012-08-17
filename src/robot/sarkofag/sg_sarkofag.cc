@@ -55,18 +55,14 @@ void servo_buffer::load_hardware_interface(void)
 			new hi_moxa::HI_moxa(master, mrrocpp::lib::sarkofag::LAST_MOXA_PORT_NUM, ports_vector, mrrocpp::lib::sarkofag::CARD_ADDRESSES, mrrocpp::lib::sarkofag::MAX_INCREMENT, mrrocpp::lib::sarkofag::TX_PREFIX_LEN);
 	hi->init();
 	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::sarkofag::MAX_CURRENT_0);
-#ifdef CCM
-	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_CURRENT);
-#else
-	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_PWM);
-#endif
 
 	// utworzenie tablicy regulatorow
 	// Serwomechanizm 1
 
 	// regulator_ptr[1] = new NL_regulator_2 (0, 0, 0.71, 13./4, 12.57/4, 0.35);
 	// kolumna dla sarkofag
-	regulator_ptr[0] = new NL_regulator_8_sarkofag(0, 0, 0, 0.39, 8.62 / 2., 7.89 / 2., 0.35, master);
+	regulator_ptr[0] =
+			new NL_regulator_8_sarkofag(0, 0, 0, 0.39, 8.62 / 2., 7.89 / 2., 0.35, master, common::REG_OUTPUT::PWM_OUTPUT);
 
 	common::servo_buffer::load_hardware_interface();
 

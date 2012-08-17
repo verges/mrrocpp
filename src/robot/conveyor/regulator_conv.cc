@@ -29,10 +29,9 @@ namespace conveyor {
 
 // uint64_t kk;	// numer pomiaru od momentu startu pomiarow
 
-
 /*-----------------------------------------------------------------------*/
-NL_regulator_1_conv::NL_regulator_1_conv(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master) :
-	NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master)
+NL_regulator_1_conv::NL_regulator_1_conv(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master, common::REG_OUTPUT _reg_output) :
+		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master, _reg_output)
 {
 	desired_velocity_limit = 0.5;
 	// Konstruktor regulatora konkretnego
@@ -42,8 +41,6 @@ NL_regulator_1_conv::NL_regulator_1_conv(uint8_t _axis_number, uint8_t reg_no, u
 /*-----------------------------------------------------------------------*/
 
 // tasmociag
-
-
 /*-----------------------------------------------------------------------*/
 uint8_t NL_regulator_1_conv::compute_set_value(void)
 {
@@ -71,11 +68,9 @@ uint8_t NL_regulator_1_conv::compute_set_value(void)
 	uint8_t alg_par_status; // okresla prawidlowosc numeru algorytmu regulacji
 	// i zestawu jego parametrow
 
-
 	alg_par_status = common::ALGORITHM_AND_PARAMETERS_OK;
 
 	// double root_position_increment_new=position_increment_new;
-
 
 	// przeliczenie radianow na impulsy
 	// step_new_pulse = step_new*IRP6_POSTUMENT_INC_PER_REVOLUTION/(2*M_PI); // ORIGINAL
@@ -95,7 +90,6 @@ uint8_t NL_regulator_1_conv::compute_set_value(void)
 	//  aaa++;
 	//  if (aaa == 9) aaa=0;
 	// }
-
 	/* // by Y - bez sensu
 	 // Jesli rzeczywisty przyrost jest wiekszy od dopuszczalnego
 	 if (fabs(position_increment_new) > common::MAX_INC)
@@ -105,15 +99,12 @@ uint8_t NL_regulator_1_conv::compute_set_value(void)
 	// kumulacja przyrostu polozenia w tym makrokroku // ORIGINAL
 	// pos_increment_new_sum += position_increment_new*POSTUMENT_TO_TRACK_RATIO;
 	// servo_pos_increment_new_sum += position_increment_new*POSTUMENT_TO_TRACK_RATIO; // by Y
-
 	// kumulacja przyrostu polozenia w tym makrokroku
 	// pos_increment_new_sum += root_position_increment_new;
 	// servo_pos_increment_new_sum += root_position_increment_new;// by Y
-
-
 	// Przyrost calki uchybu
-	delta_eint = delta_eint_old + 1.008 * (step_new_pulse - position_increment_new) - 0.992 * (step_old_pulse
-			- position_increment_old);
+	delta_eint = delta_eint_old + 1.008 * (step_new_pulse - position_increment_new)
+			- 0.992 * (step_old_pulse - position_increment_old);
 
 	// if (fabs(step_new_pulse) > 70.0) {
 	//  cprintf("snp = %lf   pin = %lf\n",step_new_pulse, position_increment_new);
@@ -195,7 +186,6 @@ uint8_t NL_regulator_1_conv::compute_set_value(void)
 	b0 = 1.576266 * CONVEYOR35V_TO_CONVEYOR_VOLTAGE_RATIO; //9.244959545156;
 	b1 = 1.468599 * CONVEYOR35V_TO_CONVEYOR_VOLTAGE_RATIO; //8.613484947882;
 
-
 	switch (algorithm_no)
 	{
 		case 0: // algorytm nr 0
@@ -207,14 +197,15 @@ uint8_t NL_regulator_1_conv::compute_set_value(void)
 				counter = 0;
 
 			if (fabs(step_new) < EPS && fabs(position_increment_new) < EPS && (counter > integrator_off)) {
-				set_value_new = (1 + a) * set_value_old - a * set_value_very_old + b0 * (step_new_pulse
-						- position_increment_new) - b1 * (step_old_pulse - position_increment_old);
+				set_value_new = (1 + a) * set_value_old - a * set_value_very_old
+						+ b0 * (step_new_pulse - position_increment_new)
+						- b1 * (step_old_pulse - position_increment_old);
 			}
 			break;
 		case 1: // algorytm nr 1
 			// obliczenie nowej wartosci wypelnienia PWM algorytm PD + I
-			set_value_new = (1 + a) * set_value_old - a * set_value_very_old + b0 * (step_new_pulse
-					- position_increment_new) - b1 * (step_old_pulse - position_increment_old);
+			set_value_new = (1 + a) * set_value_old - a * set_value_very_old
+					+ b0 * (step_new_pulse - position_increment_new) - b1 * (step_old_pulse - position_increment_old);
 			break;
 		default: // w tym miejscu nie powinien wystapic blad zwiazany z
 			// nieistniejacym numerem algorytmu

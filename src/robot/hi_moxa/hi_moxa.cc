@@ -152,6 +152,16 @@ void HI_moxa::set_current(int drive_number, double set_value)
 #endif
 }
 
+void HI_moxa::set_pwm_mode(int drive_number)
+{
+	set_parameter_now(drive_number, NF_COMMAND_SetDrivesMode, NF_DrivesMode_PWM);
+}
+
+void HI_moxa::set_current_mode(int drive_number)
+{
+	set_parameter_now(drive_number, NF_COMMAND_SetDrivesMode, NF_DrivesMode_CURRENT);
+}
+
 void HI_moxa::set_parameter(int drive_number, const int parameter, ...)
 {
 	va_list newValue;

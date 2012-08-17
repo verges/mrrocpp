@@ -94,6 +94,9 @@ public:
 	 */
 	virtual void set_current(int drive_number, double set_value);
 
+	virtual void set_pwm_mode(int drive_number);
+	virtual void set_current_mode(int drive_number);
+
 	/**
 	 * @brief write parameter to communication buffer
 	 * @param drive_number		number of drive
@@ -186,43 +189,43 @@ public:
 private:
 	/// communication baud rate (bps)
 #if defined(B921600)
-	static const speed_t BAUD = B921600;
+			static const speed_t BAUD = B921600;
 #else
-	static const speed_t BAUD = 921600;
+			static const speed_t BAUD = 921600;
 #endif
-	const int howMuchItSucks;
-	/// (number of drives)-1
-	const std::size_t last_drive_number;
-	/// vector of serial port names
-	std::vector <std::string> port_names;
-	/// tab of drives addresses
-	const unsigned int* drives_addresses;
-	/// tab of max allowed motor position increments
-	const double* ridiculous_increment;
-	/// tab of port designators
-	int fd[MOXA_SERVOS_NR];
-	int fd_max;
-	/// tab of communication class instances
-	SerialComm* SerialPort[MOXA_SERVOS_NR];
-	/// tab of data buffers
-	struct servo_St servo_data[MOXA_SERVOS_NR];
-	struct termios oldtio[MOXA_SERVOS_NR];
+			const int howMuchItSucks;
+			/// (number of drives)-1
+			const std::size_t last_drive_number;
+			/// vector of serial port names
+			std::vector <std::string> port_names;
+			/// tab of drives addresses
+			const unsigned int* drives_addresses;
+			/// tab of max allowed motor position increments
+			const double* ridiculous_increment;
+			/// tab of port designators
+			int fd[MOXA_SERVOS_NR];
+			int fd_max;
+			/// tab of communication class instances
+			SerialComm* SerialPort[MOXA_SERVOS_NR];
+			/// tab of data buffers
+			struct servo_St servo_data[MOXA_SERVOS_NR];
+			struct termios oldtio[MOXA_SERVOS_NR];
 
-	/// periodic timer used for generating read_write_hardware time base
-	lib::periodic_timer ptimer;
+			/// periodic timer used for generating read_write_hardware time base
+			lib::periodic_timer ptimer;
 
-	NF_STRUCT_ComBuf NFComBuf;
-	uint8_t txBuf[256];
-	uint8_t txCnt;
-	uint8_t rxBuf[256];
-	uint8_t rxCnt;
-	uint8_t rxCommandArray[256];
-	uint8_t rxCommandCnt;
-};
+			NF_STRUCT_ComBuf NFComBuf;
+			uint8_t txBuf[256];
+			uint8_t txCnt;
+			uint8_t rxBuf[256];
+			uint8_t rxCnt;
+			uint8_t rxCommandArray[256];
+			uint8_t rxCommandCnt;
+		};
 // endof: class hardware_interface
 
-}// namespace hi_moxa
-} // namespace edp
-} // namespace mrrocpp
+		}// namespace hi_moxa
+		} // namespace edp
+		} // namespace mrrocpp
 
 #endif // __HI_MOXA_H

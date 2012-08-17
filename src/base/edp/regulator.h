@@ -15,6 +15,11 @@ namespace mrrocpp {
 namespace edp {
 namespace common {
 
+enum REG_OUTPUT
+{
+	CURRENT_OUTPUT, PWM_OUTPUT
+};
+
 static const uint8_t ALGORITHM_AND_PARAMETERS_OK = 0;
 static const uint8_t UNIDENTIFIED_ALGORITHM_NO = 1;
 static const uint8_t UNIDENTIFIED_ALGORITHM_PARAMETERS_NO = 2;
@@ -73,12 +78,14 @@ protected:
 
 public:
 
+	REG_OUTPUT reg_output;
+
 	bool new_desired_velocity_error;
 	// samoświadomości osi
 	uint8_t axis_number;
 
 	motor_driven_effector &master;
-	regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, motor_driven_effector &_master); // konstruktor
+	regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, motor_driven_effector &_master, REG_OUTPUT _reg_output); // konstruktor
 
 	virtual ~regulator();
 
@@ -141,7 +148,7 @@ protected:
 
 public:
 
-	NL_regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, motor_driven_effector &_master);
+	NL_regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, motor_driven_effector &_master, REG_OUTPUT _reg_output);
 
 	virtual uint8_t compute_set_value(void) = 0;
 	// obliczenie nastepnej wartosci zadanej dla napedu - metoda abstrakcyjna

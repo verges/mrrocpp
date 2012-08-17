@@ -23,8 +23,8 @@ namespace edp {
 namespace irp6ot_m {
 
 /*-----------------------------------------------------------------------*/
-NL_regulator_1_irp6ot::NL_regulator_1_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master) :
-		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master)
+NL_regulator_1_irp6ot::NL_regulator_1_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master, common::REG_OUTPUT _reg_output) :
+		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master, _reg_output)
 {
 	desired_velocity_limit = 0.5;
 	// Konstruktor regulatora konkretnego
@@ -34,8 +34,8 @@ NL_regulator_1_irp6ot::NL_regulator_1_irp6ot(uint8_t _axis_number, uint8_t reg_n
 /*-----------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------*/
-NL_regulator_2_irp6ot::NL_regulator_2_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master) :
-		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master)
+NL_regulator_2_irp6ot::NL_regulator_2_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master, common::REG_OUTPUT _reg_output) :
+		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master, _reg_output)
 {
 	desired_velocity_limit = 0.5;
 	// Konstruktor regulatora konkretnego
@@ -45,8 +45,8 @@ NL_regulator_2_irp6ot::NL_regulator_2_irp6ot(uint8_t _axis_number, uint8_t reg_n
 /*-----------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------*/
-NL_regulator_3_irp6ot::NL_regulator_3_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master) :
-		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master)
+NL_regulator_3_irp6ot::NL_regulator_3_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master, common::REG_OUTPUT _reg_output) :
+		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master, _reg_output)
 {
 	desired_velocity_limit = 0.5;
 	// Konstruktor regulatora konkretnego
@@ -56,8 +56,8 @@ NL_regulator_3_irp6ot::NL_regulator_3_irp6ot(uint8_t _axis_number, uint8_t reg_n
 /*-----------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------*/
-NL_regulator_4_irp6ot::NL_regulator_4_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master) :
-		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master)
+NL_regulator_4_irp6ot::NL_regulator_4_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master, common::REG_OUTPUT _reg_output) :
+		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master, _reg_output)
 {
 	desired_velocity_limit = 0.5;
 	// Konstruktor regulatora konkretnego
@@ -67,8 +67,8 @@ NL_regulator_4_irp6ot::NL_regulator_4_irp6ot(uint8_t _axis_number, uint8_t reg_n
 /*-----------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------*/
-NL_regulator_5_irp6ot::NL_regulator_5_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master) :
-		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master)
+NL_regulator_5_irp6ot::NL_regulator_5_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master, common::REG_OUTPUT _reg_output) :
+		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master, _reg_output)
 {
 	desired_velocity_limit = 0.5;
 	// Konstruktor regulatora konkretnego
@@ -79,8 +79,8 @@ NL_regulator_5_irp6ot::NL_regulator_5_irp6ot(uint8_t _axis_number, uint8_t reg_n
 /*-----------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------*/
-NL_regulator_6_irp6ot::NL_regulator_6_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master) :
-		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master)
+NL_regulator_6_irp6ot::NL_regulator_6_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master, common::REG_OUTPUT _reg_output) :
+		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master, _reg_output)
 {
 	desired_velocity_limit = 0.5;
 	// Konstruktor regulatora konkretnego
@@ -90,8 +90,8 @@ NL_regulator_6_irp6ot::NL_regulator_6_irp6ot(uint8_t _axis_number, uint8_t reg_n
 /*-----------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------*/
-NL_regulator_7_irp6ot::NL_regulator_7_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master) :
-		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master)
+NL_regulator_7_irp6ot::NL_regulator_7_irp6ot(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master, common::REG_OUTPUT _reg_output) :
+		NL_regulator(_axis_number, reg_no, reg_par_no, aa, bb0, bb1, k_ff, _master, _reg_output)
 {
 	desired_velocity_limit = 0.5;
 	// Konstruktor regulatora konkretnego

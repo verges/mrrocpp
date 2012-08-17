@@ -92,6 +92,10 @@ public:
 	virtual void init() = 0;
 	virtual void set_pwm(int drive_number, double set_value) = 0;
 	virtual void set_current(int drive_number, double set_value) = 0;
+
+	virtual void set_pwm_mode(int drive_number) = 0;
+	virtual void set_current_mode(int drive_number) = 0;
+
 	virtual int get_current(int drive_number) = 0;
 
 	virtual float get_voltage(int drive_number) = 0;

@@ -25,10 +25,9 @@ namespace common {
 
 // regulator
 
-
 /*-----------------------------------------------------------------------*/
 regulator::regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, common::motor_driven_effector &_master) :
-	new_desired_velocity_error(true), axis_number(_axis_number), master(_master)
+		new_desired_velocity_error(true), axis_number(_axis_number), master(_master)
 {
 	// Konstruktor abstrakcyjnego regulatora
 	// Inicjuje zmienne, ktore kazdy regulator konkretny musi miec i aktualizowac,
@@ -55,7 +54,7 @@ regulator::regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, c
 	delta_eint = 0.0; // przyrost calki uchybu
 	delta_eint_old = 0.0; // przyrost calki uchybu w poprzednim kroku
 	pos_increment_new_sum = 0; // skumulowany przyrost odczytanego polozenia w trakcie realizacji makrokroku
-	servo_pos_increment_new_sum = 0;// by Y
+	servo_pos_increment_new_sum = 0; // by Y
 
 	step_new_over_constraint_sum = 0.0;
 	previous_abs_position = 0.0;
@@ -146,7 +145,6 @@ double regulator::get_previous_pwm(void) const
 	return set_value_old;
 }
 
-
 int regulator::get_PWM_value(void) const
 {
 	// odczytanie zadanego wypelnienia PWM - metoda abstrakcyjna
@@ -167,7 +165,6 @@ int regulator::get_actual_inc(void) const
 }
 
 // double get_desired_inc ( int axe_nr );
-
 
 void regulator::insert_algorithm_no(uint8_t new_number)
 {
@@ -212,7 +209,7 @@ void regulator::clear_regulator()
 
 /*-----------------------------------------------------------------------*/
 NL_regulator::NL_regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master) :
-	regulator(_axis_number, reg_no, reg_par_no, _master)
+		regulator(_axis_number, reg_no, reg_par_no, _master)
 {
 	// Konstruktor regulatora konkretnego
 	// Przy inicjacji nalezy dopilnowac, zeby numery algorytmu regulacji oraz zestawu jego parametrow byly

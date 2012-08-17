@@ -229,7 +229,7 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 			//				current_measured = (float) (-measured_current);
 
 			// HI_MOXA zwraca prad w mA, ze znakiem odpowiadajacym kierunkowi przeplywu
-			current_measured = -((float) measured_current) * CURRENT_PRESCALER;
+			current_measured = ((float) measured_current) * CURRENT_PRESCALER;
 
 			// wyznaczenie uchybu
 			current_error = current_desired - current_measured;

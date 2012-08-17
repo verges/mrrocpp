@@ -188,9 +188,9 @@ int HI_moxa::get_current(int drive_number)
 	int ret;
 	ret = NFComBuf.ReadDrivesCurrent.data[drive_number];
 
-// #ifdef T_INFO_FUNC
+#ifdef T_INFO_FUNC
 	std::cout << "[func] HI_moxa::get_current(" << drive_number << ") = " << ret << std::endl;
-// #endif
+#endif
 	return ret;
 }
 

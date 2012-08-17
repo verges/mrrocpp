@@ -202,10 +202,10 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 
 #define PROP_I_REG 0.0
 #define INT_I_REG 0.04
-#define MAX_REG_CURRENT 150.0
+#define MAX_REG_CURRENT 200.0
 #define CURRENT_PRESCALER 1.0
 
-// #define NEWIMP 1
+#define NEWIMP 1
 
 	switch (algorithm_no)
 	{
@@ -220,7 +220,7 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 				set_value_new = -MAX_PWM;
 
 			set_value_old = set_value_new;
-
+			//	std::cout << "zeus\n";
 			// wyznaczenie wartosci zadanej pradu
 			current_desired = (MAX_REG_CURRENT * set_value_new) / MAX_PWM;
 
@@ -238,7 +238,7 @@ uint8_t NL_regulator_8_irp6ot::compute_set_value(void)
 
 #ifdef NEWIMP
 
-			set_value_new = current_error;
+			set_value_new = current_desired;
 #else
 			// wyznaczenie calki uchybu
 			int_current_error = int_current_error + INT_I_REG * current_error;// 500Hz => 0.02s

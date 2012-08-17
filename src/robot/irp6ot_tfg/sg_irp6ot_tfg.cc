@@ -21,7 +21,7 @@ namespace mrrocpp {
 namespace edp {
 namespace irp6ot_tfg {
 
-// #define CCM 1
+#define CCM 1
 
 /*-----------------------------------------------------------------------*/
 servo_buffer::servo_buffer(effector &_master) :
@@ -84,8 +84,8 @@ uint64_t servo_buffer::compute_all_set_values(void)
 		status |= ((uint64_t) regulator_ptr[j]->compute_set_value()) << 2 * j;
 		// przepisanie obliczonej wartosci zadanej do hardware interface
 #ifdef CCM
-		hi->set_current(j, regulator_ptr[j]->get_set_value() * (125 / 190));
-		std::cout << "des current: " << regulator_ptr[j]->get_set_value() * (125 / 190) << std::endl;
+		hi->set_current(j, regulator_ptr[j]->get_set_value());
+		//	std::cout << "des current: " << regulator_ptr[j]->get_set_value() << std::endl;
 #else
 		hi->set_pwm(j, regulator_ptr[j]->get_set_value());
 #endif

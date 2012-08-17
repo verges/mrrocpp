@@ -598,14 +598,17 @@ void HI_moxa::reset_counters(void)
 
 void HI_moxa::start_synchro(int drive_number)
 {
-	if(NFComBuf.SetDrivesMode.data[drive_number] == NF_DrivesMode_PWM)
+	if (NFComBuf.SetDrivesMode.data[drive_number] == NF_DrivesMode_PWM
+	)
 		NFComBuf.SetDrivesMode.data[drive_number] = NF_DrivesMode_SYNC_PWM0;
-	else if(NFComBuf.SetDrivesMode.data[drive_number] == NF_DrivesMode_CURRENT)
+	else if (NFComBuf.SetDrivesMode.data[drive_number] == NF_DrivesMode_CURRENT
+	)
 		NFComBuf.SetDrivesMode.data[drive_number] = NF_DrivesMode_SYNC_CURRENT0;
-	else{
+	else {
 		hardware_panic = true;
 		std::stringstream temp_message;
-		temp_message << "[error] unknown mode on drive " << (int) drive_number << " when start_synchro() called" << std::endl;
+		temp_message << "[error] unknown mode on drive " << (int) drive_number << " when start_synchro() called"
+				<< std::endl;
 		master.msg->message(lib::FATAL_ERROR, temp_message.str());
 		std::cout << temp_message.str();
 	}
@@ -617,14 +620,17 @@ void HI_moxa::start_synchro(int drive_number)
 
 void HI_moxa::finish_synchro(int drive_number)
 {
-	if(NFComBuf.SetDrivesMode.data[drive_number] == NF_DrivesMode_SYNC_PWM0)
+	if (NFComBuf.SetDrivesMode.data[drive_number] == NF_DrivesMode_SYNC_PWM0
+	)
 		NFComBuf.SetDrivesMode.data[drive_number] = NF_DrivesMode_PWM;
-	else if(NFComBuf.SetDrivesMode.data[drive_number] == NF_DrivesMode_SYNC_CURRENT0)
+	else if (NFComBuf.SetDrivesMode.data[drive_number] == NF_DrivesMode_SYNC_CURRENT0
+	)
 		NFComBuf.SetDrivesMode.data[drive_number] = NF_DrivesMode_CURRENT;
-	else{
+	else {
 		hardware_panic = true;
 		std::stringstream temp_message;
-		temp_message << "[error] unknown mode on drive " << (int) drive_number << " when finish_synchro() called" << std::endl;
+		temp_message << "[error] unknown mode on drive " << (int) drive_number << " when finish_synchro() called"
+				<< std::endl;
 		master.msg->message(lib::FATAL_ERROR, temp_message.str());
 		std::cout << temp_message.str();
 	}

@@ -5,7 +5,6 @@
 // Ostatnia modyfikacja: 2006
 // -------------------------------------------------------------------------
 
-
 #ifndef __SG_IRP6OT_TFG_H
 #define __SG_IRP6OT_TFG_H
 
@@ -17,7 +16,7 @@ namespace edp {
 namespace irp6ot_tfg {
 class effector;
 
-class servo_buffer: public common::servo_buffer
+class servo_buffer : public common::servo_buffer
 {
 	// Bufor polecen przysylanych z EDP_MASTER dla SERVO
 	// Obiekt z algorytmem regulacji
@@ -28,7 +27,6 @@ public:
 	effector &master;
 	void load_hardware_interface(void);
 	servo_buffer(effector &_master); // konstruktor
-	// obliczenie nastepnej wartosci zadanej dla wszystkich napedow
 
 	//! obliczenie nastepnej wartosci zadanej dla wszystkich napedow
 	uint64_t compute_all_set_values(void);
@@ -38,6 +36,5 @@ public:
 } // namespace irp6ot
 } // namespace edp
 } // namespace mrrocpp
-
 
 #endif

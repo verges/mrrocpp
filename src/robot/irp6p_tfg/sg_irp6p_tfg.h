@@ -29,7 +29,9 @@ public:
 	effector &master;
 	void load_hardware_interface(void);
 	servo_buffer(effector &_master); // konstruktor
-	// obliczenie nastepnej wartosci zadanej dla wszystkich napedow
+
+	//! obliczenie nastepnej wartosci zadanej dla wszystkich napedow
+	uint64_t compute_all_set_values(void);
 };
 
 } // namespace common

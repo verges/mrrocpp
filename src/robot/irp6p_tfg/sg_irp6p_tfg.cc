@@ -24,7 +24,7 @@ namespace mrrocpp {
 namespace edp {
 namespace irp6p_tfg {
 
-// extern uint64_t kk;				  // numer pomiaru od momentu startu pomiarow
+#define CCM 1
 
 /*-----------------------------------------------------------------------*/
 servo_buffer::servo_buffer(effector &_master) :
@@ -57,8 +57,12 @@ void servo_buffer::load_hardware_interface(void)
 //	hi->set_parameter_now(0, hi_moxa::PARAM_MAXCURRENT, mrrocpp::lib::irp6p_tfg::MAX_CURRENT_0);
 	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::irp6p_tfg::MAX_CURRENT_0);
 	//hi->set_parameter_now(0, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::conveyor::MAX_CURRENT_0);
+
+#ifdef CCM
+	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_CURRENT);
+#else
 	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_PWM);
-	//	hi->set_parameter_now(0, hi_moxa::PARAM_MAXCURRENT, 0);
+#endif
 
 	// utworzenie tablicy regulatorow
 	// Serwomechanizm 1
@@ -70,6 +74,34 @@ void servo_buffer::load_hardware_interface(void)
 	common::servo_buffer::load_hardware_interface();
 
 }
+
+/*-----------------------------------------------------------------------*/
+uint64_t servo_buffer::compute_all_set_values(void)
+{
+	// obliczenie nastepnej wartosci zadanej dla wszystkich napedow
+	uint64_t status = OK; // kumuluje numer bledu
+
+	for (int j = 0; j < master.number_of_servos; j++) {
+		if (master.robot_test_mode) {
+			regulator_ptr[j]->insert_new_pos_increment(regulator_ptr[j]->return_new_step() * axe_inc_per_revolution[j]
+					/ (2 * M_PI));
+		} else {
+			regulator_ptr[j]->insert_measured_current(hi->get_current(j));
+			regulator_ptr[j]->insert_new_pos_increment(hi->get_increment(j));
+		}
+		// obliczenie nowej wartosci zadanej dla napedu
+		status |= ((uint64_t) regulator_ptr[j]->compute_set_value()) << 2 * j;
+		// przepisanie obliczonej wartosci zadanej do hardware interface
+#ifdef CCM
+		hi->set_current(j, regulator_ptr[j]->get_set_value());
+		//	std::cout << "des current: " << regulator_ptr[j]->get_set_value() << std::endl;
+#else
+		hi->set_pwm(j, regulator_ptr[j]->get_set_value());
+#endif
+	}
+	return status;
+}
+/*-----------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------*/
 void servo_buffer::get_all_positions(void)

@@ -247,19 +247,24 @@ void NL_regulator::compute_set_value_final_computations()
 	if (set_value_new < -MAX_PWM)
 		set_value_new = -MAX_PWM;
 
+	// use existing axis_number to display particular regulator data, otherwise set to 10
+	int display_axis_number = 10;
+
 	switch (reg_output)
 	{
 		case common::REG_OUTPUT::PWM_OUTPUT: {
 
 			output_value = set_value_new;
 			// use axis_number to display particular regulator data
-			//	if (axis_number==0) std::cout << "meassured_current: " << measured_current << " desired pwm: " << output_value << std::endl;
+			if (axis_number == display_axis_number)
+				std::cout << "meassured_current: " << measured_current << " desired pwm: " << output_value
+						<< " current_reg_kp: " << measured_current / output_value << std::endl;
 
 		}
 			break;
 		case common::REG_OUTPUT::CURRENT_OUTPUT: {
 
-			output_value = set_value_new / current_reg_kp;
+			output_value = set_value_new * current_reg_kp;
 
 			if (output_value > max_output_current) {
 				output_value = max_output_current;
@@ -267,7 +272,9 @@ void NL_regulator::compute_set_value_final_computations()
 				output_value = -max_output_current;
 			}
 			// use axis_number to display particular regulator data
-			//	if (axis_number==0) std::cout << "meassured_current: " << measured_current << " desired current: " << output_value << std::endl;
+			if (axis_number == display_axis_number)
+				std::cout << "meassured_current: " << measured_current << " desired current: " << output_value
+						<< std::endl;
 
 		}
 			break;

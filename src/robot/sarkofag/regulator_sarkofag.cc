@@ -191,7 +191,7 @@ uint8_t NL_regulator_8_sarkofag::compute_set_value(void)
 	b0 = 1.576266 / 2; //9.244959545156;
 	b1 = 1.468599 / 2; //8.613484947882;
 	max_output_current = 15000;
-	current_reg_kp = 0.005;
+	current_reg_kp = 200;
 
 	switch (algorithm_no)
 	{

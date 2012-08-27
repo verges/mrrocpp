@@ -75,7 +75,7 @@ void servo_buffer::load_hardware_interface(void)
 	// Serwomechanizm 1
 	// regulator_ptr[0] = new NL_regulator_1 (0, 0, 0.64, 16.61/5., 15.89/5., 0.35);
 	regulator_ptr[0] =
-			new NL_regulator_1_irp6ot(0, 0, 0, 0.333, 6.2, 5.933, 0.35, master, common::REG_OUTPUT::PWM_OUTPUT);
+			new NL_regulator_1_irp6ot(0, 0, 0, 0.333, 6.2, 5.933, 0.35, master, common::REG_OUTPUT::CURRENT_OUTPUT);
 	// Serwomechanizm 2
 	// regulator_ptr[1] = new NL_regulator_2 (0, 0, 0.71, 13./4, 12.57/4, 0.35);
 	regulator_ptr[1] =

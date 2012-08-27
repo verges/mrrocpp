@@ -249,8 +249,8 @@ uint8_t NL_regulator_1_irp6ot::compute_set_value(void)
 	a = 0.412429378531;
 	b0 = 2.594932 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO; //stara z przelicz rezolwer/enkoder 15.219541375872
 	b1 = 2.504769 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO; //
-	max_output_current = 15000;
-	current_reg_kp = 150;
+	max_output_current = 22000;
+	current_reg_kp = 190;
 
 	switch (algorithm_no)
 	{
@@ -443,7 +443,7 @@ uint8_t NL_regulator_2_irp6ot::compute_set_value(void)
 	a = 0.412429378531;
 	b0 = 2.594932 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO; //stara z przelicz rezolwer/enkoder 15.219541375872
 	b1 = 2.504769 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO; //
-	max_output_current = 15000;
+	max_output_current = 20000;
 	current_reg_kp = 200;
 
 	switch (algorithm_no)
@@ -637,7 +637,7 @@ uint8_t NL_regulator_3_irp6ot::compute_set_value(void)
 	b0 = 1.030178 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO; //6.042100283822;
 	b1 = 0.986142 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO;
 	max_output_current = 15000;
-	current_reg_kp = 200;
+	current_reg_kp = 150;
 
 	switch (algorithm_no)
 	{
@@ -831,7 +831,7 @@ uint8_t NL_regulator_4_irp6ot::compute_set_value(void)
 	b0 = 1.997464 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO;
 	b1 = 1.904138 * POSTUMENT35V_TO_POSTUMENT_VOLTAGE_RATIO;
 	max_output_current = 15000;
-	current_reg_kp = 200;
+	current_reg_kp = 180;
 
 	switch (algorithm_no)
 	{

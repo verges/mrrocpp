@@ -231,6 +231,9 @@ NL_regulator::NL_regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par
 
 void NL_regulator::compute_set_value_final_computations()
 {
+
+	static bool last_servo_mode = false;
+
 	// scope-locked reader data update
 	{
 		boost::mutex::scoped_lock lock(master.rb_obj->reader_mutex);
@@ -248,7 +251,14 @@ void NL_regulator::compute_set_value_final_computations()
 		set_value_new = -MAX_PWM;
 
 	// use existing axis_number to display particular regulator data, otherwise set to 10
-	int display_axis_number = 10;
+	int display_axis_number = 3;
+
+	if (axis_number == display_axis_number) {
+		if (last_servo_mode != master.servo_mode) {
+			std::cout << "sm changed to: " << master.servo_mode << std::endl;
+			last_servo_mode = master.servo_mode;
+		}
+	}
 
 	switch (reg_output)
 	{
@@ -256,9 +266,10 @@ void NL_regulator::compute_set_value_final_computations()
 
 			output_value = set_value_new;
 			// use axis_number to display particular regulator data
-			if (axis_number == display_axis_number)
-				std::cout << "meassured_current: " << measured_current << " desired pwm: " << output_value
-						<< " current_reg_kp: " << measured_current / output_value << std::endl;
+			if ((axis_number == display_axis_number) && (master.servo_mode == true))
+				std::cout << "sm: " << master.servo_mode << " meassured_current: " << measured_current
+						<< " desired pwm: " << output_value << " current_reg_kp: " << measured_current / output_value
+						<< std::endl;
 
 		}
 			break;
@@ -272,9 +283,9 @@ void NL_regulator::compute_set_value_final_computations()
 				output_value = -max_output_current;
 			}
 			// use axis_number to display particular regulator data
-			if (axis_number == display_axis_number)
-				std::cout << "meassured_current: " << measured_current << " desired current: " << output_value
-						<< std::endl;
+			if ((axis_number == display_axis_number) && (master.servo_mode == true))
+				std::cout << "sm: " << master.servo_mode << " meassured_current: " << measured_current
+						<< " desired current: " << output_value << std::endl;
 
 		}
 			break;

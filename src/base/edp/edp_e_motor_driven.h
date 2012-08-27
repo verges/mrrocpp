@@ -206,6 +206,8 @@ protected:
 
 public:
 
+	bool servo_mode;
+
 	/*!
 	 * \brief method to read current joint position stored in global_current_joints
 	 *

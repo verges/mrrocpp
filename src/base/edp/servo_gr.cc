@@ -282,7 +282,7 @@ void servo_buffer::operator()()
 			{
 				boost::mutex::scoped_lock lock(master.rb_obj->reader_mutex);
 
-				master.rb_obj->step_data.servo_mode = false; // tryb bierny
+				master.servo_mode = master.rb_obj->step_data.servo_mode = false; // tryb bierny
 			}
 
 			/* Nie otrzymano nowego polecenia */
@@ -294,7 +294,7 @@ void servo_buffer::operator()()
 			{
 				boost::mutex::scoped_lock lock(master.rb_obj->reader_mutex);
 
-				master.rb_obj->step_data.servo_mode = true; // tryb czynny
+				master.servo_mode = master.rb_obj->step_data.servo_mode = true; // tryb czynny
 			}
 
 			switch (command_type())

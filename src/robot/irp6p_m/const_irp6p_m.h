@@ -48,12 +48,12 @@ const std::string ports_strings[] =
  * @brief IRp6 postument overcurrent threshold [mA]
  * @ingroup irp6p_m
  */
-const int16_t MAX_CURRENT_0 = 15000;
+const int16_t MAX_CURRENT_0 = 25000;
 const int16_t MAX_CURRENT_1 = 18000;
-const int16_t MAX_CURRENT_2 = 10000;
-const int16_t MAX_CURRENT_3 = 10000;
+const int16_t MAX_CURRENT_2 = 15000;
+const int16_t MAX_CURRENT_3 = 17000;
 const int16_t MAX_CURRENT_4 = 10000;
-const int16_t MAX_CURRENT_5 = 10000;
+const int16_t MAX_CURRENT_5 = 2000;
 
 /*!
  * @brief IRp6 postument max encoder increment

@@ -44,16 +44,21 @@ void servo_buffer::load_hardware_interface(void)
 
 	hi->init();
 
+	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::conveyor::MAX_CURRENT_0);
+
+	NF_STRUCT_Regulator tmpReg = { 0x1010, 0x2020, 0x3030, 0x4040 };
+
+	hi->set_parameter_now(0, NF_COMMAND_SetCurrentRegulator, tmpReg);
+
 	// conveyor uruchamia sie jako zsynchronizowany - ustawic parametr na karcie sterownika
 	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMisc, NF_DrivesMisc_SetSynchronized);
 	//hi->set_parameter_now(0, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::conveyor::MAX_CURRENT_0);
-	hi->set_parameter_now(0, NF_COMMAND_SetDrivesMode, NF_DrivesMode_PWM);
 
 	// utworzenie tablicy regulatorow
 
 	// Serwomechanizm 1
 	regulator_ptr[0] =
-			new NL_regulator_1_conv(0, 0, 0, 0.333, 6.2, 5.933, 0.35, master, common::REG_OUTPUT::PWM_OUTPUT); // tasmociag dla irp6 postument
+			new NL_regulator_1_conv(0, 0, 0, 0.333, 6.2, 5.933, 0.35, master, common::REG_OUTPUT::CURRENT_OUTPUT); // tasmociag dla irp6 postument
 
 	common::servo_buffer::load_hardware_interface();
 }

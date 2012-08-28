@@ -184,7 +184,7 @@ uint8_t NL_regulator_1_conv::compute_set_value(void)
 	b0 = 1.576266 * CONVEYOR35V_TO_CONVEYOR_VOLTAGE_RATIO; //9.244959545156;
 	b1 = 1.468599 * CONVEYOR35V_TO_CONVEYOR_VOLTAGE_RATIO; //8.613484947882;
 	max_output_current = 15000;
-	current_reg_kp = 200;
+	current_reg_kp = 120;
 
 	switch (algorithm_no)
 	{

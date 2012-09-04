@@ -46,7 +46,7 @@ const std::string ports_strings[] = { "/dev/ttyMI7" };
  * @brief Sarkofag overcurrent threshold [mA]
  * @ingroup sarkofag
  */
-const int16_t MAX_CURRENT_0 = 20000;
+const int16_t MAX_CURRENT_0 = 25000;
 
 /*!
  * @brief Sarkofag max increment

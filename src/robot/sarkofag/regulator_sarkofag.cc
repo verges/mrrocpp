@@ -107,7 +107,6 @@ uint8_t NL_regulator_8_sarkofag::compute_set_value(void)
 	// kumulacja przyrostu polozenia w tym makrokroku
 	// pos_increment_new_sum += root_position_increment_new;
 	// servo_pos_increment_new_sum += root_position_increment_new;// by Y
-
 	// Przyrost calki uchybu
 	delta_eint = delta_eint_old + 1.008 * (step_new_pulse - position_increment_new)
 			- 0.992 * (step_old_pulse - position_increment_old);
@@ -187,27 +186,22 @@ uint8_t NL_regulator_8_sarkofag::compute_set_value(void)
 		}; // end: switch (algorithm_no)
 	}
 
-	a = 0.548946716233 / 2;
-	b0 = 1.576266 / 2; //9.244959545156;
-	b1 = 1.468599 / 2; //8.613484947882;
-	max_output_current = 15000;
-	current_reg_kp = 200;
+	double kp = 0.5;
+	double ki=0.02;
+
+	a = 0;
+	b0 = kp*(1+ki);
+	b1 = kp;
+	max_output_current = 1000;
+	current_reg_kp = 10;
 
 	switch (algorithm_no)
 	{
 		case 0: // algorytm nr 0
 			// obliczenie nowej wartosci wypelnienia PWM algorytm PD + I
-			set_value_new = (1 + a) * set_value_old - a * set_value_very_old + b0 * delta_eint - b1 * delta_eint_old;
-			if ((fabs(set_value_new)) < 0.1)
-				counter++;
-			else
-				counter = 0;
 
-			if (fabs(step_new) < EPS && fabs(position_increment_new) < EPS && (counter > integrator_off)) {
-				set_value_new = (1 + a) * set_value_old - a * set_value_very_old
-						+ b0 * (step_new_pulse - position_increment_new)
-						- b1 * (step_old_pulse - position_increment_old);
-			}
+			set_value_new = (1 + a) * set_value_old - a * set_value_very_old + b0 * delta_eint - b1 * delta_eint_old;
+
 			break;
 		case 1: // algorytm nr 1
 			// obliczenie nowej wartosci wypelnienia PWM algorytm PD + I

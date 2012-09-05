@@ -46,6 +46,7 @@ public:
 	UiRobot(common::Interface& _interface);
 
 	void synchronise();
+	void unsynchronise();
 
 	/*
 	 * opens move window on mp or ecp request

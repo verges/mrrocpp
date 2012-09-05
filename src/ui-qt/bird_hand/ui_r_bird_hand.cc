@@ -50,6 +50,10 @@ void UiRobot::synchronise()
 {
 }
 
+void UiRobot::unsynchronise()
+{
+}
+
 UiRobot::UiRobot(common::Interface& _interface) :
 		common::UiRobot(_interface, lib::bird_hand::ROBOT_NAME, lib::bird_hand::NUM_OF_SERVOS), ui_ecp_robot(NULL)
 {

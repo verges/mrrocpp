@@ -38,6 +38,7 @@ public slots:
 	void on_EDP_Unload_triggered(mrrocpp::ui::common::UiRobot *robot);
 
 	void on_Synchronisation_triggered(mrrocpp::ui::common::UiRobot *robot);
+	void on_UnSynchronisation_triggered(mrrocpp::ui::common::UiRobot *robot);
 	void on_Clear_Fault_triggered(mrrocpp::ui::common::UiRobot *robot);
 	void on_Synchro_Position_triggered(mrrocpp::ui::common::UiRobot *robot);
 	void on_Front_Position_triggered(mrrocpp::ui::common::UiRobot *robot);

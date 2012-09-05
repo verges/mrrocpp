@@ -68,6 +68,10 @@ void UiRobot::synchronise()
 	eb.command(boost::bind(&ui::sarkofag::UiRobot::synchronise_int, &(*this)));
 }
 
+void UiRobot::unsynchronise()
+{
+}
+
 int UiRobot::synchronise_int()
 
 {

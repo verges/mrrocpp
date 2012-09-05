@@ -57,6 +57,7 @@ public:
 	virtual void move_to_preset_position(int variant);
 
 	virtual void synchronise();
+	virtual void unsynchronise();
 
 	int execute_motor_motion();
 	int execute_joint_motion();
@@ -71,6 +72,7 @@ public:
 
 protected:
 	QAction *action_Synchronisation;
+	QAction *action_UnSynchronisation;
 
 private:
 	QAction *action_Synchro_Position;
@@ -94,6 +96,7 @@ private:
 	QMenu *menu_Absolute_Moves;
 	QMenu *menu_Relative_Moves;
 	QMenu *menu_Tool;
+	QMenu *menu_Special;
 };
 
 }

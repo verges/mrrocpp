@@ -52,6 +52,7 @@ public:
 	void manage_interface();
 
 	void synchronise();
+	void unsynchronise();
 	void edp_create();
 	void create_ui_ecp_robot();
 

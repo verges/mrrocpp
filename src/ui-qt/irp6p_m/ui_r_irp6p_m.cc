@@ -44,8 +44,6 @@ void UiRobot::open_c_joint_window()
 	wgts[WGT_JOINTS]->my_open();
 }
 
-
-
 void UiRobot::create_ui_ecp_robot()
 {
 	common::UiRobot::ui_ecp_robot = ui_ecp_robot = new ui::irp6p_m::EcpRobot(*this);
@@ -89,6 +87,20 @@ void UiRobot::move_to_preset_position(int variant)
 void UiRobot::synchronise()
 {
 	eb.command(boost::bind(&ui::irp6p_m::UiRobot::synchronise_int, &(*this)));
+}
+
+void UiRobot::unsynchronise()
+{
+	if ((is_edp_loaded()) && (state.edp.is_synchronised == true)) {
+
+		msg->message(lib::NON_FATAL_ERROR, "unsynchronise");
+		std::cout << "ui unsynchronise()" << std::endl;
+
+		ui_ecp_robot->ecp->unsynchronise();
+		interface.manage_interface();
+		std::cout << "ui unsynchronise() end" << std::endl;
+		msg->message(lib::NON_FATAL_ERROR, "unsynchronise end");
+	}
 }
 
 UiRobot::UiRobot(common::Interface& _interface) :

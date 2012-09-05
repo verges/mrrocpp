@@ -47,6 +47,10 @@ void UiRobot::synchronise()
 
 }
 
+void UiRobot::unsynchronise()
+{
+}
+
 void UiRobot::move_to_preset_position(int variant)
 {
 

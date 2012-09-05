@@ -783,6 +783,7 @@ void servo_buffer::unsynchronise(void)
 // desynchronizacja
 		hi->unsynchro(j);
 	} // end: for
+	reply_to_EDP_MASTER();
 }
 
 void servo_buffer::synchro_choose_axis_to_move(common::regulator* &crp, int j)

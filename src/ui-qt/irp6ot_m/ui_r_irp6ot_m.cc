@@ -117,6 +117,10 @@ void UiRobot::synchronise()
 	eb.command(boost::bind(&ui::irp6ot_m::UiRobot::synchronise_int, &(*this)));
 }
 
+void UiRobot::unsynchronise()
+{
+}
+
 }
 } //namespace ui
 } //namespace mrrocpp

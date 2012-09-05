@@ -189,6 +189,7 @@ public:
 	}
 
 	virtual void synchronise() = 0;
+	virtual void unsynchronise() = 0;
 	virtual void edp_create();
 	virtual int edp_create_int();
 	virtual void create_ui_ecp_robot() = 0;

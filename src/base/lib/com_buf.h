@@ -283,7 +283,7 @@ enum GRIPPER_STATE_ENUM
 //------------------------------------------------------------------------------
 enum INSTRUCTION_TYPE
 {
-	SET, GET, SET_GET, SYNCHRO, QUERY
+	SET, GET, SET_GET, SYNCHRO, QUERY, UNSYNCHRO
 };
 
 //------------------------------------------------------------------------------
@@ -815,7 +815,7 @@ public:
 	/*!
 	 * \brief template method to put data into the memory (serialize)
 	 */
-	template <typename BUFFER_TYPE>
+template	<typename BUFFER_TYPE>
 	void set(const BUFFER_TYPE & buffer)
 	{
 		xdr_oarchive <> oa;

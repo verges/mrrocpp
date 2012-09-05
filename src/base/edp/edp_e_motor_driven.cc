@@ -865,6 +865,7 @@ void motor_driven_effector::pre_synchro_loop(STATE& next_state)
 
 					break;
 				default:
+
 					break;
 			}
 		}
@@ -1024,6 +1025,7 @@ void motor_driven_effector::synchro_loop(STATE& next_state)
 						reply.reply_type = lib::SYNCHRO_OK;
 						msg->message("Robot is synchronized");
 						variant_reply_to_instruction();
+
 						next_state = GET_INSTRUCTION;
 
 					} else { // blad: powinna byla nadejsc instrukcja QUERY
@@ -1175,8 +1177,8 @@ void motor_driven_effector::synchro_loop(STATE& next_state)
 
 void motor_driven_effector::post_synchro_loop(STATE& next_state)
 {
-	/* Nieskoczona petla wykonujca przejscia w grafie automatu (procesu EDP_MASTER) */
-	while (true) {
+	/* petla wykonujca przejscia w grafie automatu (procesu EDP_MASTER) dzialajaca do chwili zlecenie desynchronizacji */
+	while (next_state != GET_STATE) {
 
 		try { // w tym bloku beda wylapywane wyjatki (bledy)
 			switch (next_state)
@@ -1331,10 +1333,11 @@ void motor_driven_effector::main_loop()
 	// by Y pierwsza petla while do odpytania o stan EDP przez UI zaraz po starcie EDP
 	STATE next_state = GET_STATE;
 	// stan nastepny, do ktorego przejdzie EDP_MASTER
-
-	pre_synchro_loop(next_state);
-	synchro_loop(next_state);
-	post_synchro_loop(next_state);
+	while (true) {
+		pre_synchro_loop(next_state);
+		synchro_loop(next_state);
+		post_synchro_loop(next_state);
+	}
 }
 
 lib::INSTRUCTION_TYPE motor_driven_effector::receive_instruction()

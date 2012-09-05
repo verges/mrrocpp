@@ -782,6 +782,7 @@ void servo_buffer::unsynchronise(void)
 	for (int j = 0; j < (master.number_of_servos); j++) {
 // desynchronizacja
 		hi->unsynchro(j);
+
 	} // end: for
 	reply_to_EDP_MASTER();
 }

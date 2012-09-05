@@ -46,7 +46,6 @@ void UiRobot::open_c_joint_window()
 	wgts[WGT_JOINTS]->my_open();
 }
 
-
 void UiRobot::create_ui_ecp_robot()
 {
 	common::UiRobot::ui_ecp_robot = ui_ecp_robot = new ui::irp6ot_m::EcpRobot(*this);
@@ -115,10 +114,6 @@ void UiRobot::setup_menubar()
 void UiRobot::synchronise()
 {
 	eb.command(boost::bind(&ui::irp6ot_m::UiRobot::synchronise_int, &(*this)));
-}
-
-void UiRobot::unsynchronise()
-{
 }
 
 }

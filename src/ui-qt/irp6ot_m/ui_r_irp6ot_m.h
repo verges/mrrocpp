@@ -50,7 +50,7 @@ public:
 	UiRobot(common::Interface& _interface);
 
 	virtual void synchronise();
-	virtual void unsynchronise();
+
 	/*
 	 * opens move window on mp or ecp request
 	 * 	 * C_MOTOR variant
@@ -71,8 +71,6 @@ public:
 
 	void create_ui_ecp_robot();
 	void edp_create_int_extra_operations();
-
-
 
 	void setup_menubar();
 

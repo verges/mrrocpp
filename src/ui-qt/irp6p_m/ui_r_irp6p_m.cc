@@ -89,21 +89,6 @@ void UiRobot::synchronise()
 	eb.command(boost::bind(&ui::irp6p_m::UiRobot::synchronise_int, &(*this)));
 }
 
-void UiRobot::unsynchronise()
-{
-	if ((is_edp_loaded()) && (state.edp.is_synchronised == true)) {
-
-		msg->message(lib::NON_FATAL_ERROR, "unsynchronise");
-		std::cout << "ui unsynchronise()" << std::endl;
-		close_all_windows();
-		ui_ecp_robot->ecp->unsynchronise();
-		get_edp_state();
-		interface.manage_interface();
-		std::cout << "ui unsynchronise() end" << std::endl;
-		msg->message(lib::NON_FATAL_ERROR, "unsynchronise end");
-	}
-}
-
 UiRobot::UiRobot(common::Interface& _interface) :
 		irp6_m::UiRobot(_interface, lib::irp6p_m::ROBOT_NAME, lib::irp6p_m::NUM_OF_SERVOS)
 {

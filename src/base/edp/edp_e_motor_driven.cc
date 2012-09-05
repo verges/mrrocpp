@@ -1187,6 +1187,19 @@ void motor_driven_effector::post_synchro_loop(STATE& next_state)
 					// wstepna interpretacja nadesanego polecenia w celu wykrycia nieprawidlowosci
 					switch (receive_instruction())
 					{
+						case lib::UNSYNCHRO:
+							// instrukcja wlasciwa => zle jej wykonanie
+							/* Potwierdzenie przyjecia instrukcji synchronizacji do wykonania */
+							reply.reply_type = lib::ACKNOWLEDGE;
+							variant_reply_to_instruction();
+							/* Zlecenie wykonania synchronizacji */
+							// by Y przejscie przez watek transformation w celu ujednolicenia
+							master_order(MT_UNSYNCHRONISE, 0);
+							// synchronise();
+							// Jezeli synchronizacja okae sie niemoliwa, to zostanie zgloszony wyjatek:
+							/* Oczekiwanie na poprawne zakoczenie synchronizacji */
+							next_state = SYNCHRO_TERMINATED;
+							break;
 						case lib::SET:
 						case lib::GET:
 						case lib::SET_GET:
@@ -1215,6 +1228,20 @@ void motor_driven_effector::post_synchro_loop(STATE& next_state)
 
 					}
 					next_state = EXECUTE_INSTRUCTION;
+					break;
+				case SYNCHRO_TERMINATED:
+					/* Oczekiwanie na zapytanie od ECP o status zakonczenia synchronizacji (QUERY) */
+					if (receive_instruction() == lib::QUERY) { // instrukcja wlasciwa => zle jej wykonanie
+						// Budowa adekwatnej odpowiedzi
+						reply.reply_type = lib::SYNCHRO_OK;
+						msg->message("Robot is unsynchronized");
+						variant_reply_to_instruction();
+
+						next_state = GET_STATE;
+
+					} else { // blad: powinna byla nadejsc instrukcja QUERY
+						BOOST_THROW_EXCEPTION(nfe_4() << mrrocpp_error0(QUERY_EXPECTED));
+					}
 					break;
 				case EXECUTE_INSTRUCTION:
 					// wykonanie instrukcji - wszelkie bledy powoduja zgloszenie wyjtku NonFatal_error_2 lub Fatal_error
@@ -1303,6 +1330,28 @@ void motor_driven_effector::post_synchro_loop(STATE& next_state)
 			// powrot do stanu: GET_INSTRUCTION
 			next_state = GET_INSTRUCTION;
 		}
+
+		catch (nfe_4 & error) {
+			// Obsluga bledow nie fatalnych
+			// Konkretny numer bledu znajduje sie w skladowej error obiektu nfe
+			// Sa to bledy nie zwiazane ze sprzetem i komunikacja miedzyprocesow
+			// zapamietanie poprzedniej odpowiedzi
+
+			uint64_t error0 = 0;
+
+			if (uint64_t const * tmp = boost::get_error_info <mrrocpp_error0>(error)) {
+				error0 = *tmp;
+			}
+
+			lib::REPLY_TYPE rep_type = reply.reply_type;
+			establish_error(reply, error0, OK);
+			variant_reply_to_instruction();
+			msg->message(lib::NON_FATAL_ERROR, error0);
+			// przywrocenie poprzedniej odpowiedzi
+			reply.reply_type = rep_type;
+			// powrot do stanu: SYNCHRO_TERMINATED
+			next_state = SYNCHRO_TERMINATED;
+		} // end: catch(transformer::NonFatal_error nfe4)
 
 		catch (exception::fe & error) {
 			// Obsluga bledow fatalnych

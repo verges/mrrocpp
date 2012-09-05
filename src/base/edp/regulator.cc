@@ -50,6 +50,7 @@ regulator::regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, c
 	set_value_new = 0; // wielkosc kroku do realizacji przez HIP (wypelnienie PWM -- u[k])
 	set_value_old = 0; // wielkosc kroku do realizacji przez HIP (wypelnienie PWM -- u[k-1])
 	set_value_very_old = 0; // wielkosc kroku do realizacji przez HIP (wypelnienie PWM -- u[k-2])
+	output_value = 0.0;
 
 	delta_eint = 0.0; // przyrost calki uchybu
 	delta_eint_old = 0.0; // przyrost calki uchybu w poprzednim kroku
@@ -269,7 +270,7 @@ void NL_regulator::compute_set_value_final_computations()
 			if ((axis_number == display_axis_number) && (master.servo_mode == true))
 				std::cout << "pwm_a: " << display_axis_number << " sm: " << master.servo_mode << " meassured_current: "
 						<< measured_current << " desired_pwm: " << output_value << " kp: "
-						<< measured_current / output_value << " pin: " << position_increment_new <<std::endl;
+						<< measured_current / output_value << " pin: " << position_increment_new << std::endl;
 
 		}
 			break;
@@ -283,10 +284,11 @@ void NL_regulator::compute_set_value_final_computations()
 				output_value = -max_output_current;
 			}
 			// use axis_number to display particular regulator data
-			if ((axis_number == display_axis_number) && (master.servo_mode == false))
+			//		if ((axis_number == display_axis_number) && (master.servo_mode == false))
+			if ((axis_number == display_axis_number))
 				std::cout << "cascade_a: " << display_axis_number << " sm: " << master.servo_mode
 						<< " meassured_current: " << measured_current << " desired_current: " << output_value
-						<< std::endl;
+						<< " pin: " << position_increment_new << std::endl;
 
 		}
 			break;

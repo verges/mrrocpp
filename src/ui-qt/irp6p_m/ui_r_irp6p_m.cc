@@ -95,8 +95,9 @@ void UiRobot::unsynchronise()
 
 		msg->message(lib::NON_FATAL_ERROR, "unsynchronise");
 		std::cout << "ui unsynchronise()" << std::endl;
-
+		close_all_windows();
 		ui_ecp_robot->ecp->unsynchronise();
+		get_edp_state();
 		interface.manage_interface();
 		std::cout << "ui unsynchronise() end" << std::endl;
 		msg->message(lib::NON_FATAL_ERROR, "unsynchronise end");

@@ -896,7 +896,7 @@ void motor_driven_effector::pre_synchro_loop(STATE& next_state)
 			}
 
 			establish_error(reply, error0, OK);
-			//  printf("catch NonFatal_error_1\n");
+			printf("catch NonFatal_error_1 p1\n");
 			// informacja dla ECP o bledzie
 			variant_reply_to_instruction();
 			msg->message(lib::NON_FATAL_ERROR, error0);
@@ -1073,7 +1073,7 @@ void motor_driven_effector::synchro_loop(STATE& next_state)
 			if (uint64_t const * tmp = boost::get_error_info <mrrocpp_error0>(error)) {
 				error0 = *tmp;
 			}
-
+			printf("catch NonFatal_error_1 p2\n");
 			establish_error(reply, error0, OK);
 			variant_reply_to_instruction();
 			msg->message(lib::NON_FATAL_ERROR, error0);
@@ -1202,6 +1202,8 @@ void motor_driven_effector::post_synchro_loop(STATE& next_state)
 					switch (receive_instruction())
 					{
 						case lib::UNSYNCHRO:
+							//	 printf("UNSYNCHRO\n");
+							//							 flushall();
 							// instrukcja wlasciwa => zle jej wykonanie
 							/* Potwierdzenie przyjecia instrukcji synchronizacji do wykonania */
 							reply.reply_type = lib::ACKNOWLEDGE;
@@ -1219,8 +1221,10 @@ void motor_driven_effector::post_synchro_loop(STATE& next_state)
 						case lib::SET_GET:
 							// potwierdzenie przyjecia polecenia (dla ECP)
 							// printf("SET_GET\n");
+							// flushall();
 							reply.reply_type = lib::ACKNOWLEDGE;
 							variant_reply_to_instruction();
+							next_state = EXECUTE_INSTRUCTION;
 							break;
 						case lib::SYNCHRO: // blad: robot jest juz zsynchronizowany
 							// okreslenie rodzaju bledu
@@ -1241,7 +1245,7 @@ void motor_driven_effector::post_synchro_loop(STATE& next_state)
 							break;
 
 					}
-					next_state = EXECUTE_INSTRUCTION;
+
 					break;
 				case SYNCHRO_TERMINATED:
 					/* Oczekiwanie na zapytanie od ECP o status zakonczenia synchronizacji (QUERY) */
@@ -1286,7 +1290,7 @@ void motor_driven_effector::post_synchro_loop(STATE& next_state)
 			if (uint64_t const * tmp = boost::get_error_info <mrrocpp_error0>(error)) {
 				error0 = *tmp;
 			}
-
+			printf("catch NonFatal_error_1 p3\n");
 			establish_error(reply, error0, OK);
 			// printf("catch NonFatal_error_1\n");
 			// informacja dla ECP o bledzie
@@ -1303,7 +1307,8 @@ void motor_driven_effector::post_synchro_loop(STATE& next_state)
 			// printf ("catch master thread NonFatal_error_2\n");
 
 			uint64_t error0 = 0;
-
+			printf("catch NonFatal_error_2 p3\n");
+			flushall();
 			if (uint64_t const * tmp = boost::get_error_info <mrrocpp_error0>(error)) {
 				error0 = *tmp;
 			}
@@ -1331,7 +1336,7 @@ void motor_driven_effector::post_synchro_loop(STATE& next_state)
 			lib::REPLY_TYPE rep_type = reply.reply_type;
 			uint64_t err_no_0 = reply.error_no.error0;
 			uint64_t err_no_1 = reply.error_no.error1;
-
+			printf("catch NonFatal_error_3 p3\n");
 			establish_error(reply, error0, OK);
 			// informacja dla ECP o bledzie
 			variant_reply_to_instruction();
@@ -1356,7 +1361,7 @@ void motor_driven_effector::post_synchro_loop(STATE& next_state)
 			if (uint64_t const * tmp = boost::get_error_info <mrrocpp_error0>(error)) {
 				error0 = *tmp;
 			}
-
+			printf("catch NonFatal_error_4 p3\n");
 			lib::REPLY_TYPE rep_type = reply.reply_type;
 			establish_error(reply, error0, OK);
 			variant_reply_to_instruction();

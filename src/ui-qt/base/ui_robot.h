@@ -193,6 +193,7 @@ public:
 	virtual void edp_create();
 	virtual int edp_create_int();
 	virtual void create_ui_ecp_robot() = 0;
+	void get_edp_state();
 
 	wgt_robot_process_control * get_wgt_robot_pc();
 	void delete_robot_process_control_window();

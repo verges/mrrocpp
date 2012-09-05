@@ -178,16 +178,7 @@ int UiRobot::edp_create_int()
 
 						connect_to_reader();
 
-						// odczytanie poczatkowego stanu robota (komunikuje sie z EDP)
-						lib::controller_state_t robot_controller_initial_state_tmp;
-
-						ui_get_controler_state(robot_controller_initial_state_tmp);
-
-						if (robot_controller_initial_state_tmp.robot_in_fault_state) {
-							msg->message(lib::FATAL_ERROR, "Robot in fault state");
-						}
-
-						state.edp.is_synchronised = robot_controller_initial_state_tmp.is_synchronised;
+						get_edp_state();
 					}
 				}
 
@@ -230,6 +221,20 @@ int UiRobot::edp_create_int()
 
 	return 1;
 
+}
+
+void UiRobot::get_edp_state()
+{
+	// odczytanie poczatkowego stanu robota (komunikuje sie z EDP)
+	lib::controller_state_t robot_controller_initial_state_tmp;
+
+	ui_get_controler_state(robot_controller_initial_state_tmp);
+
+	if (robot_controller_initial_state_tmp.robot_in_fault_state) {
+		msg->message(lib::FATAL_ERROR, "Robot in fault state");
+	}
+
+	state.edp.is_synchronised = robot_controller_initial_state_tmp.is_synchronised;
 }
 
 const lib::robot_name_t UiRobot::getName()

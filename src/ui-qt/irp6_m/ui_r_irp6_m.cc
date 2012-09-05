@@ -155,8 +155,13 @@ void UiRobot::manage_interface()
 			} else // jesli robot jest niezsynchronizowany
 			{
 				action_Synchronisation->setEnabled(true);
-				menu_Special->setEnabled(false);
 				menu_Pre_Synchro_Moves->setEnabled(true);
+
+				menu_Preset_Positions->setEnabled(false);
+				menu_Special->setEnabled(false);
+				menu_Absolute_Moves->setEnabled(false);
+				menu_Relative_Moves->setEnabled(false);
+				menu_Tool->setEnabled(false);
 			}
 			break;
 		default:

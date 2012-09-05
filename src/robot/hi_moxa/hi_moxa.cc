@@ -650,6 +650,14 @@ void HI_moxa::finish_synchro(int drive_number)
 	//#endif
 }
 
+void HI_moxa::unsynchro(int drive_number)
+{
+
+	set_parameter_now(drive_number, NF_COMMAND_SetDrivesMisc, NF_DrivesMisc_ResetSynchronized);
+
+	std::cout << "[func] HI_moxa::unsynchro(" << drive_number << ")" << std::endl;
+}
+
 bool HI_moxa::in_synchro_area(int drive_number)
 {
 	return ((NFComBuf.ReadDrivesStatus.data[drive_number] & NF_DrivesStatus_SynchroSwitch) != 0);

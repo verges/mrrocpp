@@ -164,6 +164,12 @@ public:
 	virtual void finish_synchro(int drive_number);
 
 	/**
+	 * @brief unsynchronise axis
+	 * @param drive_number		number of drive
+	 */
+	virtual void unsynchro(int drive_number);
+
+	/**
 	 * @brief read 'in synchro area' flag from communication buffer
 	 * @param drive_number		number of drive
 	 */

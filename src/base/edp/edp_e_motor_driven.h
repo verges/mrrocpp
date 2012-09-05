@@ -368,6 +368,14 @@ public:
 	virtual void synchronise();
 
 	/*!
+	 * \brief method to unsynchronise robot
+	 *
+	 * it is impossible to move robot in absolute coordinates before synchronisation.
+	 */
+	virtual void unsynchronise();
+
+
+	/*!
 	 * \brief method to compute servo_current_motor_pos, servo_cuurent_joints_pos and surve_current_frame in child classes
 	 *
 	 * It is commanded in every step of motor control.

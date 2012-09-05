@@ -302,6 +302,9 @@ void servo_buffer::operator()()
 				case SYNCHRONISE:
 					synchronise(); // synchronizacja
 					break;
+				case UNSYNCHRONISE:
+					unsynchronise(); // desynchronizacja
+					break;
 				case MOVE:
 					Move(); // realizacja makrokroku ruchu
 					break;
@@ -396,6 +399,8 @@ bool servo_buffer::get_command(void)
 		switch (command_type())
 		{
 			case SYNCHRONISE:
+				return true; // wyjscie bez kontaktu z EDP_MASTER
+			case UNSYNCHRONISE:
 				return true; // wyjscie bez kontaktu z EDP_MASTER
 			case MOVE:
 				return true; // wyjscie bez kontaktu z EDP_MASTER
@@ -759,6 +764,25 @@ void servo_buffer::synchronise(void)
 
 	// printf("koniec synchro\n");
 	reply_to_EDP_MASTER();
+}
+
+void servo_buffer::unsynchronise(void)
+{
+
+	//	master.msg->message("synchro start");
+	//printf("synchro \n");
+	if (master.robot_test_mode) {
+		// W.S. Tylko przy testowaniu
+		clear_reply_status();
+		clear_reply_status_tmp();
+		reply_to_EDP_MASTER();
+		return;
+	}
+
+	for (int j = 0; j < (master.number_of_servos); j++) {
+// desynchronizacja
+		hi->unsynchro(j);
+	} // end: for
 }
 
 void servo_buffer::synchro_choose_axis_to_move(common::regulator* &crp, int j)

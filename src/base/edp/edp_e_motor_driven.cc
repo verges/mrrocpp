@@ -169,6 +169,9 @@ void motor_driven_effector::single_thread_master_order(common::MT_ORDER nm_task,
 		case common::MT_SYNCHRONISE:
 			synchronise();
 			break;
+		case common::MT_UNSYNCHRONISE:
+			unsynchronise();
+			break;
 		case common::MT_MOVE_ARM:
 			move_arm(instruction);
 			break;
@@ -508,6 +511,17 @@ void motor_driven_effector::synchronise()
 		servo_current_motor_pos[i] = desired_motor_pos_new[i] = desired_motor_pos_old[i] = current_motor_pos[i];
 		desired_joints[i] = current_joints[i];
 	}
+	reply.reply_type = lib::SYNCHRO_OK;
+}
+
+void motor_driven_effector::unsynchronise()
+{
+	/* Uformowanie rozkazu synchronizacji dla procesu SERVO_GROUP */
+	sb->servo_command.instruction_code = UNSYNCHRONISE;
+	/* Wyslanie rozkazu synchronizacji do realizacji procesowi SERVO_GROUP */
+	sb->send_to_SERVO_GROUP();
+	controller_state_edp_buf.is_synchronised = false; // Ustawienie flagi zsynchronizowania robota
+
 	reply.reply_type = lib::SYNCHRO_OK;
 }
 

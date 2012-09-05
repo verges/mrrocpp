@@ -59,31 +59,36 @@ void manip_trans_t::operator()()
 				case MT_GET_CONTROLLER_STATE:
 					master.get_controller_state(current_cmd.instruction);
 					trans_t_to_master_synchroniser.command();
-				//	error_existed = 0;
+					//	error_existed = 0;
 					break;
 				case MT_SET_ROBOT_MODEL:
 					master.set_robot_model(current_cmd.instruction);
 					trans_t_to_master_synchroniser.command();
-				//	error_existed = 0;
+					//	error_existed = 0;
 					break;
 				case MT_GET_ARM_POSITION:
 					master.get_arm_position(current_cmd.trans_t_tryb, current_cmd.instruction);
 					trans_t_to_master_synchroniser.command();
-				//	 error_existed = 0;
-						break;
+					//	 error_existed = 0;
+					break;
 				case MT_GET_ALGORITHMS:
 					master.get_algorithms();
 					trans_t_to_master_synchroniser.command();
-				//	error_existed = 0;
+					//	error_existed = 0;
 					break;
 				case MT_SYNCHRONISE:
 					master.synchronise();
 					trans_t_to_master_synchroniser.command();
-				//	error_existed = 0;
+					//	error_existed = 0;
+					break;
+				case MT_UNSYNCHRONISE:
+					master.unsynchronise();
+					trans_t_to_master_synchroniser.command();
+					//	error_existed = 0;
 					break;
 				case MT_MOVE_ARM:
 					master.move_arm(current_cmd.instruction); // wariant dla watku edp_trans_t
-				//	error_existed = 0;
+					//	error_existed = 0;
 					break;
 				default: // blad: z reply_type wynika, ze odpowied nie ma zawiera narzedzia
 					//dodac rzucanie wyjatku
@@ -117,7 +122,7 @@ void manip_trans_t::operator()()
 				}
 			}
 
-	//		trans_t_to_master_synchroniser.command();
+			//		trans_t_to_master_synchroniser.command();
 			// Wylapywanie niezdefiniowanych bledow
 			// printf("zlapane cos");// by Y&W
 		}

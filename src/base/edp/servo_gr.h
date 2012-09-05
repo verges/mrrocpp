@@ -45,7 +45,7 @@ const int SYNCHRO_FINAL_STOP_STEP_NUMBER = 25; // liczba krokow zatrzymania podc
 //------------------------------------------------------------------------------
 enum SERVO_COMMAND
 {
-	MOVE, READ, SYNCHRONISE, SERVO_ALGORITHM_AND_PARAMETERS
+	MOVE, READ, SYNCHRONISE, UNSYNCHRONISE, SERVO_ALGORITHM_AND_PARAMETERS
 };
 
 //------------------------------------------------------------------------------
@@ -209,6 +209,10 @@ public:
 	//! synchronizacja
 
 	virtual void synchronise(void);
+
+	//! synchronizacja
+
+	virtual void unsynchronise(void);
 
 	//! ustawia flage w hardware interfejs powodujaca stop awaryjny
 	void set_hi_panic(void);

@@ -74,7 +74,7 @@ protected:
 
 public:
 	HardwareInterface(motor_driven_effector &_master) :
-		master(_master)
+			master(_master)
 	{
 
 	}
@@ -100,13 +100,13 @@ public:
 
 	virtual float get_voltage(int drive_number) = 0;
 
-
 	virtual double get_increment(int drive_number) = 0;
 	virtual long int get_position(int drive_number) = 0;
 	virtual uint64_t read_write_hardware(void) = 0; // Obsluga sprzetu
 	virtual void reset_counters(void) = 0; // Zerowanie licznikow polozenia
 	virtual void start_synchro(int drive_number) = 0;
 	virtual void finish_synchro(int drive_number) = 0;
+	virtual void unsynchro(int drive_number) = 0;
 	virtual bool in_synchro_area(int drive_number) = 0;
 	virtual bool robot_synchronized() = 0;
 

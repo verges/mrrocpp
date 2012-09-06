@@ -252,7 +252,7 @@ void NL_regulator::compute_set_value_final_computations()
 		set_value_new = -MAX_PWM;
 
 	// use existing axis_number to display particular regulator data, otherwise set to 10
-	int display_axis_number = 10;
+	int display_axis_number = 6;
 
 	if (axis_number == display_axis_number) {
 		if (last_servo_mode != master.servo_mode) {
@@ -267,10 +267,11 @@ void NL_regulator::compute_set_value_final_computations()
 
 			output_value = set_value_new;
 			// use axis_number to display particular regulator data
-			if ((axis_number == display_axis_number) && (master.servo_mode == true))
+			if ((axis_number == display_axis_number) && (master.servo_mode == true)) {
 				std::cout << "pwm_a: " << display_axis_number << " sm: " << master.servo_mode << " meassured_current: "
 						<< measured_current << " desired_pwm: " << output_value << " kp: "
 						<< measured_current / output_value << " pin: " << position_increment_new << std::endl;
+			}
 
 		}
 			break;
@@ -284,11 +285,13 @@ void NL_regulator::compute_set_value_final_computations()
 				output_value = -max_output_current;
 			}
 			// use axis_number to display particular regulator data
-			//		if ((axis_number == display_axis_number) && (master.servo_mode == false))
-			if ((axis_number == display_axis_number))
+			if ((axis_number == display_axis_number) && (master.servo_mode == true))
+			//if ((axis_number == display_axis_number))
+					{
 				std::cout << "cascade_a: " << display_axis_number << " sm: " << master.servo_mode
 						<< " meassured_current: " << measured_current << " desired_current: " << output_value
 						<< " pin: " << position_increment_new << std::endl;
+			}
 
 		}
 			break;

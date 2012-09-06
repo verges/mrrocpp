@@ -252,7 +252,7 @@ void NL_regulator::compute_set_value_final_computations()
 		set_value_new = -MAX_PWM;
 
 	// use existing axis_number to display particular regulator data, otherwise set to 10
-	int display_axis_number = 6;
+	int display_axis_number = 10;
 
 	if (axis_number == display_axis_number) {
 		if (last_servo_mode != master.servo_mode) {

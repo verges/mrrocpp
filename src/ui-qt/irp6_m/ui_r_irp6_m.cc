@@ -142,8 +142,14 @@ void UiRobot::manage_interface()
 				{
 					case common::UI_MP_NOT_PERMITED_TO_RUN:
 					case common::UI_MP_PERMITED_TO_RUN:
-					case common::UI_MP_WAITING_FOR_START_PULSE:
 						menu_Special->setEnabled(true);
+						menu_Preset_Positions->setEnabled(true);
+						menu_Absolute_Moves->setEnabled(true);
+						menu_Relative_Moves->setEnabled(true);
+						menu_Tool->setEnabled(true);
+						break;
+					case common::UI_MP_WAITING_FOR_START_PULSE:
+						menu_Special->setEnabled(false);
 						menu_Preset_Positions->setEnabled(true);
 						menu_Absolute_Moves->setEnabled(true);
 						menu_Relative_Moves->setEnabled(true);

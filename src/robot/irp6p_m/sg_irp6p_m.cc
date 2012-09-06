@@ -79,18 +79,18 @@ void servo_buffer::load_hardware_interface(void)
 	hi->set_parameter_now(4, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::irp6p_m::MAX_CURRENT_4);
 	hi->set_parameter_now(5, NF_COMMAND_SetDrivesMaxCurrent, mrrocpp::lib::irp6p_m::MAX_CURRENT_5);
 
-	NF_STRUCT_Regulator tmpReg = { 0x1010, 0x2020, 0x3030, 0x4040 };
+	/*
+	 NF_STRUCT_Regulator tmpReg = { 0x1010, 0x2020, 0x3030, 0x4040 };
 
-	hi->set_parameter_now(0, NF_COMMAND_SetCurrentRegulator, tmpReg);
-	hi->set_parameter_now(1, NF_COMMAND_SetCurrentRegulator, tmpReg);
-	hi->set_parameter_now(2, NF_COMMAND_SetCurrentRegulator, tmpReg);
-	hi->set_parameter_now(3, NF_COMMAND_SetCurrentRegulator, tmpReg);
-	hi->set_parameter_now(4, NF_COMMAND_SetCurrentRegulator, tmpReg);
-	hi->set_parameter_now(5, NF_COMMAND_SetCurrentRegulator, tmpReg);
-
+	 hi->set_parameter_now(0, NF_COMMAND_SetCurrentRegulator, tmpReg);
+	 hi->set_parameter_now(1, NF_COMMAND_SetCurrentRegulator, tmpReg);
+	 hi->set_parameter_now(2, NF_COMMAND_SetCurrentRegulator, tmpReg);
+	 hi->set_parameter_now(3, NF_COMMAND_SetCurrentRegulator, tmpReg);
+	 hi->set_parameter_now(4, NF_COMMAND_SetCurrentRegulator, tmpReg);
+	 hi->set_parameter_now(5, NF_COMMAND_SetCurrentRegulator, tmpReg);
+	 */
 	// utworzenie tablicy regulatorow
 	// Serwomechanizm 1
-
 	// regulator_ptr[1] = new NL_regulator_2 (0, 0, 0.71, 13./4, 12.57/4, 0.35);
 	// kolumna dla irp6 postument
 	regulator_ptr[0] =

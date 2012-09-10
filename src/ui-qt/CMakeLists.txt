@@ -44,6 +44,13 @@ INCLUDE(${QT_USE_FILE})
 # Include current directory, necessary for proper UI headers to work
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+ # and finally an resource file
+  SET( MR_RCS
+       resource.qrc
+  )
+QT4_ADD_RESOURCES( MR_RC_SRCS ${MR_RCS} )
+
+
 # Source files
 SET(GUI_CXX_SRCS
 	base/interface.cc	
@@ -218,6 +225,7 @@ QT4_WRAP_UI(GUI_CXX_SRCS ${GUI_UI})
 # Create GUI executable
 ADD_EXECUTABLE(
 	ui-qt
+	${MR_RC_SRCS}
 	${GUI_CXX_SRCS}
 )
 

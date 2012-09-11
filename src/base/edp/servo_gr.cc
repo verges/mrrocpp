@@ -262,6 +262,8 @@ void servo_buffer::operator()()
 	} catch (std::exception & e) {
 		printf("servo group exception: %s\n", e.what());
 		master.msg->message(lib::FATAL_ERROR, e.what());
+		// signal master thread to continue executing
+		thread_started.command();
 		exit(EXIT_SUCCESS);
 	}
 

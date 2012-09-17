@@ -264,7 +264,7 @@ void servo_buffer::operator()()
 		master.msg->message(lib::FATAL_ERROR, e.what());
 		// signal master thread to continue executing
 		thread_started.command();
-		exit(EXIT_SUCCESS);
+		raise(SIGUSR2);
 	}
 
 	if (!master.robot_test_mode) {

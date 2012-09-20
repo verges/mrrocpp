@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	QLocale::setDefault(QLocale::English);
 	interface = new mrrocpp::ui::common::Interface();
 	Q_INIT_RESOURCE(resource);
-	QApplication::setWindowIcon(QIcon(":/icon.png"));
+	QApplication::setWindowIcon(QIcon(":/mrr.svg"));
 
 //	QApplication::setWindowIcon(DOCKICON);
 	interface->init();

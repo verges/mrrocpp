@@ -175,16 +175,17 @@ void imu::get_reading(void)
 
 	}
 
-	if (master.rb_obj) {
-		boost::mutex::scoped_lock lock(master.rb_obj->reader_mutex);
-		master.rb_obj->step_data.real_cartesian_acc[0] = ldata.linearAcceleration[0];
-		master.rb_obj->step_data.real_cartesian_acc[1] = ldata.linearAcceleration[1];
-		master.rb_obj->step_data.real_cartesian_acc[2] = ldata.linearAcceleration[2];
-		master.rb_obj->step_data.real_cartesian_vel[3] = ldata.angularVelocity[0];
-		master.rb_obj->step_data.real_cartesian_vel[4] = ldata.angularVelocity[1];
-		master.rb_obj->step_data.real_cartesian_vel[5] = ldata.angularVelocity[2];
+	lib::Xyz_Angle_Axis_vector imu_acc;
+	imu_acc[0] = ldata.linearAcceleration[0];
+	imu_acc[1] = ldata.linearAcceleration[1];
+	imu_acc[2] = ldata.linearAcceleration[2];
+	imu_acc[3] = ldata.angularVelocity[0] - previous_ldata.angularVelocity[0];
+	imu_acc[4] = ldata.angularVelocity[1] - previous_ldata.angularVelocity[1];
+	imu_acc[5] = ldata.angularVelocity[2] - previous_ldata.angularVelocity[2];
 
-	}
+	master.imu_acc_dp.write(imu_acc);
+
+	previous_ldata = ldata;
 
 }
 

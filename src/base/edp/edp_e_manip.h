@@ -119,6 +119,12 @@ public:
 	edp_dp <lib::Ft_vector> force_dp;
 
 	/*!
+	 * \brief acceleration measured in IMU
+	 */
+	edp_dp <lib::Xyz_Angle_Axis_vector> imu_acc_dp;
+
+
+	/*!
 	 * \brief the matrix of the end effector frame without tool for the servo buffer (pose of the WRIST).
 	 *
 	 * It is computed for every single step of the motion.

@@ -202,6 +202,8 @@ void force::get_reading(void)
 
 	lib::Homog_matrix current_frame = master.servo_current_frame_wo_tool_dp.read();
 	lib::Homog_matrix current_rotation(current_frame.return_with_with_removed_translation());
+	// przypsieszenie we wszystkich osiach w ukladzie imu z watku imu
+	lib::Xyz_Angle_Axis_vector imu_acc = master.imu_acc_dp.read();
 
 	lib::Ft_vector force_output;
 
@@ -262,6 +264,7 @@ void force::get_reading(void)
 			boost::mutex::scoped_lock lock(master.rb_obj->reader_mutex);
 
 			current_force_in_tool.to_table(master.rb_obj->step_data.force);
+			imu_acc.to_table(master.rb_obj->step_data.real_cartesian_acc);
 		} else {
 			//	std::cerr << " " << std::endl;
 		}

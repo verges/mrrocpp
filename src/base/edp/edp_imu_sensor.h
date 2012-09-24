@@ -40,6 +40,7 @@ class imu : public lib::sensor::sensor_interface
 {
 protected:
 	ImuData ldata;
+	ImuData previous_ldata;
 	/*!
 	 * \brief Info if the imu sensor test mode is active.
 	 *

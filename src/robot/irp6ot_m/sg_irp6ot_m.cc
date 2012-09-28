@@ -109,7 +109,7 @@ void servo_buffer::load_hardware_interface(void)
 			new NL_regulator_6_irp6ot(5, 0, 0, 0.39, 8.62 / 2., 7.89 / 2., 0.35, master, common::REG_OUTPUT::PWM_OUTPUT);
 
 	regulator_ptr[6] =
-			new NL_regulator_7_irp6ot(6, 0, 0, 0.39, 8.62 / 2., 7.89 / 2., 0.35, master, common::REG_OUTPUT::CURRENT_OUTPUT);
+			new NL_regulator_7_irp6ot(6, 0, 0, 0.39, 8.62 / 2., 7.89 / 2., 0.35, master, common::REG_OUTPUT::PWM_OUTPUT);
 
 	common::servo_buffer::load_hardware_interface();
 }

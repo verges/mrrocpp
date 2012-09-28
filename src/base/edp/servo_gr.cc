@@ -54,6 +54,8 @@ void servo_buffer::load_hardware_interface(void)
 	for (int j = 0; j < master.number_of_servos; j++) {
 		command.parameters.move.abs_position[j] = 0.0;
 	}
+	//zeby odczytac na pewno stan synchronizacji robota
+	hi->read_write_hardware();
 }
 
 // obliczenie statystyk pradu

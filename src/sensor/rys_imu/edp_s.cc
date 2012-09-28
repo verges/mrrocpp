@@ -69,7 +69,7 @@ void rys_imu::get_particular_reading(void)
 	ldata = ri->getReading();
 
 	if (((i++) % 1000) == 0) {
-		std::cout << i << std::endl;
+		std::cout << "rys imu:" << i << std::endl;
 	}
 
 //	std::cout << "Ang:\n" << ldata.angularVelocity << "\nLin:\n" << ldata.linearAcceleration << "\n";

@@ -190,6 +190,13 @@ void force::wait_for_event()
 /***************************** odczyt z czujnika *****************************/
 void force::get_reading(void)
 {
+	/*
+	 static int i = 1;
+
+	 if (((i++) % 1000) == 0) {
+	 std::cout << "force sensor:" << i << std::endl;
+	 }
+	 */
 	if (!is_sensor_configured) {
 		BOOST_THROW_EXCEPTION(lib::exception::fe_sensor() << lib::exception::mrrocpp_error0(SENSOR_NOT_CONFIGURED));
 	}

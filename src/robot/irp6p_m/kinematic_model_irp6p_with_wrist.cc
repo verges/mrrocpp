@@ -179,7 +179,6 @@ void model_with_wrist::set_kinematic_parameters(void)
 	gear[5] = H_5 * K_5;
 	theta[5] = 0.000000e+00;
 
-
 	dir_a_6 = -0.00000000283130;
 	dir_b_6 = 0.00001451910074;
 	dir_c_6 = 0.074;
@@ -188,7 +187,6 @@ void model_with_wrist::set_kinematic_parameters(void)
 	inv_c_6 = -0.2831300000e20;
 	inv_d_6 = -2564.034320;
 
-
 	/* -----------------------------------------------------------------------
 	 Polozenia synchronizacji - odczyty z enkoderow silnikow.
 	 ------------------------------------------------------------------------- */
@@ -196,9 +194,8 @@ void model_with_wrist::set_kinematic_parameters(void)
 	synchro_motor_position[1] = -5; // ramie d. [rad]
 	synchro_motor_position[2] = -8.527; // ramie g. [rad]
 	synchro_motor_position[3] = 151.31; // kisc T [rad]
-	synchro_motor_position[4] = 435.25; // stara kisc V [rad]
+	synchro_motor_position[4] = 431.25; // stara kisc V [rad]
 	synchro_motor_position[5] = 791.0; // nowa kisc N [rad]
-
 
 	/* -----------------------------------------------------------------------
 	 Polozenia synchronizacji we wspolrzednych wewnetrznych - obliczone na podstawie z enkoderow silnikow.
@@ -210,7 +207,6 @@ void model_with_wrist::set_kinematic_parameters(void)
 	synchro_joint_position[4] = synchro_motor_position[4] - gear[4] * theta[4] - synchro_motor_position[3];
 	synchro_joint_position[5] = synchro_motor_position[5] - gear[5] * theta[5];
 
-
 	/* -----------------------------------------------------------------------
 	 Zakresy ruchu walow silnikow w radianach.
 	 ------------------------------------------------------------------------- */
@@ -221,14 +217,12 @@ void model_with_wrist::set_kinematic_parameters(void)
 	lower_limit_axis[4] = -80;
 	lower_limit_axis[5] = -1000;
 
-
 	upper_limit_axis[0] = 450;
 	upper_limit_axis[1] = 100;
 	upper_limit_axis[2] = 100;
 	upper_limit_axis[3] = 380;
 	upper_limit_axis[4] = 490;
 	upper_limit_axis[5] = 3000;
-
 
 	/* -----------------------------------------------------------------------
 	 Zakresy ruchu poszczegolnych stopni swobody (w radianach lub milimetrach).
@@ -240,14 +234,12 @@ void model_with_wrist::set_kinematic_parameters(void)
 	lower_limit_joint[4] = -10.0; // -M_PI
 	lower_limit_joint[5] = -2.88;
 
-
 	upper_limit_joint[0] = 170.0 * M_PI / 180.0; // [rad]
 	upper_limit_joint[1] = -50.0 * M_PI / 180.0;
 	upper_limit_joint[2] = 40.0 * M_PI / 180.0;
 	upper_limit_joint[3] = 92 * M_PI / 180.0;
 	upper_limit_joint[4] = 10.0; //M_PI
 	upper_limit_joint[5] = 2.93;
-
 
 } //: set_kinematic_parameters
 
@@ -283,7 +275,6 @@ void model_with_wrist::check_motor_position(const lib::MotorArray & motor_positi
 		BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_LOWER_LIMIT_AXIS_5));
 	else if (motor_position[5] > upper_limit_axis[5]) // Kat f6 wiekszy od maksymalnego
 		BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_UPPER_LIMIT_AXIS_5));
-
 
 } //: check_motor_position
 
@@ -387,7 +378,6 @@ void model_with_wrist::mp2i_transform(const lib::MotorArray & local_current_moto
 	// na kat obrotu kisci (wspolrzedna wewnetrzna) w radianach
 	local_current_joints[5] = (local_current_motor_pos[5] - synchro_motor_position[5]) / gear[5] + theta[5];
 
-
 	// Sprawdzenie obliczonych wartosci wspolrzednych wewnetrznych.
 	// poprawka w celu dostosowania do konwencji DH
 	local_current_joints[2] -= local_current_joints[1] + M_PI_2;
@@ -446,7 +436,6 @@ void model_with_wrist::i2mp_transform(lib::MotorArray & local_desired_motor_pos_
 
 	// Obliczanie kata obrotu walu silnika napedowego obrotu kisci N
 	local_desired_motor_pos_new[5] = gear[5] * local_desired_joints_tmp[5] + synchro_joint_position[5];
-
 
 	// Sprawdzenie obliczonych wartosci.
 	check_motor_position(local_desired_motor_pos_new);

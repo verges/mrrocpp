@@ -49,7 +49,6 @@ void model_with_wrist::set_kinematic_parameters(void)
 	 3 - pochylnie kisci: os T
 	 4 - obrot kisci:    os V
 	 5 - obrot kisci:    os N
-	 6 - chwytak
 	 ------------------------------------------------------------------------- */
 
 	/* -----------------------------------------------------------------------
@@ -180,18 +179,7 @@ void model_with_wrist::set_kinematic_parameters(void)
 	gear[5] = H_5 * K_5;
 	theta[5] = 0.000000e+00;
 
-	/* -----------------------------------------------------------------------
-	 Wspolczynniki uzywane przy obliczeniach zwarcia/rozwarcia szczek:
-	 Obliczenia wartosci wspolrzednych wewnetrznych na podstawie odczytow enkoderow silnikow
-	 * joint[6] = dir_a_6 * motor[6]^2 + dir_b_6 * motor[6] + dir_c_6
-	 uzywane wspolczynniki
-	 * dir_a_6, dir_b_6, dir_c_6
 
-	 Obliczenia wartosci polozen silnikow na podstawie wspolrzednych wewnetrznych
-	 * motor[6] = inv_a_6 * sqrt(inv_b_6 + inv_c_6 * joint[6]) + inv_d_6
-	 uzywane wspolczynniki
-	 * inv_a_6, inv_b_6, inv_c_6, inv_d_6
-	 ------------------------------------------------------------------------- */
 	dir_a_6 = -0.00000000283130;
 	dir_b_6 = 0.00001451910074;
 	dir_c_6 = 0.074;
@@ -199,8 +187,7 @@ void model_with_wrist::set_kinematic_parameters(void)
 	inv_b_6 = 0.2622172716e19;
 	inv_c_6 = -0.2831300000e20;
 	inv_d_6 = -2564.034320;
-	theta[6] = 0.000000e+00;
-	gear[6] = 0.000000e+00;
+
 
 	/* -----------------------------------------------------------------------
 	 Polozenia synchronizacji - odczyty z enkoderow silnikow.
@@ -211,7 +198,7 @@ void model_with_wrist::set_kinematic_parameters(void)
 	synchro_motor_position[3] = 151.31; // kisc T [rad]
 	synchro_motor_position[4] = 435.25; // kisc V [rad]
 	synchro_motor_position[5] = 791.0; // kisc N [rad]
-	synchro_motor_position[6] = 4830; // chwytak [-]
+
 
 	/* -----------------------------------------------------------------------
 	 Polozenia synchronizacji we wspolrzednych wewnetrznych - obliczone na podstawie z enkoderow silnikow.
@@ -222,7 +209,7 @@ void model_with_wrist::set_kinematic_parameters(void)
 	synchro_joint_position[3] = synchro_motor_position[3] - gear[3] * theta[3];
 	synchro_joint_position[4] = synchro_motor_position[4] - gear[4] * theta[4] - synchro_motor_position[3];
 	synchro_joint_position[5] = synchro_motor_position[5] - gear[5] * theta[5];
-	synchro_joint_position[6] = synchro_motor_position[6] - gear[6] * theta[6];
+
 
 	/* -----------------------------------------------------------------------
 	 Zakresy ruchu walow silnikow w radianach.
@@ -233,7 +220,7 @@ void model_with_wrist::set_kinematic_parameters(void)
 	lower_limit_axis[3] = -70;
 	lower_limit_axis[4] = -80;
 	lower_limit_axis[5] = -1000;
-	lower_limit_axis[6] = -2000;
+
 
 	upper_limit_axis[0] = 450;
 	upper_limit_axis[1] = 100;
@@ -241,7 +228,7 @@ void model_with_wrist::set_kinematic_parameters(void)
 	upper_limit_axis[3] = 380;
 	upper_limit_axis[4] = 490;
 	upper_limit_axis[5] = 3000;
-	upper_limit_axis[6] = 5000;
+
 
 	/* -----------------------------------------------------------------------
 	 Zakresy ruchu poszczegolnych stopni swobody (w radianach lub milimetrach).
@@ -252,7 +239,7 @@ void model_with_wrist::set_kinematic_parameters(void)
 	lower_limit_joint[3] = -90.0 * M_PI / 180.0;
 	lower_limit_joint[4] = -10.0; // -M_PI
 	lower_limit_joint[5] = -2.88;
-	lower_limit_joint[6] = 0.053;
+
 
 	upper_limit_joint[0] = 170.0 * M_PI / 180.0; // [rad]
 	upper_limit_joint[1] = -50.0 * M_PI / 180.0;
@@ -260,7 +247,7 @@ void model_with_wrist::set_kinematic_parameters(void)
 	upper_limit_joint[3] = 92 * M_PI / 180.0;
 	upper_limit_joint[4] = 10.0; //M_PI
 	upper_limit_joint[5] = 2.93;
-	upper_limit_joint[6] = 0.091;
+
 
 } //: set_kinematic_parameters
 
@@ -297,12 +284,7 @@ void model_with_wrist::check_motor_position(const lib::MotorArray & motor_positi
 	else if (motor_position[5] > upper_limit_axis[5]) // Kat f6 wiekszy od maksymalnego
 		BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_UPPER_LIMIT_AXIS_5));
 
-	if (number_of_servos > 6) {
-		if (motor_position[6] < lower_limit_axis[6]) // Kat f7 mniejszy od minimalnego
-			BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_LOWER_LIMIT_AXIS_6));
-		else if (motor_position[6] > upper_limit_axis[6]) // Kat f7 wiekszy od maksymalnego
-			BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_UPPER_LIMIT_AXIS_6));
-	}
+
 } //: check_motor_position
 
 void model_with_wrist::check_joints(const lib::JointArray & q) const
@@ -355,16 +337,6 @@ void model_with_wrist::check_joints(const lib::JointArray & q) const
 	if (q[5] > upper_limit_joint[5]) // kat q5 wiekszy od maksymalnego
 		BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_UPPER_THETA6_LIMIT));
 
-	if (number_of_servos > 6) {
-		//***szczeki chwytaka***
-		if (isnan(q[6]))
-			BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(NOT_A_NUMBER_JOINT_VALUE_THETA7));
-		if (q[6] < lower_limit_joint[6]) // 6 st. swobody
-			BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_LOWER_THETA7_LIMIT));
-
-		if (q[6] > upper_limit_joint[6]) // 6 st. swobody
-			BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_UPPER_THETA7_LIMIT));
-	}
 } //: check_joints
 
 void model_with_wrist::mp2i_transform(const lib::MotorArray & local_current_motor_pos, lib::JointArray & local_current_joints)
@@ -415,13 +387,7 @@ void model_with_wrist::mp2i_transform(const lib::MotorArray & local_current_moto
 	// na kat obrotu kisci (wspolrzedna wewnetrzna) w radianach
 	local_current_joints[5] = (local_current_motor_pos[5] - synchro_motor_position[5]) / gear[5] + theta[5];
 
-	/*
-	 if (number_of_servos > 6) {
-	 // Przelicznik polozenia walu silnika szczek na ich zacisniecie
-	 local_current_joints[6] = dir_a_6 * (local_current_motor_pos[6] * local_current_motor_pos[6]) - dir_b_6
-	 * local_current_motor_pos[6] + dir_c_6;
-	 }
-	 */
+
 	// Sprawdzenie obliczonych wartosci wspolrzednych wewnetrznych.
 	// poprawka w celu dostosowania do konwencji DH
 	local_current_joints[2] -= local_current_joints[1] + M_PI_2;
@@ -481,10 +447,7 @@ void model_with_wrist::i2mp_transform(lib::MotorArray & local_desired_motor_pos_
 	// Obliczanie kata obrotu walu silnika napedowego obrotu kisci N
 	local_desired_motor_pos_new[5] = gear[5] * local_desired_joints_tmp[5] + synchro_joint_position[5];
 
-	if (number_of_servos > 6) {
-		// Obliczenie kata obrotu walu silnika napedowego chwytaka.
-		local_desired_motor_pos_new[6] = inv_a_6 * sqrt(inv_b_6 + inv_c_6 * local_desired_joints_tmp[6]) + inv_d_6;
-	}
+
 	// Sprawdzenie obliczonych wartosci.
 	check_motor_position(local_desired_motor_pos_new);
 

@@ -70,7 +70,8 @@ ImuData IMU::getReading()
 		int select_retval = select(fd + 1, &rfds, NULL, NULL, &timeout);
 
 		if (select_retval == 0) {
-			printf("timeout !!! \n");
+			printf("imu 16362 timeout !!! \n");
+			throw std::runtime_error("imu 16362 timeout !!!");
 		} else {
 			int ret = read(fd, data + dlen, 50 - dlen);
 			if (ret <= 0)

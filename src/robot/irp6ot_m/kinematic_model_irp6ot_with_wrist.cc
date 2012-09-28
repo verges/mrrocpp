@@ -46,8 +46,8 @@ void model_with_wrist::set_kinematic_parameters(void)
 	 3 - ramie gorne:    os ALFA
 	 4 - pochylnie kisci: os T
 	 5 - obrot kisci:    os V
-	 7 - obrot kisci:    os N
-	 8 - chwytak
+	 6 - obrot kisci:    os N
+
 	 ------------------------------------------------------------------------- */
 
 	/* -----------------------------------------------------------------------
@@ -172,18 +172,6 @@ void model_with_wrist::set_kinematic_parameters(void)
 	gear[6] = H_6 * K_6;
 	theta[6] = 0.000000e+00;
 
-	/* -----------------------------------------------------------------------
-	 Wspolczynniki uzywane przy obliczeniach zwarcia/rozwarcia szczek:
-	 Obliczenia wartosci wspolrzednych wewnetrznych na podstawie odczytow enkoderow silnikow
-	 * joint[7] = dir_a_7 * motor[7]^2 + dir_b_7 * motor[7] + dir_c_7
-	 uzywane wspolczynniki
-	 * dir_a_7, dir_b_7, dir_c_7
-
-	 Obliczenia wartosci polozen silnikow na podstawie wspolrzednych wewnetrznych
-	 * motor[7] = inv_a_7 * sqrt(inv_b_7 + inv_c_7 * joint[7]) + inv_d_7
-	 uzywane wspolczynniki
-	 * inv_a_7, inv_b_7, inv_c_7, inv_d_7
-	 ------------------------------------------------------------------------- */
 	dir_a_7 = -0.00000000283130;
 	dir_b_7 = 0.00001451910074;
 	dir_c_7 = 0.074;
@@ -191,8 +179,6 @@ void model_with_wrist::set_kinematic_parameters(void)
 	inv_b_7 = 0.2622172716e19;
 	inv_c_7 = -0.2831300000e20;
 	inv_d_7 = -2564.034320;
-	gear[7] = 0.0;
-	theta[7] = 0.000000e+00;
 
 	/* -----------------------------------------------------------------------
 	 Polozenia synchronizacji - odczyty z enkoderow silnikow.
@@ -203,9 +189,8 @@ void model_with_wrist::set_kinematic_parameters(void)
 	synchro_motor_position[2] = -4.012; // ramie d. [rad]
 	synchro_motor_position[3] = -6.219; // ramie g. [rad]
 	synchro_motor_position[4] = 158.997; // kisc T [rad]
-        synchro_motor_position[5] = 474.5; // kisc V [rad] poprawne front position w motorach (6 os z kolei oznaczona jako 5) + 320.25
+	synchro_motor_position[5] = 474.5; // kisc V [rad] poprawne front position w motorach (6 os z kolei oznaczona jako 5) + 320.25
 	synchro_motor_position[6] = 769.7; // kisc N [rad]
-	synchro_motor_position[7] = 4830; // chwytak [-]
 
 	/* -----------------------------------------------------------------------
 	 Polozenia synchronizacji we wspolrzednych wewnetrznych - obliczone na podstawie z enkoderow silnikow.
@@ -217,7 +202,6 @@ void model_with_wrist::set_kinematic_parameters(void)
 	synchro_joint_position[4] = synchro_motor_position[4] - gear[4] * theta[4];
 	synchro_joint_position[5] = synchro_motor_position[5] - gear[5] * theta[5] - synchro_motor_position[4];
 	synchro_joint_position[6] = synchro_motor_position[6] - gear[6] * theta[6];
-	synchro_joint_position[7] = synchro_motor_position[7] - gear[7] * theta[7];
 
 	/* -----------------------------------------------------------------------
 	 Zakresy ruchu walow silnikow w radianach.
@@ -229,7 +213,6 @@ void model_with_wrist::set_kinematic_parameters(void)
 	lower_limit_axis[4] = -70;
 	lower_limit_axis[5] = -80;
 	lower_limit_axis[6] = -1000;
-	lower_limit_axis[7] = -2000;
 
 	upper_limit_axis[0] = 1900;
 	// przed postawieniem szafy obkok robota
@@ -241,7 +224,6 @@ void model_with_wrist::set_kinematic_parameters(void)
 	upper_limit_axis[4] = 380;
 	upper_limit_axis[5] = 490;
 	upper_limit_axis[6] = 3000;
-	upper_limit_axis[7] = 5000;
 
 	/* -----------------------------------------------------------------------
 	 Zakresy ruchu poszczegolnych stopni swobody (w radianach lub milimetrach).
@@ -256,7 +238,6 @@ void model_with_wrist::set_kinematic_parameters(void)
 	lower_limit_joint[4] = -90.0 * M_PI / 180.0;
 	lower_limit_joint[5] = -10.0; // -M_PI
 	lower_limit_joint[6] = -2.88;
-	lower_limit_joint[7] = 0.053;
 
 	upper_limit_joint[0] = 1.21; // [m];
 	upper_limit_joint[1] = 170.0 * M_PI / 180.0; // [rad]
@@ -265,7 +246,6 @@ void model_with_wrist::set_kinematic_parameters(void)
 	upper_limit_joint[4] = 92 * M_PI / 180.0;
 	upper_limit_joint[5] = 10.0; //M_PI
 	upper_limit_joint[6] = 2.93;
-	upper_limit_joint[7] = 0.091;
 
 } // end: set_kinematic_parameters
 
@@ -305,13 +285,6 @@ void model_with_wrist::check_motor_position(const lib::MotorArray & motor_positi
 		BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_LOWER_LIMIT_AXIS_6));
 	else if (motor_position[6] > upper_limit_axis[6]) // Kat f7 wiekszy od maksymalnego
 		BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_UPPER_LIMIT_AXIS_6));
-
-	if (number_of_servos > 7) {
-		if (motor_position[7] < lower_limit_axis[7]) // Kat f8 mniejszy od minimalnego
-			BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_LOWER_LIMIT_AXIS_7));
-		else if (motor_position[7] > upper_limit_axis[7]) // Kat f8 wiekszy od maksymalnego
-			BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_UPPER_LIMIT_AXIS_7));
-	}
 
 } //: check_motor_position
 
@@ -373,16 +346,6 @@ void model_with_wrist::check_joints(const lib::JointArray & q) const
 	if (q[6] > upper_limit_joint[6]) // 6 st. swobody
 		BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_UPPER_THETA6_LIMIT));
 
-	//***szczeki chwytaka***
-	if (number_of_servos > 7) {
-		if (isnan(q[7]))
-			BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(NOT_A_NUMBER_JOINT_VALUE_THETA7));
-		if (q[7] < lower_limit_joint[7]) // 7 st. swobody
-			BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_LOWER_THETA7_LIMIT));
-
-		if (q[7] > upper_limit_joint[7]) // 7 st. swobody
-			BOOST_THROW_EXCEPTION(nfe_2() << mrrocpp_error0(BEYOND_UPPER_THETA7_LIMIT));
-	}
 } //: check_joints
 
 void model_with_wrist::mp2i_transform(const lib::MotorArray & local_current_motor_pos, lib::JointArray & local_current_joints)
@@ -498,11 +461,6 @@ void model_with_wrist::i2mp_transform(lib::MotorArray & local_desired_motor_pos_
 
 	// Obliczanie kata obrotu walu silnika napedowego obrotu kisci N
 	local_desired_motor_pos_new[6] = gear[6] * local_desired_joints_tmp[6] + synchro_joint_position[6];
-
-	if (number_of_servos > 7) {
-		// Obliczenie kata obrotu walu silnika napedowego chwytaka.
-		local_desired_motor_pos_new[7] = inv_a_7 * sqrt(inv_b_7 + inv_c_7 * local_desired_joints_tmp[7]) + inv_d_7;
-	}
 
 	// Sprawdzenie obliczonych wartosci.
 	check_motor_position(local_desired_motor_pos_new);

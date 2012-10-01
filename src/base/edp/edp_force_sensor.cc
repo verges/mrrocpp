@@ -160,7 +160,7 @@ force::force(common::manip_effector &_master) :
 	clear_cb();
 
 	// przypsieszenie ziemskie w ukladzie o orientacji ukaldu bazowego
-	gravitational_acceleration = lib::Xyz_Angle_Axis_vector(0, 0, 10, 0, 0, 0);
+	gravitational_acceleration = lib::Xyz_Angle_Axis_vector(0, 0, -1, 0, 0, 0);
 
 }
 
@@ -392,7 +392,7 @@ lib::Ft_vector force::compute_inertial_force(lib::Xyz_Angle_Axis_vector & output
 
 	lib::Xyz_Angle_Axis_vector msr_acc = master.imu_acc_dp.read();
 
-	lib::Xyz_Angle_Axis_vector ga_in_current_orientation = lib::Xi_star(!curr_frame) * gravitational_acceleration;
+	lib::Xyz_Angle_Axis_vector ga_in_current_orientation = lib::Xi_star(curr_frame) * gravitational_acceleration;
 
 	msr_acc = lib::Xi_v(tool_mass_center_translation) * lib::Xi_v(imu_frame) * msr_acc;
 

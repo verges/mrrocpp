@@ -213,7 +213,6 @@ void force::get_reading(void)
 	lib::Homog_matrix current_frame = master.servo_current_frame_wo_tool_dp.read();
 //	lib::Homog_matrix current_rotation(current_frame.return_with_with_removed_translation());
 	// przypsieszenie we wszystkich osiach w ukladzie imu z watku imu
-	lib::Xyz_Angle_Axis_vector imu_acc = master.imu_acc_dp.read();
 
 	lib::Ft_vector force_output;
 
@@ -258,6 +257,9 @@ void force::get_reading(void)
 
 		sr_msg->message(lib::NON_FATAL_ERROR, buffer.str());
 	}
+
+	lib::Xyz_Angle_Axis_vector imu_acc;
+	compute_inertial_force(imu_acc, current_frame);
 
 	// przygotowanie odczytu dla readera przetransformowanego do ukladu narzedzia
 
@@ -314,17 +316,27 @@ void force::configure_sensor(void)
 			free(toDel);
 		}
 
-		//zczytanie polozenia czujnika wzgledem nadgarstka
 		lib::Xyz_Angle_Axis_vector tab;
-		if (master.config.exists("sensor_in_wrist")) {
-			char *tmp = strdup(master.config.value <std::string>("sensor_in_wrist").c_str());
+		//zczytanie polozenia czujnika sily wzgledem nadgarstka
+		if (master.config.exists("force_sensor_in_wrist")) {
+			char *tmp = strdup(master.config.value <std::string>("force_sensor_in_wrist").c_str());
 			char* toDel = tmp;
 			for (int i = 0; i < 6; i++) {
 				tab[i] = strtod(tmp, &tmp);
 			}
-			sensor_frame = lib::Homog_matrix(tab);
+			force_sensor_frame = lib::Homog_matrix(tab);
 			free(toDel);
+		}
 
+		//zczytanie polozenia imu wzgledem nadgarstka
+		if (master.config.exists("imu_in_wrist")) {
+			char *tmp = strdup(master.config.value <std::string>("imu_in_wrist").c_str());
+			char* toDel = tmp;
+			for (int i = 0; i < 6; i++) {
+				tab[i] = strtod(tmp, &tmp);
+			}
+			imu_frame = lib::Homog_matrix(tab);
+			free(toDel);
 		}
 
 		// zczytanie ciezaru narzedzia
@@ -339,8 +351,11 @@ void force::configure_sensor(void)
 		free(toDel);
 
 		lib::K_vector pointofgravity(point);
+
+		tool_mass_center_translation = lib::Homog_matrix(point[0], point[1], point[2]);
+
 		gravity_transformation =
-				new lib::ForceTrans(force_sensor_name, current_frame, sensor_frame, weight, pointofgravity, is_right_turn_frame);
+				new lib::ForceTrans(force_sensor_name, current_frame, force_sensor_frame, weight, pointofgravity, is_right_turn_frame);
 	} else {
 		gravity_transformation->synchro(current_frame);
 	}
@@ -354,6 +369,10 @@ force::~force()
 void force::set_force_tool(void)
 {
 	lib::K_vector gravity_arm_in_sensor(next_force_tool_position);
+
+	tool_mass_center_translation =
+			lib::Homog_matrix(gravity_arm_in_sensor[0], gravity_arm_in_sensor[1], gravity_arm_in_sensor[2]);
+
 	lib::Homog_matrix frame = master.servo_current_frame_wo_tool_dp.read();
 	gravity_transformation->defineTool(frame, next_force_tool_weight, gravity_arm_in_sensor);
 
@@ -367,9 +386,17 @@ void force::set_command_execution_finish() // podniesienie semafora
 	new_command_synchroniser.command();
 }
 
-lib::Ft_vector force::compute_inertial_force(void)
+lib::Ft_vector force::compute_inertial_force(lib::Xyz_Angle_Axis_vector & output_acc, const lib::Homog_matrix curr_frame)
 {
 	lib::Ft_vector output_force;
+
+	lib::Xyz_Angle_Axis_vector msr_acc = master.imu_acc_dp.read();
+
+	lib::Xyz_Angle_Axis_vector ga_in_current_orientation = lib::Xi_star(!curr_frame) * gravitational_acceleration;
+
+	msr_acc = lib::Xi_v(tool_mass_center_translation) * lib::Xi_v(imu_frame) * msr_acc;
+
+	output_acc = msr_acc - ga_in_current_orientation;
 
 	return output_force;
 }

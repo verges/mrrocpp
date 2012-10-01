@@ -74,8 +74,12 @@ protected:
 
 	// is sensor_frame right turn
 	bool is_right_turn_frame;
-	// sensor_frame related to wrist frame
-	lib::Homog_matrix sensor_frame;
+
+	// force_sensor_frame related to wrist frame
+	lib::Homog_matrix force_sensor_frame;
+
+	// imu_frame related to wrist frame
+	lib::Homog_matrix imu_frame;
 
 	lib::ForceTrans *gravity_transformation; // klasa likwidujaca wplyw grawitacji na czujnik
 
@@ -102,7 +106,7 @@ protected:
 	void get_reading(void);
 
 	// computes inertial force
-	lib::Ft_vector compute_inertial_force(void);
+	lib::Ft_vector compute_inertial_force(lib::Xyz_Angle_Axis_vector & output_acc, const lib::Homog_matrix curr_frame);
 
 	struct _from_vsp
 	{
@@ -117,6 +121,8 @@ protected:
 	void clear_cb();
 
 	lib::Xyz_Angle_Axis_vector gravitational_acceleration;
+
+	lib::Homog_matrix tool_mass_center_translation;
 
 public:
 	void operator()();

@@ -51,7 +51,7 @@ void ForceTrans::defineTool(const lib::Homog_matrix & init_frame, const double w
 	// sila reakcji w ukladzie czujnika z orientacja bazy
 	lib::Ft_vector gravity_force_torque_in_sensor(lib::Xi_f(!current_orientation) * gravity_force_torque_in_base);
 
-	// macierz anrzedzia wzgledem nadgarstka
+	// macierz narzedzia wzgledem nadgarstka
 	lib::Homog_matrix tool_mass_center_translation(point_of_gravity[0], point_of_gravity[1], point_of_gravity[2]);
 	ft_tool_mass_center_translation = lib::Xi_f(tool_mass_center_translation);
 

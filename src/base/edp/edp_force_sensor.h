@@ -101,6 +101,9 @@ protected:
 
 	void get_reading(void);
 
+	// computes inertial force
+	lib::Ft_vector compute_inertial_force(void);
+
 	struct _from_vsp
 	{
 		lib::sensor::VSP_REPORT_t vsp_report;
@@ -112,6 +115,8 @@ protected:
 	static const int FORCE_BUFFER_LENGHT = 2;
 
 	void clear_cb();
+
+	lib::Xyz_Angle_Axis_vector gravitational_acceleration;
 
 public:
 	void operator()();

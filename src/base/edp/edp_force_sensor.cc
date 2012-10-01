@@ -159,6 +159,9 @@ force::force(common::manip_effector &_master) :
 
 	clear_cb();
 
+	// przypsieszenie ziemskie w ukladzie o orientacji ukaldu bazowego
+	gravitational_acceleration = lib::Xyz_Angle_Axis_vector(0, 0, 10, 0, 0, 0);
+
 }
 
 void force::clear_cb()
@@ -208,7 +211,7 @@ void force::get_reading(void)
 	}
 
 	lib::Homog_matrix current_frame = master.servo_current_frame_wo_tool_dp.read();
-	lib::Homog_matrix current_rotation(current_frame.return_with_with_removed_translation());
+//	lib::Homog_matrix current_rotation(current_frame.return_with_with_removed_translation());
 	// przypsieszenie we wszystkich osiach w ukladzie imu z watku imu
 	lib::Xyz_Angle_Axis_vector imu_acc = master.imu_acc_dp.read();
 
@@ -225,7 +228,7 @@ void force::get_reading(void)
 
 	if (!overforce) {
 		//sily przechowujemy w zerowej orientacji bazowej w ukladzie nadgarstka
-		lib::Ft_vector base_force = gravity_transformation->getForce(ft_table, current_rotation);
+		lib::Ft_vector base_force = gravity_transformation->getForce(ft_table, current_frame);
 
 		// dodanie nowej sily do bufora dla celow usredniania (filtracji dolnoprzepustowej)
 		cb.push_back(base_force);
@@ -258,12 +261,14 @@ void force::get_reading(void)
 
 	// przygotowanie odczytu dla readera przetransformowanego do ukladu narzedzia
 
-	lib::Ft_tr ft_tr_inv_current_rotation_matrix(!current_rotation);
+	lib::Xi_star ft_tr_inv_current_rotation_matrix(!current_frame);
 
 	lib::Homog_matrix current_tool(((mrrocpp::kinematics::common::kinematic_model_with_tool*) master.get_current_kinematic_model())->tool);
-	lib::Ft_tr ft_tr_inv_tool_matrix(!current_tool);
+	lib::Xi_f ft_tr_inv_tool_matrix(!current_tool);
 
 	lib::Ft_vector current_force_in_tool(ft_tr_inv_tool_matrix * ft_tr_inv_current_rotation_matrix * force_output);
+
+	// Transformacja przyspieszeń
 
 	// scope-locked reader data update
 	{
@@ -360,6 +365,13 @@ void force::set_command_execution_finish() // podniesienie semafora
 {
 	new_edp_command = false;
 	new_command_synchroniser.command();
+}
+
+lib::Ft_vector force::compute_inertial_force(void)
+{
+	lib::Ft_vector output_force;
+
+	return output_force;
 }
 
 } // namespace sensor

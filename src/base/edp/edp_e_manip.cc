@@ -175,10 +175,10 @@ void manip_effector::get_arm_position_with_force_and_sb(bool read_hardware, lib:
 
 	lib::Homog_matrix current_frame_wo_offset = servo_current_frame_wo_tool_dp.read();
 	current_frame_wo_offset.remove_translation();
-	lib::Ft_tr ft_tr_inv_current_frame_matrix(!current_frame_wo_offset);
+	lib::Xi_f ft_tr_inv_current_frame_matrix(!current_frame_wo_offset);
 
 	lib::Homog_matrix current_tool(((mrrocpp::kinematics::common::kinematic_model_with_tool*) get_current_kinematic_model())->tool);
-	lib::Ft_tr ft_tr_inv_tool_matrix(!current_tool);
+	lib::Xi_f ft_tr_inv_tool_matrix(!current_tool);
 
 	lib::Ft_vector current_force = force_dp.read();
 
@@ -362,16 +362,16 @@ void manip_effector::iterate_macrostep(const lib::JointArray & begining_joints, 
 
 	//	std::cout << current_tool << std::endl;
 
-	lib::Ft_tr ft_tr_inv_tool_matrix = !(lib::Ft_tr(current_tool));
-	lib::V_tr v_tr_tool_matrix(current_tool);
-	lib::V_tr v_tr_inv_tool_matrix = !v_tr_tool_matrix;
+	lib::Xi_f ft_tr_inv_tool_matrix = !(lib::Xi_f(current_tool));
+	lib::Xi_v v_tr_tool_matrix(current_tool);
+	lib::Xi_v v_tr_inv_tool_matrix = !v_tr_tool_matrix;
 
 	// poczatek generacji makrokrokubase_pos_xyz_rot_xyz_vector
 	for (int step = 1; step <= ECP_motion_steps; ++step) {
 
 		lib::Homog_matrix current_frame_wo_offset = servo_current_frame_wo_tool_dp.read();
 		current_frame_wo_offset.remove_translation();
-		lib::V_tr v_tr_current_frame_matrix(current_frame_wo_offset);
+		lib::Xi_v v_tr_current_frame_matrix(current_frame_wo_offset);
 
 		lib::Ft_vector current_force = force_dp.read();
 
@@ -381,7 +381,7 @@ void manip_effector::iterate_macrostep(const lib::JointArray & begining_joints, 
 		lib::Homog_matrix begining_end_effector_frame_with_current_translation = begining_end_effector_frame;
 		begining_end_effector_frame_with_current_translation.set_translation_vector(desired_end_effector_frame);
 
-		lib::Ft_v_vector current_force_torque(ft_tr_inv_tool_matrix * !(lib::Ft_tr(current_frame_wo_offset))
+		lib::Ft_v_vector current_force_torque(ft_tr_inv_tool_matrix * !(lib::Xi_f(current_frame_wo_offset))
 				* current_force);
 		//		lib::Ft_v_vector tmp_force_torque (lib::Ft_v_tr((!current_tool) * (!current_frame_wo_offset), lib::Ft_v_tr::FT) * lib::Ft_v_vector (current_force));
 
@@ -401,7 +401,7 @@ void manip_effector::iterate_macrostep(const lib::JointArray & begining_joints, 
 			case lib::FRAME:
 			case lib::JOINT:
 			case lib::MOTOR:
-				pos_xyz_rot_xyz_vector = lib::V_tr(!(lib::V_tr(!begining_end_effector_frame_with_current_translation
+				pos_xyz_rot_xyz_vector = lib::Xi_v(!(lib::Xi_v(!begining_end_effector_frame_with_current_translation
 						* desired_end_effector_frame))) * base_pos_xyz_rot_xyz_vector;
 				break;
 			case lib::PF_VELOCITY:

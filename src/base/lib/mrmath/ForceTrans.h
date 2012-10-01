@@ -22,9 +22,9 @@ protected:
 
 	lib::Homog_matrix sensor_frame;
 
-	lib::Ft_tr ft_tool_mass_center_translation;
+	lib::Xi_f ft_tool_mass_center_translation;
 
-	lib::Ft_tr ft_tr_sensor_in_wrist;
+	lib::Xi_f ft_tr_sensor_in_wrist;
 
 	bool is_right_turn_frame;
 

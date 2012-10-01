@@ -28,7 +28,7 @@ ForceTrans::ForceTrans(const short l_force_sensor_name, const lib::Homog_matrix 
 	// polozenie czujnika wzgledem nadgarstka
 	sensor_frame = s_frame;
 
-	ft_tr_sensor_in_wrist = lib::Ft_tr(sensor_frame);
+	ft_tr_sensor_in_wrist = lib::Xi_f(sensor_frame);
 
 	tool_weight = weight;
 	gravity_arm_in_wrist = point_of_gravity;
@@ -49,11 +49,11 @@ void ForceTrans::defineTool(const lib::Homog_matrix & init_frame, const double w
 	lib::Homog_matrix current_orientation(init_frame.return_with_with_removed_translation());
 
 	// sila reakcji w ukladzie czujnika z orientacja bazy
-	lib::Ft_vector gravity_force_torque_in_sensor(lib::Ft_tr(!current_orientation) * gravity_force_torque_in_base);
+	lib::Ft_vector gravity_force_torque_in_sensor(lib::Xi_f(!current_orientation) * gravity_force_torque_in_base);
 
 	// macierz anrzedzia wzgledem nadgarstka
 	lib::Homog_matrix tool_mass_center_translation(point_of_gravity[0], point_of_gravity[1], point_of_gravity[2]);
-	ft_tool_mass_center_translation = lib::Ft_tr(tool_mass_center_translation);
+	ft_tool_mass_center_translation = lib::Xi_f(tool_mass_center_translation);
 
 	// sila reakcji w ukladzie nadgarstka z orientacja bazy
 	reaction_force_torque_in_wrist = -(ft_tool_mass_center_translation * gravity_force_torque_in_sensor);
@@ -61,7 +61,7 @@ void ForceTrans::defineTool(const lib::Homog_matrix & init_frame, const double w
 }
 
 // zwraca sily i momenty sil w w ukladzie z orientacja koncowki manipulatory bez narzedzia
-lib::Ft_vector ForceTrans::getForce(const lib::Ft_vector _inputForceTorque, const lib::Homog_matrix current_rotation)
+lib::Ft_vector ForceTrans::getForce(const lib::Ft_vector _inputForceTorque, const lib::Homog_matrix curr_frame)
 {
 
 	lib::Ft_vector inputForceTorque = _inputForceTorque;
@@ -79,14 +79,14 @@ lib::Ft_vector ForceTrans::getForce(const lib::Ft_vector _inputForceTorque, cons
 
 		// sprowadzenie odczytow sil do ukladu czujnika przy zalozeniu ze uklad chwytaka ma te sama orientacje
 		// co uklad narzedzia
-		lib::Ft_vector gravity_force_torque_in_sensor(lib::Ft_tr(!current_rotation) * gravity_force_torque_in_base);
+		lib::Ft_vector gravity_force_torque_in_sensor(lib::Xi_star(!curr_frame) * gravity_force_torque_in_base);
 
 		// finalne przeksztalcenie (3.30 z doktoratu TW)
 		lib::Ft_vector output_force_torque(input_force_torque
 				- (ft_tool_mass_center_translation * gravity_force_torque_in_sensor) - reaction_force_torque_in_wrist);
 
 		// sprowadzenie sily w ukladzie nadgarstka do orientacji ukladu bazowego
-		output_force_torque = lib::Ft_tr(current_rotation) * Ft_vector(-output_force_torque);
+		output_force_torque = lib::Xi_star(curr_frame) * Ft_vector(-output_force_torque);
 
 		return output_force_torque;
 	}

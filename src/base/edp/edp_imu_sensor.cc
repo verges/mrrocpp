@@ -179,13 +179,11 @@ void imu::get_reading(void)
 	imu_acc[0] = ldata.linearAcceleration[0];
 	imu_acc[1] = ldata.linearAcceleration[1];
 	imu_acc[2] = ldata.linearAcceleration[2];
-	imu_acc[3] = ldata.angularVelocity[0] - previous_ldata.angularVelocity[0];
-	imu_acc[4] = ldata.angularVelocity[1] - previous_ldata.angularVelocity[1];
-	imu_acc[5] = ldata.angularVelocity[2] - previous_ldata.angularVelocity[2];
+	imu_acc[3] = ldata.angularAcceleration[0];
+	imu_acc[4] = ldata.angularAcceleration[1];
+	imu_acc[5] = ldata.angularAcceleration[2];
 
 	master.imu_acc_dp.write(imu_acc);
-
-	previous_ldata = ldata;
 
 }
 

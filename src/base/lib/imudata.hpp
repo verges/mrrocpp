@@ -6,6 +6,7 @@
 struct ImuData
 {
 	Eigen::Vector3d angularVelocity;
+	Eigen::Vector3d angularAcceleration;
 	Eigen::Vector3d linearAcceleration;
 };
 

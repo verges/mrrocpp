@@ -160,7 +160,7 @@ force::force(common::manip_effector &_master) :
 	clear_cb();
 
 	// przypsieszenie ziemskie w ukladzie o orientacji ukaldu bazowego
-	gravitational_acceleration = lib::Xyz_Angle_Axis_vector(0, 0, -1, 0, 0, 0);
+	gravitational_acceleration = lib::Xyz_Angle_Axis_vector(0, 0, lib::G_ACC, 0, 0, 0);
 
 }
 

@@ -39,6 +39,8 @@ private:
 	char data[50];
 	int dlen;
 
+	double imu_step;
+
 	ImuData imu_data;
 
 	int16_t getShort14(char * dat);

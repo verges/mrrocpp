@@ -94,7 +94,7 @@ void servo_buffer::load_hardware_interface(void)
 	// regulator_ptr[1] = new NL_regulator_2 (0, 0, 0.71, 13./4, 12.57/4, 0.35);
 	// kolumna dla irp6 postument
 	regulator_ptr[0] =
-			new NL_regulator_2_irp6p(0, 0, 0, 0.429, 6.834, 6.606, 0.35, master, common::REG_OUTPUT::PWM_OUTPUT); // kolumna dla irp6 postument
+			new NL_regulator_2_irp6p(0, 0, 0, 0.429, 6.834, 6.606, 0.35, master, common::REG_OUTPUT::CURRENT_OUTPUT); // kolumna dla irp6 postument
 	regulator_ptr[1] =
 			new NL_regulator_3_irp6p(1, 0, 0, 0.64, 9.96 / 4, 9.54 / 4, 0.35, master, common::REG_OUTPUT::CURRENT_OUTPUT);
 	// regulator_ptr[3] = new NL_regulator_4 (0, 0, 0.62, 9.85/4, 9.39/4, 0.35);

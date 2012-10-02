@@ -297,7 +297,7 @@ void NL_regulator::compute_set_value_final_computations()
 			break;
 	}
 
-	// przepisanie nowych wartosci zmiennych do zmiennych przechowujacych wartosci poprzednie
+// przepisanie nowych wartosci zmiennych do zmiennych przechowujacych wartosci poprzednie
 	position_increment_old = position_increment_new;
 	delta_eint_old = delta_eint;
 	step_old_pulse = step_new_pulse;

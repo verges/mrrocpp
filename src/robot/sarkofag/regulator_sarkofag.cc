@@ -187,13 +187,13 @@ uint8_t NL_regulator_8_sarkofag::compute_set_value(void)
 	}
 
 	double kp = 0.5;
-	double ki=0.02;
+	double ki = 0.02;
 
 	a = 0;
-	b0 = kp*(1+ki);
+	b0 = kp * (1 + ki);
 	b1 = kp;
-	max_output_current = 1000;
-	current_reg_kp = 10;
+	max_output_current = 20000;
+	current_reg_kp = 100;
 
 	switch (algorithm_no)
 	{

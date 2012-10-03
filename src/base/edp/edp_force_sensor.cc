@@ -221,7 +221,6 @@ void force::get_reading(void)
 	for (int i = 0; i < 6; i++) {
 		if ((fabs(ft_table[i]) > force_constraints[i]) || (!(std::isfinite(ft_table[i])))) {
 			overforce = true;
-
 		}
 	}
 	lib::Xyz_Angle_Axis_vector imu_acc;

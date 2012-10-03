@@ -155,9 +155,9 @@ void IMU::interpret(char * dat)
 	imu_data.linearAcceleration[1] = acclY * acc_factor;
 	imu_data.linearAcceleration[2] = acclZ * acc_factor;
 
-	imu_data.angularAcceleration[0] = (imu_data.angularVelocity[0] - last_imu_data.angularVelocity[0]) / imu_step;
-	imu_data.angularAcceleration[1] = (imu_data.angularVelocity[1] - last_imu_data.angularVelocity[1]) / imu_step;
-	imu_data.angularAcceleration[2] = (imu_data.angularVelocity[2] - last_imu_data.angularVelocity[2]) / imu_step;
+	imu_data.angularAcceleration[0] = -(imu_data.angularVelocity[0] - last_imu_data.angularVelocity[0]) / imu_step;
+	imu_data.angularAcceleration[1] = -(imu_data.angularVelocity[1] - last_imu_data.angularVelocity[1]) / imu_step;
+	imu_data.angularAcceleration[2] = -(imu_data.angularVelocity[2] - last_imu_data.angularVelocity[2]) / imu_step;
 
 	last_imu_data = imu_data;
 

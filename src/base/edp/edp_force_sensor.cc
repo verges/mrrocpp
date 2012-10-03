@@ -224,11 +224,19 @@ void force::get_reading(void)
 
 		}
 	}
-
+	lib::Xyz_Angle_Axis_vector imu_acc;
 	if (!overforce) {
+
+		lib::Ft_vector inertial_force = compute_inertial_force(imu_acc, current_frame);
+
 		//sily przechowujemy w zerowej orientacji bazowej w ukladzie nadgarstka
 		lib::Ft_vector base_force = gravity_transformation->getForce(ft_table, current_frame);
 
+		base_force = lib::Xi_star(!current_frame) * base_force;
+		base_force = base_force + inertial_force;
+		//base_force = inertial_force;
+
+		base_force = lib::Xi_star(current_frame) * base_force;
 		// dodanie nowej sily do bufora dla celow usredniania (filtracji dolnoprzepustowej)
 		cb.push_back(base_force);
 
@@ -245,6 +253,7 @@ void force::get_reading(void)
 
 		}
 		//zapis do bufora wymiany z watkiem transformation
+
 		master.force_dp.write(force_output);
 
 	} else {
@@ -257,9 +266,6 @@ void force::get_reading(void)
 
 		sr_msg->message(lib::NON_FATAL_ERROR, buffer.str());
 	}
-
-	lib::Xyz_Angle_Axis_vector imu_acc;
-	compute_inertial_force(imu_acc, current_frame);
 
 	// przygotowanie odczytu dla readera przetransformowanego do ukladu narzedzia
 
@@ -342,6 +348,8 @@ void force::configure_sensor(void)
 		// zczytanie ciezaru narzedzia
 		double weight = master.config.value <double>("weight");
 
+		next_force_tool_weight = weight;
+
 		// polzoenie sredka ciezkosci narzedzia wzgledem nadgarstka
 		double point[3];
 		char *tmp = strdup(master.config.value <std::string>("default_mass_center_in_wrist").c_str());
@@ -393,14 +401,24 @@ lib::Ft_vector force::compute_inertial_force(lib::Xyz_Angle_Axis_vector & output
 	lib::Xyz_Angle_Axis_vector msr_acc = master.imu_acc_dp.read();
 
 	lib::Xyz_Angle_Axis_vector ga_in_current_orientation = lib::Xi_star(!curr_frame) * gravitational_acceleration;
-
-	msr_acc = lib::Xi_v(tool_mass_center_translation) * lib::Xi_v(imu_frame) * msr_acc;
+	/*
+	 msr_acc[3] = 0.0;
+	 msr_acc[4] = 0.0;
+	 msr_acc[5] = 0.0;
+	 */
+	msr_acc = lib::Xi_v(!tool_mass_center_translation) * lib::Xi_v(imu_frame) * msr_acc;
 
 //	msr_acc = lib::Xi_v(imu_frame) * msr_acc;
 
 	output_acc = msr_acc - ga_in_current_orientation;
 //	output_acc = msr_acc;
 //	output_acc = ga_in_current_orientation;
+	// zamieniamy ciężar na masę
+	output_force[0] = output_acc[0] * next_force_tool_weight / lib::G_ACC;
+	output_force[1] = output_acc[1] * next_force_tool_weight / lib::G_ACC;
+	output_force[2] = output_acc[2] * next_force_tool_weight / lib::G_ACC;
+
+	output_force = lib::Xi_f(tool_mass_center_translation) * output_force;
 
 	return output_force;
 }

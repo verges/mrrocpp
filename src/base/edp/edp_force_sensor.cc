@@ -228,21 +228,27 @@ void force::get_reading(void)
 			overforce = true;
 		}
 	}
+
 	lib::Xyz_Angle_Axis_vector imu_acc;
+	lib::Ft_vector adjusted_force;
+	lib::Ft_vector inertial_force;
+
 	if (!overforce) {
 
-		lib::Ft_vector inertial_force = compute_inertial_force(imu_acc, current_frame);
+		inertial_force = compute_inertial_force(imu_acc, current_frame);
 
 		//sily przechowujemy w zerowej orientacji bazowej w ukladzie nadgarstka
-		lib::Ft_vector base_force = gravity_transformation->getForce(ft_table, current_frame);
-
-		base_force = lib::Xi_star(!current_frame) * base_force;
-		base_force = base_force + inertial_force;
+		lib::Ft_vector computed_force = gravity_transformation->getForce(ft_table, current_frame);
+		adjusted_force = computed_force;
+		computed_force = lib::Xi_star(!current_frame) * computed_force;
+		computed_force = computed_force + inertial_force;
 		//base_force = inertial_force;
 
-		base_force = lib::Xi_star(current_frame) * base_force;
+		computed_force = lib::Xi_star(current_frame) * computed_force;
+		inertial_force = lib::Xi_star(current_frame) * inertial_force;
+
 		// dodanie nowej sily do bufora dla celow usredniania (filtracji dolnoprzepustowej)
-		cb.push_back(base_force);
+		cb.push_back(computed_force);
 
 		// usredniamy za FORCE_BUFFER_LENGHT pomiarow
 		for (int j = 0; j < 6; j++) {
@@ -278,16 +284,18 @@ void force::get_reading(void)
 	lib::Homog_matrix current_tool(((mrrocpp::kinematics::common::kinematic_model_with_tool*) master.get_current_kinematic_model())->tool);
 	lib::Xi_f ft_tr_inv_tool_matrix(!current_tool);
 
-	lib::Ft_vector current_force_in_tool(ft_tr_inv_tool_matrix * ft_tr_inv_current_rotation_matrix * force_output);
-
-	// Transformacja przyspieszeń
+	lib::Ft_vector computed_force_in_tool(ft_tr_inv_tool_matrix * ft_tr_inv_current_rotation_matrix * force_output);
+	lib::Ft_vector adjusted_force_in_tool(ft_tr_inv_tool_matrix * ft_tr_inv_current_rotation_matrix * adjusted_force);
+	lib::Ft_vector inertial_force_in_tool(ft_tr_inv_tool_matrix * ft_tr_inv_current_rotation_matrix * inertial_force);
 
 	// scope-locked reader data update
 	{
 		if (master.rb_obj) {
 			boost::mutex::scoped_lock lock(master.rb_obj->reader_mutex);
 
-			current_force_in_tool.to_table(master.rb_obj->step_data.computed_force);
+			computed_force_in_tool.to_table(master.rb_obj->step_data.computed_force);
+			adjusted_force_in_tool.to_table(master.rb_obj->step_data.adjusted_force);
+			inertial_force_in_tool.to_table(master.rb_obj->step_data.inertial_force);
 			imu_acc.to_table(master.rb_obj->step_data.real_cartesian_acc);
 		} else {
 			//	std::cerr << " " << std::endl;

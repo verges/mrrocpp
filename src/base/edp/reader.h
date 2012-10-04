@@ -42,7 +42,8 @@ struct reader_config
 
 	bool computed_force[6]; // pierwsze 3 z 6
 	bool desired_force[6]; // pierwsze 3 z 6
-	bool filtered_force[6]; // sila po przefiltrowaniu
+	bool adjusted_force[6]; // sila po wyeliminowaniu grawitacji
+	bool inertial_force[6]; // sila bezwladnosci
 
 	bool current_joints[lib::MAX_SERVOS_NR];
 	bool desired_joints[lib::MAX_SERVOS_NR];
@@ -69,7 +70,8 @@ struct reader_data
 
 	double computed_force[6]; // pierwsze 3 z 6
 	double desired_force[6]; // pierwsze 3 z 6
-	double filtered_force[6]; // sila po przefiltrowaniu
+	double adjusted_force[6]; // sila po wyeliminowaniu grawitacji
+	double inertial_force[6]; // sila bezwladnosci
 
 	double desired_cartesian_position[6]; // skaldowe liniowe polozenia zadanego
 	double current_joints[lib::MAX_SERVOS_NR]; // polozenie w joints

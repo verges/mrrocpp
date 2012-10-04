@@ -51,7 +51,8 @@ reader_config::reader_config() :
 	for (int i = 0; i < 6; ++i) {
 		computed_force[i] = false;
 		desired_force[i] = false;
-		filtered_force[i] = false;
+		adjusted_force[i] = false;
+		inertial_force[i] = false;
 		desired_cartesian_position[i] = false;
 		real_cartesian_position[i] = false;
 		real_cartesian_vel[i] = false;
@@ -141,8 +142,11 @@ void reader_buffer::operator()()
 			sprintf(tmp_string, "desired_force_%d", j);
 			reader_cnf.desired_force[j] = master.config.check_config(tmp_string);
 
-			sprintf(tmp_string, "filtered_force_%d", j);
-			reader_cnf.filtered_force[j] = master.config.check_config(tmp_string);
+			sprintf(tmp_string, "adjusted_force_%d", j);
+			reader_cnf.adjusted_force[j] = master.config.check_config(tmp_string);
+
+			sprintf(tmp_string, "inertial_force_%d", j);
+			reader_cnf.inertial_force[j] = master.config.check_config(tmp_string);
 
 			sprintf(tmp_string, "desired_cartesian_position_%d", j);
 			reader_cnf.desired_cartesian_position[j] = master.config.check_config(tmp_string);
@@ -354,8 +358,10 @@ void reader_buffer::write_data_old_format(std::ofstream& outfile, const reader_d
 			outfile << data.computed_force[j] << " ";
 		if (reader_cnf.desired_force[j])
 			outfile << data.desired_force[j] << " ";
-		if (reader_cnf.filtered_force[j])
-			outfile << data.filtered_force[j] << " ";
+		if (reader_cnf.adjusted_force[j])
+			outfile << data.adjusted_force[j] << " ";
+		if (reader_cnf.inertial_force[j])
+			outfile << data.inertial_force[j] << " ";
 	}
 
 	outfile << "k: ";
@@ -433,8 +439,10 @@ void reader_buffer::write_header_csv(std::ofstream& outfile)
 			outfile << "computed_force[" << j << "];";
 		if (reader_cnf.desired_force[j])
 			outfile << "desired_force[" << j << "];";
-		if (reader_cnf.filtered_force[j])
-			outfile << "filtered_force[" << j << "];";
+		if (reader_cnf.adjusted_force[j])
+			outfile << "adjusted_force[" << j << "];";
+		if (reader_cnf.inertial_force[j])
+			outfile << "inertial_force[" << j << "];";
 	}
 
 	for (int j = 0; j < 6; j++) {
@@ -502,8 +510,10 @@ void reader_buffer::write_data_csv(std::ofstream& outfile, const reader_data & d
 			outfile << data.computed_force[j] << ";";
 		if (reader_cnf.desired_force[j])
 			outfile << data.desired_force[j] << ";";
-		if (reader_cnf.filtered_force[j])
-			outfile << data.filtered_force[j] << ";";
+		if (reader_cnf.adjusted_force[j])
+			outfile << data.adjusted_force[j] << ";";
+		if (reader_cnf.inertial_force[j])
+			outfile << data.inertial_force[j] << ";";
 	}
 
 	for (int j = 0; j < 6; j++) {

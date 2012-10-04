@@ -125,6 +125,7 @@ void force::operator()()
 } //!< end MAIN
 
 force::force(common::manip_effector &_master) :
+		imu_sensor_test_mode(true),
 		force_sensor_test_mode(true),
 		is_reading_ready(false), //!< nie ma zadnego gotowego odczytu
 		is_right_turn_frame(true),
@@ -140,6 +141,10 @@ force::force(common::manip_effector &_master) :
 			boost::shared_ptr <lib::sr_vsp>(new lib::sr_vsp(lib::EDP, "f_" + master.config.robot_name, master.config.get_sr_attach_point()));
 
 	sr_msg->message("force");
+
+	if (master.config.exists(lib::IMU_SENSOR_TEST_MODE)) {
+		imu_sensor_test_mode = master.config.exists_and_true(lib::IMU_SENSOR_TEST_MODE);
+	}
 
 	if (master.config.exists(lib::FORCE_SENSOR_TEST_MODE)) {
 		force_sensor_test_mode = master.config.exists_and_true(lib::FORCE_SENSOR_TEST_MODE);
@@ -419,7 +424,13 @@ lib::Ft_vector force::compute_inertial_force(lib::Xyz_Angle_Axis_vector & output
 
 	output_force = lib::Xi_f(tool_mass_center_translation) * output_force;
 
+	// wtrybie testowym zerujemy wyjscie
+	if (imu_sensor_test_mode) {
+		output_force = lib::Ft_vector();
+	}
+
 	return output_force;
+
 }
 
 } // namespace sensor

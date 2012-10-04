@@ -60,6 +60,14 @@ typedef struct _force_data
 class force : public lib::sensor::sensor_interface
 {
 protected:
+
+	/*!
+	 * \brief Info if the imu sensor test mode is active.
+	 *
+	 * It is taken from configuration data.
+	 */
+	bool imu_sensor_test_mode;
+
 	/*!
 	 * \brief Info if the force sensor test mode is active.
 	 *

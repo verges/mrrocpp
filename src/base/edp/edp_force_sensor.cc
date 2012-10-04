@@ -287,7 +287,7 @@ void force::get_reading(void)
 		if (master.rb_obj) {
 			boost::mutex::scoped_lock lock(master.rb_obj->reader_mutex);
 
-			current_force_in_tool.to_table(master.rb_obj->step_data.force);
+			current_force_in_tool.to_table(master.rb_obj->step_data.computed_force);
 			imu_acc.to_table(master.rb_obj->step_data.real_cartesian_acc);
 		} else {
 			//	std::cerr << " " << std::endl;

@@ -123,8 +123,7 @@ void UiRobot::manage_interface()
 		case common::UI_EDP_OFF:
 
 			menu_Special->setEnabled(false);
-			action_Synchronisation->setEnabled(false);
-			menu_Pre_Synchro_Moves->setEnabled(false);
+
 			menu_Absolute_Moves->setEnabled(false);
 			menu_Relative_Moves->setEnabled(false);
 			menu_Tool->setEnabled(false);
@@ -136,7 +135,6 @@ void UiRobot::manage_interface()
 
 			// jesli robot jest zsynchronizowany
 			if (state.edp.is_synchronised) {
-				action_Synchronisation->setEnabled(false);
 
 				switch (interface.mp->mp_state.state)
 				{
@@ -172,8 +170,6 @@ void UiRobot::manage_interface()
 
 			} else // jesli robot jest niezsynchronizowany
 			{
-				action_Synchronisation->setEnabled(true);
-				menu_Pre_Synchro_Moves->setEnabled(true);
 
 				menu_Special->setEnabled(false);
 				menu_Absolute_Moves->setEnabled(false);
@@ -200,7 +196,6 @@ void UiRobot::setup_menubar()
 	Ui::MenuBar *menuBar = interface.get_main_window()->getMenuBar();
 	Ui::SignalDispatcher *signalDispatcher = interface.get_main_window()->getSignalDispatcher();
 
-	action_Synchronisation = new Ui::MenuBarAction(QString("&Synchronisation"), this, menuBar);
 	action_UnSynchronisation = new Ui::MenuBarAction(QString("&UnSynchronisation"), this, menuBar);
 
 	action_Pre_Synchro_Moves_Motors =
@@ -219,18 +214,15 @@ void UiRobot::setup_menubar()
 	action_Tool_Xyz_Angle_Axis =
 			new Ui::MenuBarAction(QString("Xyz &Angle Axis"), wgts[WGT_TOOL_ANGLE_AXIS], signalDispatcher, menuBar);
 
-	menu_Pre_Synchro_Moves = new QMenu(robot_menu);
 	menu_Absolute_Moves = new QMenu(robot_menu);
 	menu_Relative_Moves = new QMenu(robot_menu);
 	menu_Tool = new QMenu(robot_menu);
 	menu_Special = new QMenu(robot_menu);
 
-	robot_menu->addAction(menu_Pre_Synchro_Moves->menuAction());
 	robot_menu->addAction(menu_Absolute_Moves->menuAction());
 	robot_menu->addAction(menu_Relative_Moves->menuAction());
 	robot_menu->addAction(menu_Tool->menuAction());
 
-	menu_Pre_Synchro_Moves->addAction(action_Synchronisation);
 	menu_Pre_Synchro_Moves->addAction(action_Pre_Synchro_Moves_Motors);
 	menu_Absolute_Moves->addAction(action_Absolute_Moves_Motors);
 	menu_Absolute_Moves->addAction(action_Joints);
@@ -241,7 +233,6 @@ void UiRobot::setup_menubar()
 	menu_Tool->addAction(action_Tool_Xyz_Angle_Axis);
 
 	robot_menu->setTitle(QApplication::translate("MainWindow", "Irp6&ot_m", 0, QApplication::UnicodeUTF8));
-	menu_Pre_Synchro_Moves->setTitle(QApplication::translate("MainWindow", "P&re Synchro Moves", 0, QApplication::UnicodeUTF8));
 	menu_Absolute_Moves->setTitle(QApplication::translate("MainWindow", "A&bsolute moves", 0, QApplication::UnicodeUTF8));
 	menu_Relative_Moves->setTitle(QApplication::translate("MainWindow", "Re&lative Moves", 0, QApplication::UnicodeUTF8));
 	menu_Tool->setTitle(QApplication::translate("MainWindow", "&Tool", 0, QApplication::UnicodeUTF8));
@@ -252,7 +243,6 @@ void UiRobot::setup_menubar()
 	menu_Special->setTitle(QApplication::translate("MainWindow", "&Special", 0, QApplication::UnicodeUTF8));
 
 	// connections
-	connect(action_Synchronisation, SIGNAL(triggered(mrrocpp::ui::common::UiRobot*)), signalDispatcher, SLOT(on_Synchronisation_triggered(mrrocpp::ui::common::UiRobot*)), Qt::AutoCompatConnection);
 	connect(action_UnSynchronisation, SIGNAL(triggered(mrrocpp::ui::common::UiRobot*)), signalDispatcher, SLOT(on_UnSynchronisation_triggered(mrrocpp::ui::common::UiRobot*)), Qt::AutoCompatConnection);
 
 }

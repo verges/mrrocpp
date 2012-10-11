@@ -80,7 +80,7 @@ private:
 	QAction *action_Tool_Xyz_Angle_Axis;
 	QAction *action_Absolute_Moves_Motors;
 
-	QMenu *menu_Pre_Synchro_Moves;
+
 	QMenu *menu_Absolute_Moves;
 	QMenu *menu_Relative_Moves;
 	QMenu *menu_Tool;

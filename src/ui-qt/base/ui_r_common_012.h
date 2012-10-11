@@ -34,9 +34,6 @@ private:
 
 public:
 
-//	double current_pos[1];// pozycja biezaca
-//	double desired_pos[1]; // pozycja zadana
-
 	common_012::EcpRobot *ui_ecp_robot;
 
 	UiRobot(common::Interface& _interface, lib::robot_name_t _robot_name, int _number_of_servos);
@@ -45,16 +42,18 @@ public:
 	void manage_interface();
 
 protected:
-	QAction *action_Synchronisation;
+
+	QMenu *menu_Pre_Synchro_Moves;
 
 private:
+	QAction *action_Synchronisation;
+	QMenu *menu_Preset_Positions;
 	QAction *action_Synchro_Position;
 	QAction *action_Front_Position;
 	QAction *action_Position_0;
 	QAction *action_Position_1;
 	QAction *action_Position_2;
 
-	QMenu *menu_Preset_Positions;
 };
 
 }

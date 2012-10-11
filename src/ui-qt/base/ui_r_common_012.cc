@@ -40,16 +40,20 @@ void UiRobot::setup_menubar()
 	action_Position_0 = new Ui::MenuBarAction(QString("Position &0"), this, menuBar);
 	action_Position_1 = new Ui::MenuBarAction(QString("Position &1"), this, menuBar);
 	action_Position_2 = new Ui::MenuBarAction(QString("Position &2"), this, menuBar);
-
+	menu_Pre_Synchro_Moves = new QMenu(robot_menu);
 	menu_Preset_Positions = new QMenu(robot_menu);
 	robot_menu->addSeparator();
-	robot_menu->addAction(action_Synchronisation);
+
+	robot_menu->addAction(menu_Pre_Synchro_Moves->menuAction());
+	menu_Pre_Synchro_Moves->addAction(action_Synchronisation);
+
 	robot_menu->addAction(menu_Preset_Positions->menuAction());
 	menu_Preset_Positions->addAction(action_Synchro_Position);
 	menu_Preset_Positions->addAction(action_Position_0);
 	menu_Preset_Positions->addAction(action_Position_1);
 	menu_Preset_Positions->addAction(action_Position_2);
 
+	menu_Pre_Synchro_Moves->setTitle(QApplication::translate("MainWindow", "P&re Synchro Moves", 0, QApplication::UnicodeUTF8));
 	menu_Preset_Positions->setTitle(QApplication::translate("MainWindow", "&Preset positions", 0, QApplication::UnicodeUTF8));
 
 	// connections
@@ -73,13 +77,14 @@ void UiRobot::manage_interface()
 			break;
 		case common::UI_EDP_OFF:
 			menu_Preset_Positions->setEnabled(false);
-			action_Synchronisation->setEnabled(false);
+			menu_Pre_Synchro_Moves->setEnabled(false);
 			break;
 		case common::UI_EDP_WAITING_TO_START_READER:
 		case common::UI_EDP_WAITING_TO_STOP_READER:
 
 			// jesli robot jest zsynchronizowany
 			if (state.edp.is_synchronised) {
+				action_Synchronisation->setEnabled(false);
 				action_Synchronisation->setEnabled(false);
 				//	mw->enable_menu_item(true, 1, menuBar->menuall_Preset_Positions);
 
@@ -102,7 +107,7 @@ void UiRobot::manage_interface()
 
 			} else // jesli robot jest niezsynchronizowany
 			{
-				action_Synchronisation->setEnabled(true);
+				menu_Pre_Synchro_Moves->setEnabled(true);
 			}
 			break;
 		default:

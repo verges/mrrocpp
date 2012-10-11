@@ -40,6 +40,7 @@ public:
 
 	void setup_menubar();
 	void manage_interface();
+	virtual void unsynchronise();
 
 protected:
 

@@ -38,9 +38,7 @@ void UiRobot::synchronise()
 	eb.command(boost::bind(&ui::conveyor::UiRobot::synchronise_int, &(*this)));
 }
 
-void UiRobot::unsynchronise()
-{
-}
+
 
 int UiRobot::synchronise_int()
 

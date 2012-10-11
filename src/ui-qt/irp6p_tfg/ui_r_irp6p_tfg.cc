@@ -43,9 +43,6 @@ void UiRobot::synchronise()
 	eb.command(boost::bind(&ui::irp6p_tfg::UiRobot::synchronise_int, &(*this)));
 }
 
-void UiRobot::unsynchronise()
-{
-}
 
 void UiRobot::move_to_preset_position(int variant)
 {

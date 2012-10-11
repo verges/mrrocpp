@@ -49,7 +49,7 @@ public:
 	void manage_interface();
 
 	void synchronise();
-	void unsynchronise();
+
 	int synchronise_int();
 
 	void move_to_synchro_position();

@@ -42,7 +42,7 @@ class EcpRobot;
 
 class UiRobot : public common::UiRobot
 {
-	Q_OBJECT
+Q_OBJECT
 
 public:
 	EcpRobot *ui_ecp_robot;

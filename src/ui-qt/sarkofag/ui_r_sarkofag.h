@@ -51,7 +51,7 @@ public:
 	void manage_interface();
 
 	void synchronise();
-	void unsynchronise();
+
 	int synchronise_int();
 
 	int execute_motor_motion();

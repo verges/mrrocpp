@@ -67,7 +67,7 @@ public:
 
 protected:
 
-	QAction *action_UnSynchronisation;
+
 
 private:
 
@@ -84,7 +84,7 @@ private:
 	QMenu *menu_Absolute_Moves;
 	QMenu *menu_Relative_Moves;
 	QMenu *menu_Tool;
-	QMenu *menu_Special;
+
 };
 
 }

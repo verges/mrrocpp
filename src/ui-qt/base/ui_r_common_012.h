@@ -47,8 +47,12 @@ protected:
 	QMenu *menu_Pre_Synchro_Moves;
 
 private:
-	QAction *action_Synchronisation;
 	QMenu *menu_Preset_Positions;
+	QMenu *menu_Special;
+
+	QAction *action_UnSynchronisation;
+	QAction *action_Synchronisation;
+
 	QAction *action_Synchro_Position;
 	QAction *action_Front_Position;
 	QAction *action_Position_0;

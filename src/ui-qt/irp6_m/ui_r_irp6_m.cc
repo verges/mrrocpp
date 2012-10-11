@@ -36,7 +36,6 @@ void UiRobot::synchronise()
 {
 }
 
-
 int UiRobot::execute_motor_motion()
 {
 	try {
@@ -107,8 +106,6 @@ void UiRobot::manage_interface()
 			break;
 		case common::UI_EDP_OFF:
 
-			menu_Special->setEnabled(false);
-
 			menu_Absolute_Moves->setEnabled(false);
 			menu_Relative_Moves->setEnabled(false);
 			menu_Tool->setEnabled(false);
@@ -125,14 +122,12 @@ void UiRobot::manage_interface()
 				{
 					case common::UI_MP_NOT_PERMITED_TO_RUN:
 					case common::UI_MP_PERMITED_TO_RUN:
-						menu_Special->setEnabled(true);
 
 						menu_Absolute_Moves->setEnabled(true);
 						menu_Relative_Moves->setEnabled(true);
 						menu_Tool->setEnabled(true);
 						break;
 					case common::UI_MP_WAITING_FOR_START_PULSE:
-						menu_Special->setEnabled(false);
 
 						menu_Absolute_Moves->setEnabled(true);
 						menu_Relative_Moves->setEnabled(true);
@@ -143,7 +138,6 @@ void UiRobot::manage_interface()
 
 						break;
 					case common::UI_MP_TASK_PAUSED:
-						menu_Special->setEnabled(false);
 
 						menu_Absolute_Moves->setEnabled(false);
 						menu_Relative_Moves->setEnabled(false);
@@ -156,7 +150,6 @@ void UiRobot::manage_interface()
 			} else // jesli robot jest niezsynchronizowany
 			{
 
-				menu_Special->setEnabled(false);
 				menu_Absolute_Moves->setEnabled(false);
 				menu_Relative_Moves->setEnabled(false);
 				menu_Tool->setEnabled(false);
@@ -181,7 +174,6 @@ void UiRobot::setup_menubar()
 	Ui::MenuBar *menuBar = interface.get_main_window()->getMenuBar();
 	Ui::SignalDispatcher *signalDispatcher = interface.get_main_window()->getSignalDispatcher();
 
-	action_UnSynchronisation = new Ui::MenuBarAction(QString("&UnSynchronisation"), this, menuBar);
 
 	action_Pre_Synchro_Moves_Motors =
 			new Ui::MenuBarAction(QString("&Motors"), wgts[WGT_MOTORS], signalDispatcher, menuBar);
@@ -202,7 +194,7 @@ void UiRobot::setup_menubar()
 	menu_Absolute_Moves = new QMenu(robot_menu);
 	menu_Relative_Moves = new QMenu(robot_menu);
 	menu_Tool = new QMenu(robot_menu);
-	menu_Special = new QMenu(robot_menu);
+
 
 	robot_menu->addAction(menu_Absolute_Moves->menuAction());
 	robot_menu->addAction(menu_Relative_Moves->menuAction());
@@ -222,13 +214,6 @@ void UiRobot::setup_menubar()
 	menu_Relative_Moves->setTitle(QApplication::translate("MainWindow", "Re&lative Moves", 0, QApplication::UnicodeUTF8));
 	menu_Tool->setTitle(QApplication::translate("MainWindow", "&Tool", 0, QApplication::UnicodeUTF8));
 
-	robot_menu->addSeparator();
-	robot_menu->addAction(menu_Special->menuAction());
-	menu_Special->addAction(action_UnSynchronisation);
-	menu_Special->setTitle(QApplication::translate("MainWindow", "&Special", 0, QApplication::UnicodeUTF8));
-
-	// connections
-	connect(action_UnSynchronisation, SIGNAL(triggered(mrrocpp::ui::common::UiRobot*)), signalDispatcher, SLOT(on_UnSynchronisation_triggered(mrrocpp::ui::common::UiRobot*)), Qt::AutoCompatConnection);
 
 }
 

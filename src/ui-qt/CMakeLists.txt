@@ -62,6 +62,7 @@ SET(GUI_CXX_SRCS
     base/mp.cpp
     base/wgt_base.cpp
    	base/WgtAbsoluteBase.cpp
+    base/WgtKinematicBase.cpp
     base/WgtRelativeBase.cpp
     base/WgtToolBase.cpp
     base/wgt_process_control.cpp
@@ -140,6 +141,7 @@ SET(GUI_MOC_SRCS
     base/ui_ecp_dialogs/wgt_choose_option.h
     base/ui_ecp_dialogs/wgt_teaching.h
     base/WgtAbsoluteBase.h
+    base/WgtKinematicBase.h
     base/WgtRelativeBase.h
     base/WgtToolBase.h
 	base/signal_dispatcher.h
@@ -193,7 +195,8 @@ SET(GUI_UI
     base/ui_ecp_dialogs/wgt_input_double.ui
     base/ui_ecp_dialogs/wgt_choose_option.ui
     base/ui_ecp_dialogs/wgt_teaching.ui
-    base/wgt_absolute_template.ui
+    base/wgt_absolute_template.ui 
+    base/wgt_kinematic_template.ui
     base/wgt_relative_template.ui
     base/wgt_tool_template.ui
 )
@@ -209,9 +212,6 @@ endif(ROBOT_BIRD_HAND)
 if(ROBOTS_012)
 SET(GUI_UI
     ${GUI_UI}
-    irp6_m/wgt_irp6_m_relative_angle_axis.ui
-    irp6_m/wgt_irp6_m_tool_angle_axis.ui
-    irp6_m/wgt_irp6_m_tool_euler.ui
     base/wgt_single_motor_move.ui
 )
 endif(ROBOTS_012)

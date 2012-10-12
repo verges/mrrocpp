@@ -27,7 +27,7 @@ namespace common {
 class Interface;
 }
 
-namespace single_motor {
+namespace common_012 {
 class EcpRobot;
 }
 namespace sarkofag {
@@ -40,7 +40,7 @@ namespace sarkofag {
 
 // super klasa agregujaca porozrzucane struktury
 
-class UiRobot : public single_motor::UiRobot
+class UiRobot : public common_012::UiRobot
 {
 Q_OBJECT
 

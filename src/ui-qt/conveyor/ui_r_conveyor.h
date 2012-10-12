@@ -27,7 +27,7 @@ namespace common {
 class Interface;
 
 }
-namespace single_motor {
+namespace common_012 {
 class EcpRobot;
 }
 
@@ -38,7 +38,7 @@ namespace conveyor {
 //
 //
 
-class UiRobot : public single_motor::UiRobot
+class UiRobot : public common_012::UiRobot
 {
 Q_OBJECT
 private:

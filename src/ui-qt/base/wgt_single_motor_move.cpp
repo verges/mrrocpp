@@ -10,7 +10,7 @@ wgt_single_motor_move::wgt_single_motor_move(QString _widget_label, mrrocpp::ui:
 		wgt_base(_widget_label, _interface, parent)
 {
 	ui.setupUi(this);
-	robot = dynamic_cast <mrrocpp::ui::single_motor::UiRobot *>(_robot);
+	robot = dynamic_cast <mrrocpp::ui::common_012::UiRobot *>(_robot);
 	connect(this, SIGNAL(synchro_depended_init_signal()), this, SLOT(synchro_depended_init_slot()), Qt::QueuedConnection);
 	connect(this, SIGNAL(init_and_copy_signal()), this, SLOT(init_and_copy_slot()), Qt::QueuedConnection);
 

@@ -13,7 +13,7 @@ namespace common {
 class Interface;
 class UiRobot;
 }
-namespace single_motor {
+namespace common_012 {
 class UiRobot;
 
 }
@@ -42,7 +42,7 @@ public:
 
 private:
 	Ui::wgt_single_motor_moveClass ui;
-	mrrocpp::ui::single_motor::UiRobot* robot;
+	mrrocpp::ui::common_012::UiRobot* robot;
 
 	void init_mr_and_si();
 	void copy_mr_and_si();

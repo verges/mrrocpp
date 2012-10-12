@@ -28,7 +28,7 @@ namespace common_012 {
 class EcpRobot;
 }
 
-namespace single_motor {
+namespace common_012 {
 
 class UiRobot : public common::UiRobot
 {

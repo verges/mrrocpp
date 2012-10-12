@@ -13,7 +13,7 @@
 
 namespace mrrocpp {
 namespace ui {
-namespace single_motor {
+namespace common_012 {
 
 // extern ui_state_def ui_state;
 

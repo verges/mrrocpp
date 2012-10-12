@@ -13,11 +13,17 @@ wgt_irp6_m_angle_axis::wgt_irp6_m_angle_axis(QString _widget_label, mrrocpp::ui:
 {
 	ui.setupUi(this);
 	robot = dynamic_cast <mrrocpp::ui::irp6_m::UiRobot *>(_robot);
-	/*
-	 ui.label_axis_7->hide();
 
-	 setup_ui(ui.gridLayout, 6);
-	 */
+	setup_ui(ui.grid_up, 6);
+
+	axis_labels[0]->setText("x");
+	axis_labels[1]->setText("y");
+	axis_labels[2]->setText("z");
+
+	axis_labels[3]->setText("ax");
+	axis_labels[4]->setText("ay");
+	axis_labels[5]->setText("az");
+
 }
 
 void wgt_irp6_m_angle_axis::setup_ui(QGridLayout *layout, int _rows_number)

@@ -14,11 +14,11 @@ wgt_irp6_m_joints::wgt_irp6_m_joints(QString _widget_label, mrrocpp::ui::common:
 	ui.setupUi(this);
 	specyficrobot = dynamic_cast <mrrocpp::ui::irp6_m::UiRobot *>(_robot);
 
-	if (robot->robot_name == lib::irp6p_m::ROBOT_NAME) {
-		//	ui.label_axis_7->hide();
-	}
-
 	setup_ui(ui.grid_up, robot->number_of_servos);
+
+	for (int i = 0; i < robot->number_of_servos; ++i) {
+		axis_labels[i]->setText(QString("q%1").arg(i));
+	}
 }
 
 void wgt_irp6_m_joints::setup_ui(QGridLayout *layout, int _rows_number)

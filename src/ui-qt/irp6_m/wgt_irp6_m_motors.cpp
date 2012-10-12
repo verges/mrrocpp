@@ -15,12 +15,6 @@ wgt_irp6_m_motors::wgt_irp6_m_motors(QString _widget_label, mrrocpp::ui::common:
 	ui.setupUi(this);
 	specyficrobot = dynamic_cast <mrrocpp::ui::irp6_m::UiRobot *>(_robot);
 
-//	if (robot->robot_name == lib::irp6ot_m::ROBOT_NAME)
-//	{
-//	//	current_pos_spin_boxes.append(ui.doubleSpinBox_cur_p7);
-//		//desired_pos_spin_boxes.append(ui.doubleSpinBox_des_p7);
-//	}
-
 	setup_ui(ui.grid_up, robot->number_of_servos);
 
 	for (int i = 0; i < robot->number_of_servos; ++i) {

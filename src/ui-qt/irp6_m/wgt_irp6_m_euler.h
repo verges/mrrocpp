@@ -32,7 +32,7 @@ public:
 	wgt_irp6_m_euler(QString _widget_label, mrrocpp::ui::common::Interface& _interface, mrrocpp::ui::common::UiRobot *_robot, QWidget *parent =
 			0);
 	~wgt_irp6_m_euler();
-	virtual void setup_ui(QGridLayout *layout, int _rows_number);
+	void setup_ui(QGridLayout *layout, int _rows_number);
 
 private:
 

@@ -1,5 +1,5 @@
 #include "../base/ui_ecp_robot/ui_ecp_r_common_012.h"
-#include "../base/ui_r_single_motor.h"
+#include "../base/ui_r_common_012.h"
 
 #include "wgt_single_motor_move.h"
 #include "../base/interface.h"

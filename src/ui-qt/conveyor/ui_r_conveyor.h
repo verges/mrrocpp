@@ -11,7 +11,7 @@
 #include <QObject>
 #include <QMenu>
 #include "../base/ui.h"
-#include "../base/ui_r_single_motor.h"
+#include "../base/ui_r_common_012.h"
 #include "robot/conveyor/const_conveyor.h"
 
 namespace Ui {

@@ -11,7 +11,7 @@
 #include <QObject>
 #include <QMenu>
 #include "../base/ui.h"
-#include "../base/ui_r_single_motor.h"
+#include "../base/ui_r_common_012.h"
 #include "../irp6_m/ui_r_irp6_m.h"
 #include "robot/irp6ot_tfg/const_irp6ot_tfg.h"
 

@@ -11,7 +11,7 @@
 #include <QObject>
 #include <QMenu>
 #include "../base/ui.h"
-#include "../base/ui_r_single_motor.h"
+#include "../base/ui_r_common_012.h"
 #include "robot/sarkofag/const_sarkofag.h"
 
 namespace Ui {

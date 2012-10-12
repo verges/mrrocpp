@@ -12,7 +12,7 @@
 #include "../base/mainwindow.h"
 #include "../base/interface.h"
 #include "../base/ui.h"
-#include "../base/ui_r_single_motor.h"
+#include "../base/ui_r_common_012.h"
 #include "robot/irp6p_tfg/const_irp6p_tfg.h"
 #include "../irp6_m/ui_r_irp6_m.h"
 

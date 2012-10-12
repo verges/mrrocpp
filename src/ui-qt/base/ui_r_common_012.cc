@@ -2,7 +2,7 @@
 /*                            AppBuilder Photon Code Lib */
 /*                                         Version 2.01  */
 
-#include "ui_r_single_motor.h"
+#include "ui_r_common_012.h"
 #include "../base/ui_ecp_robot/ui_ecp_r_common_012.h"
 #include "../base/interface.h"
 

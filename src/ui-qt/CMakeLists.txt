@@ -82,7 +82,7 @@ SET(GUI_CXX_SRCS
 	base/ui_ecp.cc
 	base/ui.cc
 	base/ui_robot.cc
-	base/ui_r_single_motor.cc
+	base/ui_r_common_012.cc
 	base/signal_dispatcher.cpp
 	base/ui_ecp_robot/ui_ecp_r_base.cc
 )

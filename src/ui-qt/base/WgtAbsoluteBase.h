@@ -5,10 +5,11 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <iostream>
+#include "ui_wgt_absolute_template.h"
 
 class WgtAbsoluteBase : public wgt_base
 {
-	Q_OBJECT
+Q_OBJECT
 
 public:
 	WgtAbsoluteBase(QString _widget_label, mrrocpp::ui::common::Interface& _interface, mrrocpp::ui::common::UiRobot *robo, QWidget *parent =
@@ -22,14 +23,17 @@ public:
 	const static int inc_move_column = 10;
 
 protected:
+	Ui::wgt_absolute_template ui;
 	QVector <QDoubleSpinBox*> current_pos_spin_boxes;
-	QDoubleSpinBox *step_spinbox;
-	QPushButton *read_button;
-	QPushButton *execute_button;
-	QPushButton *import_button;
-	QPushButton *export_button;
+	//QDoubleSpinBox *step_spinbox;
 	QPushButton *copy_button;
+	/*
+	 QPushButton *read_button;
+	 QPushButton *execute_button;
+	 QPushButton *import_button;
+	 QPushButton *export_button;
 
+	 */
 	void create_buttons_and_spin_boxes();
 	void synchro_depended_widgets_disable(bool set_disabled);
 	virtual void setup_ui(QGridLayout *layout, int _rows_number);
@@ -49,11 +53,12 @@ private:
 public slots:
 	virtual void inc_move_left_button_clicked(int button);
 	virtual void inc_move_right_button_clicked(int button);
-	void read_button_clicked();
-	void export_button_clicked();
-	void import_button_clicked();
+
+	void on_pushButton_read_clicked();
+	void on_pushButton_export_clicked();
+	void on_pushButton_import_clicked();
 	void copy_button_clicked();
-	void execute_button_clicked();
+	void on_pushButton_execute_clicked();
 	void init_and_copy_slot();
 };
 

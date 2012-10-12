@@ -5,7 +5,7 @@
 #include <QVBoxLayout>
 #include <QDockWidget>
 #include <QVector>
-#include "ui_wgt_absolute_template.h"
+
 #include "../base/WgtAbsoluteBase.h"
 
 #include "robot/irp6ot_m/const_irp6ot_m.h"

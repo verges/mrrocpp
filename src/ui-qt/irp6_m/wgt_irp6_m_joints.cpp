@@ -40,7 +40,7 @@ void wgt_irp6_m_joints::init()
 		if (robot->state.edp.pid != -1) {
 			if (robot->state.edp.is_synchronised) // Czy robot jest zsynchronizowany?
 			{
-				execute_button->setDisabled(false);
+				ui.pushButton_execute->setDisabled(false);
 				specyficrobot->ui_ecp_robot->read_joints(robot->current_pos);
 				std::cout << "init ok. wartosci current pos:" << std::endl;
 				for (int i = 0; i < robot->number_of_servos; i++) {
@@ -50,7 +50,7 @@ void wgt_irp6_m_joints::init()
 				}
 				std::cout << std::endl;
 			} else {
-				execute_button->setDisabled(true); // Wygaszanie elementow przy niezsynchronizowanym robocie
+				ui.pushButton_execute->setDisabled(true); // Wygaszanie elementow przy niezsynchronizowanym robocie
 			}
 		}
 

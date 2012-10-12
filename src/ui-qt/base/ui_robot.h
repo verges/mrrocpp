@@ -93,7 +93,7 @@ class Interface;
 
 class UiRobot : public QObject
 {
-	Q_OBJECT
+Q_OBJECT
 
 public:
 

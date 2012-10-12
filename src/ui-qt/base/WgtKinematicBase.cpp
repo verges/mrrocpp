@@ -58,10 +58,8 @@ void WgtKinematicBase::create_buttons()
 void WgtKinematicBase::synchro_depended_widgets_disable(bool set_disabled)
 {
 	copy_button->setDisabled(set_disabled);
-	ui.pushButton_execute->setDisabled(set_disabled);
+	ui.pushButton_set->setDisabled(set_disabled);
 	ui.pushButton_read->setDisabled(set_disabled);
-	ui.pushButton_import->setDisabled(set_disabled);
-	ui.pushButton_export->setDisabled(set_disabled);
 
 	for (int i = 0; i < rows_number; i++) {
 		current_pos_spin_boxes[i]->setDisabled(set_disabled);
@@ -70,48 +68,10 @@ void WgtKinematicBase::synchro_depended_widgets_disable(bool set_disabled)
 
 }
 
-void WgtKinematicBase::inc_move_left_button_clicked(int button)
-{
-	get_desired_position();
-	robot->desired_pos[button] -= ui.doubleSpinBox_step->value();
-	move_it();
-}
-
-void WgtKinematicBase::inc_move_right_button_clicked(int button)
-{
-	get_desired_position();
-	robot->desired_pos[button] += ui.doubleSpinBox_step->value();
-	move_it();
-}
-
 void WgtKinematicBase::on_pushButton_read_clicked()
 {
 	printf("read\n");
 	init();
-}
-
-void WgtKinematicBase::on_pushButton_import_clicked()
-{
-	double val[rows_number];
-
-	for (int i = 0; i < rows_number; i++)
-		val[i] = 0.0;
-
-	interface.get_main_window()->get_lineEdit_position(val, rows_number);
-
-	for (int i = 0; i < rows_number; i++)
-		desired_pos_spin_boxes[i]->setValue(val[i]);
-}
-
-void WgtKinematicBase::on_pushButton_export_clicked()
-{
-	std::stringstream buffer(std::stringstream::in | std::stringstream::out);
-
-	buffer << widget_label.toStdString() << " POSITION\n ";
-	for (int i = 0; i < rows_number; i++)
-		buffer << " " << desired_pos_spin_boxes[i]->value();
-
-	interface.ui_msg->message(buffer.str());
 }
 
 void WgtKinematicBase::init_and_copy_slot()
@@ -131,18 +91,18 @@ int WgtKinematicBase::copy()
 	if (robot->state.edp.pid != -1) {
 		if (robot->state.edp.is_synchronised) // Czy robot jest zsynchronizowany?
 		{
-			ui.pushButton_execute->setDisabled(false);
+			ui.pushButton_set->setDisabled(false);
 			for (int i = 0; i < rows_number; i++) {
 				desired_pos_spin_boxes[i]->setValue(current_pos_spin_boxes[i]->value());
 			}
 		} else
-			ui.pushButton_execute->setDisabled(true); // Wygaszanie elementow przy niezsynchronizowanym robocie
+			ui.pushButton_set->setDisabled(true); // Wygaszanie elementow przy niezsynchronizowanym robocie
 	}
 
 	return 1;
 }
 
-void WgtKinematicBase::on_pushButton_execute_clicked()
+void WgtKinematicBase::on_pushButton_set_clicked()
 {
 	get_desired_position();
 	move_it();

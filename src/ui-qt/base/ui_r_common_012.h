@@ -25,10 +25,8 @@ namespace common {
 class Interface;
 }
 namespace common_012 {
-class EcpRobot;
-}
 
-namespace common_012 {
+class EcpRobot;
 
 class UiRobot : public common::UiRobot
 {

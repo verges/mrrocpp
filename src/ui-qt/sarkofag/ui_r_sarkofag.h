@@ -63,16 +63,7 @@ public:
 	void setup_menubar();
 
 private:
-	QAction *actionsarkofag_Synchronisation;
 	QAction *actionsarkofag_Move;
-	QAction *actionsarkofag_Synchro_Position;
-	QAction *actionsarkofag_Front_Position;
-	QAction *actionsarkofag_Position_0;
-	QAction *actionsarkofag_Position_1;
-	QAction *actionsarkofag_Position_2;
-	QAction *actionsarkofag_Servo_Algorithm;
-
-	QMenu *menusarkofag_Preset_Positions;
 
 };
 

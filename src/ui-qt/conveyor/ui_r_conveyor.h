@@ -56,19 +56,11 @@ public:
 	void create_ui_ecp_robot();
 	void edp_create_int_extra_operations();
 
-
-
 	void setup_menubar();
 
 private:
-	QAction *actionconveyor_Synchronization;
-	QAction *actionconveyor_Move;
-	QAction *actionconveyor_Synchro_Position;
-	QAction *actionconveyor_Position_0;
-	QAction *actionconveyor_Position_1;
-	QAction *actionconveyor_Position_2;
 
-	QMenu *menuconveyor_Preset_Positions;
+	QAction *actionconveyor_Move;
 
 };
 

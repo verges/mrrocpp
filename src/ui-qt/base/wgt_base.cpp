@@ -162,6 +162,15 @@ QDoubleSpinBox* wgt_base::create_spin_box_to_vector(QVector <QDoubleSpinBox*> &s
 	return spin_box;
 }
 
+QLabel* wgt_base::create_label_to_vector(QVector <QLabel*> &labels_l)
+{
+	QLabel *label_l;
+	label_l = new QLabel(this);
+	labels_l.append(label_l);
+	return label_l;
+
+}
+
 void wgt_base::add_incremental_move_button(QPushButton *button, int row, int column)
 {
 	gridLayout->addWidget(button, row + 1, column, 1, 1);

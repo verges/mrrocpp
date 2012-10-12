@@ -26,6 +26,11 @@ void WgtAbsoluteBase::setup_ui(QGridLayout *layout, int _rows_number)
 	wgt_base::setup_ui(layout, _rows_number);
 
 	create_buttons_and_spin_boxes();
+
+	for (int i = 0; i < rows_number; i++) {
+		gridLayout->addWidget(create_label_to_vector(axis_labels), i + 1, 0, 1, 1);
+	}
+
 	create_buttons();
 //	create_step_spinbox();
 

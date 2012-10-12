@@ -42,7 +42,7 @@ protected:
 
 private:
 	void create_buttons();
-	void create_step_spinbox();
+
 	int copy();
 	virtual void move_it()
 	{

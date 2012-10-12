@@ -32,21 +32,8 @@ void WgtAbsoluteBase::setup_ui(QGridLayout *layout, int _rows_number)
 	}
 
 	create_buttons();
-//	create_step_spinbox();
 
 	wgt_base::create_buttons_and_spin_boxes(desired_pos_column, inc_move_column, rows_number);
-}
-
-void WgtAbsoluteBase::create_step_spinbox()
-{
-	/*
-	 step_spinbox = new QDoubleSpinBox(this);
-	 step_spinbox->setDecimals(3);
-	 step_spinbox->setMaximum(10);
-	 step_spinbox->setSingleStep(0.01);
-
-	 gridLayout->addWidget(step_spinbox, 8, 10, 1, 2);
-	 */
 }
 
 void WgtAbsoluteBase::create_buttons_and_spin_boxes()
@@ -62,19 +49,7 @@ void WgtAbsoluteBase::add_current_position_spin_box(QDoubleSpinBox *spin_box, in
 
 void WgtAbsoluteBase::create_buttons()
 {
-	/*
-	 read_button = add_button("Read", 8, 1, 1, 1);
-	 execute_button = add_button("Move", 8, 6, 1, 3);
-	 import_button = add_button("Import", 9, 6, 1, 1);
-	 export_button = add_button("Export", 9, 7, 1, 1);
 
-
-
-	 connect(read_button, SIGNAL(clicked()), this, SLOT(read_button_clicked()), Qt::QueuedConnection);
-	 connect(execute_button, SIGNAL(clicked()), this, SLOT(execute_button_clicked()), Qt::QueuedConnection);
-	 connect(import_button, SIGNAL(clicked()), this, SLOT(import_button_clicked()), Qt::QueuedConnection);
-	 connect(export_button, SIGNAL(clicked()), this, SLOT(export_button_clicked()), Qt::QueuedConnection);
-	 */
 	copy_button = add_button(">", 1, 3, rows_number, 1);
 	connect(copy_button, SIGNAL(clicked()), this, SLOT(copy_button_clicked()), Qt::QueuedConnection);
 

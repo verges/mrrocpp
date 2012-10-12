@@ -24,7 +24,7 @@ namespace ui {
 namespace common {
 class Interface;
 }
-namespace common012 {
+namespace common_012 {
 class EcpRobot;
 }
 
@@ -39,7 +39,7 @@ public:
 //	double current_pos[1];// pozycja biezaca
 //	double desired_pos[1]; // pozycja zadana
 
-	common012::EcpRobot *ui_ecp_robot;
+	common_012::EcpRobot *ui_ecp_robot;
 
 	UiRobot(common::Interface& _interface, lib::robot_name_t _robot_name, int _number_of_servos);
 

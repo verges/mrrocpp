@@ -22,7 +22,7 @@ class UiRobot;
 
 class wgt_single_motor_move : public wgt_base
 {
-	Q_OBJECT
+Q_OBJECT
 
 public:
 	wgt_single_motor_move(QString _widget_label, mrrocpp::ui::common::Interface& _interface, mrrocpp::ui::common::UiRobot* _robot, QWidget *parent =
@@ -35,11 +35,10 @@ public:
 	virtual void add_button(QPushButton *button, int row, int space)
 	{
 	}
-	;
+
 	virtual void setup_ui()
 	{
 	}
-	;
 
 private:
 	Ui::wgt_single_motor_moveClass ui;
@@ -62,7 +61,7 @@ private:
 	void get_desired_position_si();
 	void move_it_si();
 
-	signals:
+signals:
 	void synchro_depended_init_signal();
 	void init_and_copy_signal();
 

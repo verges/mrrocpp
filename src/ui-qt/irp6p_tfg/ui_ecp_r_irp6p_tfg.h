@@ -15,7 +15,7 @@ class Interface;
 namespace irp6p_tfg {
 
 // ---------------------------------------------------------------
-class EcpRobot : public common012::EcpRobot
+class EcpRobot : public common_012::EcpRobot
 {
 
 public:

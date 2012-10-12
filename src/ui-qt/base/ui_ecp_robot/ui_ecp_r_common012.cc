@@ -30,7 +30,7 @@
 
 namespace mrrocpp {
 namespace ui {
-namespace common012 {
+namespace common_012 {
 
 // ---------------------------------------------------------------
 EcpRobot::EcpRobot(common::UiRobot& _ui_robot) :

@@ -14,7 +14,7 @@ class Interface;
 namespace sarkofag {
 
 // ---------------------------------------------------------------
-class EcpRobot : public common012::EcpRobot
+class EcpRobot : public common_012::EcpRobot
 {
 
 public:

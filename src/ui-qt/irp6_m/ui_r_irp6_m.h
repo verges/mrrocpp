@@ -29,7 +29,7 @@ namespace ui {
 namespace common {
 class Interface;
 }
-namespace common012 {
+namespace common_012 {
 class EcpRobot;
 }
 
@@ -45,7 +45,7 @@ class UiRobot : public common::UiRobot
 {
 public:
 
-	common012::EcpRobot *ui_ecp_robot;
+	common_012::EcpRobot *ui_ecp_robot;
 
 	UiRobot(common::Interface& _interface, lib::robot_name_t _robot_name, int _number_of_servos);
 

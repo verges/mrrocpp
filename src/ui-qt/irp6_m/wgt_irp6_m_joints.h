@@ -36,7 +36,7 @@ public:
 	virtual void setup_ui(QGridLayout *layout, int _rows_number);
 
 private:
-	Ui::wgt_absolute_template ui;
+
 	mrrocpp::ui::irp6_m::UiRobot *specyficrobot;
 
 	void init();

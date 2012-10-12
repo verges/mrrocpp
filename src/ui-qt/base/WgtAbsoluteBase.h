@@ -19,12 +19,13 @@ public:
 	//void synchro_depended_init();
 	//void init_and_copy();
 
-	const static int desired_pos_column = 6;
-	const static int inc_move_column = 10;
+	const static int desired_pos_column = 5;
+	const static int inc_move_column = 7;
 
 protected:
 	Ui::wgt_absolute_template ui;
 	QVector <QDoubleSpinBox*> current_pos_spin_boxes;
+	QVector <QLabel*> axis_labels;
 	//QDoubleSpinBox *step_spinbox;
 	QPushButton *copy_button;
 	/*

@@ -14,15 +14,10 @@ wgt_irp6_m_euler::wgt_irp6_m_euler(QString _widget_label, mrrocpp::ui::common::I
 	ui.setupUi(this);
 	robot = dynamic_cast <mrrocpp::ui::irp6_m::UiRobot *>(_robot);
 
-	ui.label_axis_1->setText("x");
-	ui.label_axis_2->setText("y");
-	ui.label_axis_3->setText("z");
-	ui.label_axis_4->setText("alfa");
-	ui.label_axis_5->setText("beta");
-	ui.label_axis_6->setText("gamma");
-	ui.label_axis_7->hide();
-
-	setup_ui(ui.gridLayout, 6);
+	/*
+	 ui.label_axis_7->hide();
+	 */
+	setup_ui(ui.grid_up, 6);
 }
 
 void wgt_irp6_m_euler::setup_ui(QGridLayout *layout, int _rows_number)

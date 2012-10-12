@@ -21,12 +21,12 @@ wgt_irp6_m_motors::wgt_irp6_m_motors(QString _widget_label, mrrocpp::ui::common:
 //		//desired_pos_spin_boxes.append(ui.doubleSpinBox_des_p7);
 //	}
 	if (robot->robot_name == lib::irp6p_m::ROBOT_NAME) {
-		ui.label_axis_7->hide();
+		//ui.label_axis_7->hide();
 		//ui.doubleSpinBox_cur_p7->hide();
 		/*		ui.doubleSpinBox_des_p7->hide();*/
 	}
 
-	setup_ui(ui.gridLayout, robot->number_of_servos);
+	setup_ui(ui.grid_up, robot->number_of_servos);
 }
 
 void wgt_irp6_m_motors::setup_ui(QGridLayout *layout, int _rows_number)

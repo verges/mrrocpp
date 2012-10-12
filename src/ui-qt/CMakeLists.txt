@@ -209,8 +209,6 @@ endif(ROBOT_BIRD_HAND)
 if(ROBOTS_012)
 SET(GUI_UI
     ${GUI_UI}
-    irp6_m/wgt_irp6_m_angle_axis.ui
-    irp6_m/wgt_irp6_m_euler.ui
     irp6_m/wgt_irp6_m_relative_angle_axis.ui
     irp6_m/wgt_irp6_m_tool_angle_axis.ui
     irp6_m/wgt_irp6_m_tool_euler.ui

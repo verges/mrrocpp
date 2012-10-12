@@ -25,7 +25,7 @@
 
 #include "base/lib/sr/srlib.h"
 
-#include "ui_ecp_r_common012.h"
+#include "ui_ecp_r_common_012.h"
 #include "base/lib/mrmath/mrmath.h"
 
 namespace mrrocpp {

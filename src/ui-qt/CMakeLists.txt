@@ -120,7 +120,7 @@ SET(GUI_CXX_SRCS
 	irp6ot_tfg/ui_r_irp6ot_tfg.cc
 	sarkofag/ui_r_sarkofag.cc
 	conveyor/ui_r_conveyor.cc
-	base/ui_ecp_robot/ui_ecp_r_common012.cc
+	base/ui_ecp_robot/ui_ecp_r_common_012.cc
     base/wgt_single_motor_move.cpp
 )
 endif(ROBOTS_012)

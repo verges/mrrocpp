@@ -153,7 +153,7 @@ int UiRobot::edp_create_int()
 				{
 					boost::unique_lock <boost::mutex> lock(interface.process_creation_mtx);
 					try {
-						printf("create_ui_ecp_robot \n");
+						//		printf("create_ui_ecp_robot \n");
 						create_ui_ecp_robot();
 					}
 
@@ -177,11 +177,11 @@ int UiRobot::edp_create_int()
 					} else { // jesli spawn sie powiodl
 
 						state.edp.state = UI_EDP_WAITING_TO_START_READER;
-						printf("connect_to_reader \n");
+						//	printf("connect_to_reader \n");
 						connect_to_reader();
-						printf("get_edp_state \n");
+						//	printf("get_edp_state \n");
 						get_edp_state();
-						printf(" get_edp_state za \n");
+						//	printf(" get_edp_state za \n");
 					}
 				}
 

@@ -60,7 +60,7 @@ protected:
 	lib::INSTRUCTION_TYPE receive_instruction(ROBOT_COMMAND_T & instruction_)
 	{
 
-		printf("receive_instruction 3a\n");
+	//	printf("receive_instruction 3a\n");
 		// oczekuje na polecenie od ECP, wczytuje je oraz zwraca jego typ
 		int rcvid;
 		/* Oczekiwanie na polecenie od ECP */
@@ -75,7 +75,7 @@ protected:
 
 			int32_t type, subtype;
 			rcvid = messip::port_receive(server_attach, type, subtype, new_ecp_command);
-			printf("receive_instruction 3b\n");
+		//	printf("receive_instruction 3b\n");
 			if (rcvid == -1) {/* Error condition, exit */
 				perror("messip::port_receive()");
 				break;
@@ -83,7 +83,7 @@ protected:
 				fprintf(stderr, "ie. MESSIP_MSG_DISCONNECT\n");
 				continue;
 			}
-			printf("receive_instruction 3c\n");
+		//	printf("receive_instruction 3c\n");
 			/* A message (presumable ours) received, handle */
 			break;
 		}
@@ -95,7 +95,7 @@ protected:
 		//	if ((instruction.instruction_type == lib::SET) || (instruction.instruction_type == lib::SET_GET)) {
 		//	std::cout << "edp effector: " << instruction.instruction_type << "\n";
 		//	}
-		printf("receive_instruction end\n");
+	//	printf("receive_instruction end\n");
 		return instruction_.instruction_type;
 	}
 

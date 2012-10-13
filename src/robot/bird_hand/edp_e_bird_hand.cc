@@ -308,7 +308,11 @@ void effector::create_threads()
 
 lib::INSTRUCTION_TYPE effector::receive_instruction()
 {
-	return common::effector::receive_instruction(instruction);
+	printf("receive_instruction bird_hand\n");
+	lib::INSTRUCTION_TYPE output = common::effector::receive_instruction(instruction);
+	std::cout << "bird_hand: " << (int) instruction.get_type << std::endl;
+	return output;
+
 }
 
 void effector::variant_reply_to_instruction()

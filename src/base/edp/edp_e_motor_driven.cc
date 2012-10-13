@@ -588,9 +588,12 @@ lib::REPLY_TYPE motor_driven_effector::rep_type(const lib::c_buffer &instruction
 			real_reply_type = reply.reply_type;
 		}
 	}
-
+	printf("receive_instruction 100\n");
+	flushall();
 	// by Y
 	if (instruction.is_get_controller_state()) {
+		printf("receive_instruction 101\n");
+		flushall();
 		reply.reply_type = lib::CONTROLLER_STATE;
 	}
 
@@ -811,25 +814,43 @@ void motor_driven_effector::get_controller_state(lib::c_buffer &instruction)
 
 void motor_driven_effector::pre_synchro_loop(STATE& next_state)
 {
-	while ((next_state != GET_INSTRUCTION) && (next_state != GET_SYNCHRO)) {
+	printf("receive_instruction\n");
+	flushall();
 
+	while ((next_state != GET_INSTRUCTION) && (next_state != GET_SYNCHRO)) {
+		printf("receive_instruction 2\n");
+		flushall();
 		try { // w tym bloku beda wylapywane wyjatki (bledy)
 			switch (next_state)
 			{
 				case GET_STATE:
+					printf("receive_instruction 3\n");
+					flushall();
 					// wstepna interpretacja nadeslanego polecenia w celu wykrycia nieprawidlowosci
 					switch (receive_instruction())
 					{
+
 						case lib::GET:
+							printf("receive_instruction 4\n");
+							flushall();
 							// potwierdzenie przyjecia polecenia (dla ECP)
 							//            printf("SET_GET\n");
-							reply.reply_type = lib::ACKNOWLEDGE;
-							reply.reply_type = lib::ACKNOWLEDGE;
-							variant_reply_to_instruction();
+
+							flushall();
+
+							std::cout << "AA: " << (int) instruction.get_type << std::endl;
 
 							if ((rep_type(instruction)) == lib::CONTROLLER_STATE) {
 								// master_order(MT_GET_CONTROLLER_STATE, 0);
+								reply.reply_type = lib::ACKNOWLEDGE;
+								reply.reply_type = lib::ACKNOWLEDGE;
+								variant_reply_to_instruction();
+								printf("receive_instruction 5\n");
+								printf("receive_instruction 6\n");
+								flushall();
 								interpret_instruction(instruction);
+								printf("receive_instruction 7\n");
+								flushall();
 							} else {
 								BOOST_THROW_EXCEPTION(nfe_1() << mrrocpp_error0(INVALID_INSTRUCTION_TYPE));
 
@@ -1410,6 +1431,7 @@ void motor_driven_effector::main_loop()
 
 lib::INSTRUCTION_TYPE motor_driven_effector::receive_instruction()
 {
+	printf("receive_instruction motor_driven_effector\n");
 	return common::effector::receive_instruction(instruction);
 }
 

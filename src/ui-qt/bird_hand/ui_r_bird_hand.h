@@ -53,7 +53,7 @@ public:
 
 	void synchronise();
 	void unsynchronise();
-	void edp_create();
+
 	void create_ui_ecp_robot();
 
 	void setup_menubar();

@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 
 		edp::common::master->msg->message("edp loaded");
 
-		//	printf("1\n");
+			printf("1\n");
 		//	delay (20000);
 		edp::common::master->main_loop();
 		//	printf("end\n");

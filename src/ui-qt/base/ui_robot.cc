@@ -153,6 +153,7 @@ int UiRobot::edp_create_int()
 				{
 					boost::unique_lock <boost::mutex> lock(interface.process_creation_mtx);
 					try {
+						printf("create_ui_ecp_robot \n");
 						create_ui_ecp_robot();
 					}
 
@@ -165,6 +166,7 @@ int UiRobot::edp_create_int()
 				}
 
 				try {
+					printf("ui_get_edp_pid \n");
 					state.edp.pid = ui_get_edp_pid();
 
 					if (state.edp.pid < 0) {
@@ -175,10 +177,11 @@ int UiRobot::edp_create_int()
 					} else { // jesli spawn sie powiodl
 
 						state.edp.state = UI_EDP_WAITING_TO_START_READER;
-
+						printf("connect_to_reader \n");
 						connect_to_reader();
-
+						printf("get_edp_state \n");
 						get_edp_state();
+						printf(" get_edp_state za \n");
 					}
 				}
 
@@ -244,10 +247,9 @@ const lib::robot_name_t UiRobot::getName()
 
 void UiRobot::close_all_windows()
 {
-	BOOST_FOREACH(wgt_pair_t &wgt, wgts)
-			{
-				wgt.second->dwgt->close();
-			}
+	BOOST_FOREACH(wgt_pair_t &wgt, wgts) {
+		wgt.second->dwgt->close();
+	}
 
 }
 
@@ -323,8 +325,7 @@ void UiRobot::connect_to_ecp_pulse_channel()
 	while ((state.ecp.trigger_fd = messip::port_connect(state.ecp.network_trigger_attach_point)) == NULL
 
 	) {
-		if (errno == EINTR
-		)
+		if (errno == EINTR)
 			break;
 		if ((tmp++) < lib::CONNECT_RETRY) {
 			boost::this_thread::sleep(lib::CONNECT_DELAY);
@@ -598,22 +599,21 @@ void UiRobot::reload_configuration()
 						boost::tokenizer <boost::char_separator <char> > tokens(text, sep);
 
 						int j = 0;
-						BOOST_FOREACH(std::string t, tokens)
-								{
+						BOOST_FOREACH(std::string t, tokens) {
 
-									if (i < 3) {
-										//value = boost::lexical_cast<double>(my_string);
+							if (i < 3) {
+								//value = boost::lexical_cast<double>(my_string);
 
-										state.edp.preset_position[i][j] = boost::lexical_cast <double>(t);
-									} else {
-										state.edp.front_position[j] = boost::lexical_cast <double>(t);
-									}
+								state.edp.preset_position[i][j] = boost::lexical_cast <double>(t);
+							} else {
+								state.edp.front_position[j] = boost::lexical_cast <double>(t);
+							}
 
-									if (j == number_of_servos) {
-										break;
-									}
-									j++;
-								}
+							if (j == number_of_servos) {
+								break;
+							}
+							j++;
+						}
 
 					} else {
 						for (int j = 0; j < number_of_servos; j++) {

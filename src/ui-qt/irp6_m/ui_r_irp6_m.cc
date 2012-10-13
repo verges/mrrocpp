@@ -113,7 +113,6 @@ void UiRobot::manage_interface()
 			break;
 		case common::UI_EDP_WAITING_TO_START_READER:
 		case common::UI_EDP_WAITING_TO_STOP_READER:
-			menu_Pre_Synchro_Moves->setEnabled(false);
 
 			// jesli robot jest zsynchronizowany
 			if (state.edp.is_synchronised) {
@@ -174,7 +173,6 @@ void UiRobot::setup_menubar()
 	Ui::MenuBar *menuBar = interface.get_main_window()->getMenuBar();
 	Ui::SignalDispatcher *signalDispatcher = interface.get_main_window()->getSignalDispatcher();
 
-
 	action_Pre_Synchro_Moves_Motors =
 			new Ui::MenuBarAction(QString("&Motors"), wgts[WGT_MOTORS], signalDispatcher, menuBar);
 	action_Absolute_Moves_Motors =
@@ -195,7 +193,6 @@ void UiRobot::setup_menubar()
 	menu_Relative_Moves = new QMenu(robot_menu);
 	menu_Tool = new QMenu(robot_menu);
 
-
 	robot_menu->addAction(menu_Absolute_Moves->menuAction());
 	robot_menu->addAction(menu_Relative_Moves->menuAction());
 	robot_menu->addAction(menu_Tool->menuAction());
@@ -213,7 +210,6 @@ void UiRobot::setup_menubar()
 	menu_Absolute_Moves->setTitle(QApplication::translate("MainWindow", "A&bsolute moves", 0, QApplication::UnicodeUTF8));
 	menu_Relative_Moves->setTitle(QApplication::translate("MainWindow", "Re&lative Moves", 0, QApplication::UnicodeUTF8));
 	menu_Tool->setTitle(QApplication::translate("MainWindow", "&Tool", 0, QApplication::UnicodeUTF8));
-
 
 }
 

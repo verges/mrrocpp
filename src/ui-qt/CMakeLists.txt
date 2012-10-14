@@ -196,7 +196,8 @@ SET(GUI_UI
     base/ui_ecp_dialogs/wgt_choose_option.ui
     base/ui_ecp_dialogs/wgt_teaching.ui
     base/wgt_absolute_template.ui 
-    base/wgt_kinematic_template.ui
+    base/wgt_kinematic.ui
+    base/wgt_servo_algorithm_template.ui
     base/wgt_relative_template.ui
     base/wgt_tool_template.ui
 )

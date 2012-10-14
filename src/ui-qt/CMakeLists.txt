@@ -62,7 +62,6 @@ SET(GUI_CXX_SRCS
     base/mp.cpp
     base/wgt_base.cpp
    	base/WgtAbsoluteBase.cpp
-    base/WgtKinematicBase.cpp
     base/WgtRelativeBase.cpp
     base/WgtToolBase.cpp
     base/wgt_process_control.cpp
@@ -143,7 +142,6 @@ SET(GUI_MOC_SRCS
     base/ui_ecp_dialogs/wgt_choose_option.h
     base/ui_ecp_dialogs/wgt_teaching.h
     base/WgtAbsoluteBase.h
-    base/WgtKinematicBase.h
     base/WgtRelativeBase.h
     base/WgtToolBase.h
 	base/signal_dispatcher.h

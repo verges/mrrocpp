@@ -109,6 +109,8 @@ void UiRobot::manage_interface()
 			menu_Preset_Positions->setEnabled(false);
 			menu_Pre_Synchro_Moves->setEnabled(false);
 			menu_Special->setEnabled(false);
+			action_Kinematics->setEnabled(false);
+			action_Servo_Algorithm->setEnabled(false);
 			break;
 		case common::UI_EDP_WAITING_TO_START_READER:
 		case common::UI_EDP_WAITING_TO_STOP_READER:
@@ -123,17 +125,21 @@ void UiRobot::manage_interface()
 					case common::UI_MP_PERMITED_TO_RUN:
 						menu_Special->setEnabled(true);
 						menu_Preset_Positions->setEnabled(true);
+						action_Kinematics->setEnabled(true);
+						action_Servo_Algorithm->setEnabled(true);
 						break;
 					case common::UI_MP_WAITING_FOR_START_PULSE:
 						menu_Special->setEnabled(false);
 						menu_Preset_Positions->setEnabled(true);
+						action_Kinematics->setEnabled(true);
+						action_Servo_Algorithm->setEnabled(true);
 						break;
 					case common::UI_MP_TASK_RUNNING:
-
-						break;
 					case common::UI_MP_TASK_PAUSED:
 						menu_Special->setEnabled(false);
 						menu_Preset_Positions->setEnabled(false);
+						action_Kinematics->setEnabled(false);
+						action_Servo_Algorithm->setEnabled(false);
 						break;
 					default:
 						break;
@@ -144,6 +150,8 @@ void UiRobot::manage_interface()
 				menu_Special->setEnabled(false);
 				menu_Pre_Synchro_Moves->setEnabled(true);
 				menu_Preset_Positions->setEnabled(false);
+				action_Kinematics->setEnabled(true);
+				action_Servo_Algorithm->setEnabled(true);
 			}
 			break;
 		default:

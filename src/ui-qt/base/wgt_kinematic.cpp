@@ -57,6 +57,7 @@ void wgt_kinematic::on_pushButton_read_clicked()
 
 		kinematic_model_no = ui->spinBox_desired_kinematics->value();
 		robot->ui_ecp_robot->set_kinematic(kinematic_model_no);
+		init();
 	}
 	CATCH_SECTION_UI_PTR
 

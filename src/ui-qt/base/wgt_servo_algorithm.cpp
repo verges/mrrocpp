@@ -54,20 +54,47 @@ void wgt_servo_algorithm::setup_ui(QGridLayout *layout, int _rows_number)
 
 void wgt_servo_algorithm::on_pushButton_read_clicked()
 {
-	printf("read\n");
-	init();
-}
+	uint8_t servo_alg_no[lib::MAX_SERVOS_NR], servo_par_no[lib::MAX_SERVOS_NR];
+	try {
+		robot->ui_ecp_robot->get_servo_algorithm(servo_alg_no, servo_par_no);
 
-void wgt_servo_algorithm::on_pushButton_set_clicked()
+		for (int i = 0; i < rows_number; i++) {
+			current_servo_algorithm_boxes[i]->setValue(servo_alg_no[i]);
+			current_servo_parameters_boxes[i]->setValue(servo_par_no[i]);
+		}
+	}
+	CATCH_SECTION_UI_PTR
+	//cos 	tam
+}void wgt_servo_algorithm::on_pushButton_set_clicked()
 {
-	printf("set\n");
-}
-
-void wgt_servo_algorithm::init()
+	uint8_t servo_alg_no[lib::MAX_SERVOS_NR], servo_par_no[lib::MAX_SERVOS_NR];
+	try {
+		for (int i = 0; i < rows_number; i++) {
+			servo_alg_no[i] = desired_servo_algorithm_boxes[i]->value();
+			servo_par_no[i] = desired_servo_parameters_boxes[i]->value();
+		}
+		robot->ui_ecp_robot->set_servo_algorithm(servo_alg_no, servo_par_no);
+		init();
+		copy();
+	}
+	CATCH_SECTION_UI_PTR
+	//cos 	tam
+}void wgt_servo_algorithm::init()
 {
-}
+	uint8_t servo_alg_no[lib::MAX_SERVOS_NR], servo_par_no[lib::MAX_SERVOS_NR];
 
-void wgt_servo_algorithm::init_and_copy_slot()
+	try {
+		robot->ui_ecp_robot->get_servo_algorithm(servo_alg_no, servo_par_no);
+
+		for (int i = 0; i < rows_number; i++) {
+			current_servo_algorithm_boxes[i]->setValue(servo_alg_no[i]);
+			current_servo_parameters_boxes[i]->setValue(servo_par_no[i]);
+		}
+
+	}
+	CATCH_SECTION_UI_PTR
+	//cos 	tam
+}void wgt_servo_algorithm::init_and_copy_slot()
 {
 	init();
 	copy();

@@ -61,12 +61,14 @@ void wgt_kinematic::on_pushButton_read_clicked()
 	}
 	CATCH_SECTION_UI_PTR
 
-}	// aktualizacja ustawien przyciskow
-
-void wgt_kinematic::init()
+} void wgt_kinematic::init()
 {
-	uint8_t kinematic_model_no;
-	robot->ui_ecp_robot->get_kinematic(&kinematic_model_no);
-	ui->spinBox_current_kinematics->setValue(kinematic_model_no);
-	ui->spinBox_desired_kinematics->setValue(kinematic_model_no);
+	try {
+		uint8_t kinematic_model_no;
+		robot->ui_ecp_robot->get_kinematic(&kinematic_model_no);
+		ui->spinBox_current_kinematics->setValue(kinematic_model_no);
+		ui->spinBox_desired_kinematics->setValue(kinematic_model_no);
+	}
+	CATCH_SECTION_UI_PTR
+
 }

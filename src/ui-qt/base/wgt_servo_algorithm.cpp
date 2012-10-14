@@ -39,31 +39,14 @@ void wgt_servo_algorithm::setup_ui(QGridLayout *layout, int _rows_number)
 
 	wgt_base::setup_ui(layout, _rows_number);
 
-	create_buttons_and_spin_boxes();
-
 	for (int i = 0; i < rows_number; i++) {
 		gridLayout->addWidget(create_label_to_vector(axis_labels), i + 1, 0, 1, 1);
+		gridLayout->addWidget(create_spin_box_to_vector(current_servo_algorithm_boxes), i + 1, 1, 1, 1);
+		gridLayout->addWidget(create_spin_box_to_vector(current_servo_parameters_boxes), i + 1, 2, 1, 1);
+
+		gridLayout->addWidget(create_spin_box_to_vector(desired_servo_algorithm_boxes), i + 1, 6, 1, 1);
+		gridLayout->addWidget(create_spin_box_to_vector(desired_servo_parameters_boxes), i + 1, 7, 1, 1);
 	}
-
-	create_buttons();
-
-}
-
-void wgt_servo_algorithm::create_buttons_and_spin_boxes()
-{
-	for (int i = 0; i < rows_number; i++) {
-		//	add_current_position_spin_box(create_spin_box_to_vector(current_pos_spin_boxes), i);
-	}
-}
-
-void wgt_servo_algorithm::add_current_position_spin_box(QDoubleSpinBox *spin_box, int row)
-{
-	gridLayout->addWidget(spin_box, row + 1, 1, 1, 1);
-}
-
-void wgt_servo_algorithm::create_buttons()
-{
-
 	copy_button = add_button(">", 1, 4, rows_number, 1);
 	connect(copy_button, SIGNAL(clicked()), this, SLOT(copy_button_clicked()), Qt::QueuedConnection);
 
@@ -101,8 +84,8 @@ int wgt_servo_algorithm::copy()
 	if (robot->state.edp.pid != -1) {
 
 		for (int i = 0; i < rows_number; i++) {
-			//		desired_servo_algorithm_boxes[i]->setValue(current_servo_algorithm_boxes[i]->value());
-			//		desired_servo_parameters_boxes[i]->setValue(current_servo_parameters_boxes[i]->value());
+			desired_servo_algorithm_boxes[i]->setValue(current_servo_algorithm_boxes[i]->value());
+			desired_servo_parameters_boxes[i]->setValue(current_servo_parameters_boxes[i]->value());
 		}
 	}
 

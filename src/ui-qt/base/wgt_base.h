@@ -66,6 +66,7 @@ protected:
 	virtual void get_desired_position();
 
 	QDoubleSpinBox* create_spin_box_to_vector(QVector <QDoubleSpinBox*> &spin_boxes);
+	QSpinBox* create_spin_box_to_vector(QVector <QSpinBox*> &spin_boxes);
 	QLabel* create_label_to_vector(QVector <QLabel*> &labels_l);
 
 	QPushButton* create_button_to_vector(QVector <QPushButton *> &buttons, QString label);

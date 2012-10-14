@@ -45,15 +45,12 @@ protected:
 	QVector <QLabel*> axis_labels;
 	QPushButton *copy_button;
 
-	void create_buttons_and_spin_boxes();
-	virtual void setup_ui(QGridLayout *layout, int _rows_number);
-	virtual void add_current_position_spin_box(QDoubleSpinBox *spin_box, int row);
+	void setup_ui(QGridLayout *layout, int _rows_number);
 
 private:
 	Ui::wgt_servo_algorithm_templateClass *ui;
 	mrrocpp::ui::common_012::UiRobot* robot;
 
-	void create_buttons();
 	int copy();
 	void init();
 

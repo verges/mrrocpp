@@ -3,18 +3,19 @@
 /*                                         Version 2.01  */
 
 #include "ui_r_common_012.h"
-#include "../base/ui_ecp_robot/ui_ecp_r_common_012.h"
-#include "../base/interface.h"
+#include "ui_ecp_robot/ui_ecp_r_common_012.h"
+#include "interface.h"
 
-#include "../base/mainwindow.h"
-#include "../base/menu_bar.h"
-#include "../base/menu_bar_action.h"
-#include "../base/mp.h"
+#include "wgt_kinematic.h"
+#include "mainwindow.h"
+#include "menu_bar.h"
+#include "menu_bar_action.h"
+#include "mp.h"
 
 namespace mrrocpp {
 namespace ui {
 namespace common_012 {
-
+const std::string WGT_KINEMATIC = "WGT_KINEMATIC";
 // extern ui_state_def ui_state;
 
 //
@@ -26,7 +27,7 @@ namespace common_012 {
 UiRobot::UiRobot(common::Interface& _interface, lib::robot_name_t _robot_name, int _number_of_servos) :
 		common::UiRobot(_interface, _robot_name, _number_of_servos)
 {
-
+	add_wgt <wgt_kinematic>(WGT_KINEMATIC, "Kinematic");
 }
 
 void UiRobot::unsynchronise()
@@ -53,7 +54,7 @@ void UiRobot::setup_menubar()
 
 	action_UnSynchronisation = new Ui::MenuBarAction(QString("&UnSynchronisation"), this, menuBar);
 	action_Synchronisation = new Ui::MenuBarAction(QString("&Synchronisation"), this, menuBar);
-	action_Kinematics = new Ui::MenuBarAction(QString("&Kinematics"), wgt_robot_pc, signalDispatcher, menuBar);
+	action_Kinematics = new Ui::MenuBarAction(QString("&Kinematic"), wgts[WGT_KINEMATIC], signalDispatcher, menuBar);
 	action_Servo_Algorithm = new Ui::MenuBarAction(QString("Servo Algorit&hm"), this, menuBar);
 	action_Synchro_Position = new Ui::MenuBarAction(QString("&Synchro Position"), this, menuBar);
 	action_Position_0 = new Ui::MenuBarAction(QString("Position &0"), this, menuBar);

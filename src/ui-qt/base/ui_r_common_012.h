@@ -5,14 +5,15 @@
 // Ostatnia modyfikacja: 2010
 // -------------------------------------------------------------------------
 
-#ifndef __UI_R_SINGLE_MOTOR_H
-#define __UI_R_SINGLE_MOTOR_H
+#ifndef __UI_R_COMMON_012_H
+#define __UI_R_COMMON_012_H
 
 #include "../base/ui.h"
 #include "../base/ui_robot.h"
 #include "robot/conveyor/const_conveyor.h"
 
 class wgt_single_motor_move;
+class wgt_kinematic;
 
 namespace Ui {
 class MenuBar;

@@ -15,10 +15,10 @@
 #include "ui_ecp_robot/ui_ecp_r_common_012.h"
 
 wgt_servo_algorithm::wgt_servo_algorithm(QString _widget_label, mrrocpp::ui::common::Interface& _interface, mrrocpp::ui::common::UiRobot *robo, QWidget *parent) :
-		wgt_base(_widget_label, _interface, robo, parent)
+		wgt_base(_widget_label, _interface, robo, parent), ui(new Ui::wgt_servo_algorithm_templateClass)
 {
 	robot = dynamic_cast <mrrocpp::ui::common_012::UiRobot *>(robo);
-	//ui->setupUi(this);
+	ui->setupUi(this);
 	dwgt->setWindowTitle(QString::fromStdString((robo->getName())) + " sa");
 }
 
@@ -29,19 +29,19 @@ wgt_servo_algorithm::~wgt_servo_algorithm()
 
 void wgt_servo_algorithm::setup_ui(QGridLayout *layout, int _rows_number)
 {
-	/*
-	 wgt_base::setup_ui(layout, _rows_number);
 
-	 create_buttons_and_spin_boxes();
+	wgt_base::setup_ui(layout, _rows_number);
 
-	 for (int i = 0; i < rows_number; i++) {
-	 gridLayout->addWidget(create_label_to_vector(axis_labels), i + 1, 0, 1, 1);
-	 }
+	create_buttons_and_spin_boxes();
 
-	 create_buttons();
+	for (int i = 0; i < rows_number; i++) {
+		gridLayout->addWidget(create_label_to_vector(axis_labels), i + 1, 0, 1, 1);
+	}
 
-	 wgt_base::create_buttons_and_spin_boxes(desired_pos_column, inc_move_column, rows_number);
-	 */
+	create_buttons();
+
+	wgt_base::create_buttons_and_spin_boxes(desired_pos_column, inc_move_column, rows_number);
+
 }
 
 void wgt_servo_algorithm::create_buttons_and_spin_boxes()

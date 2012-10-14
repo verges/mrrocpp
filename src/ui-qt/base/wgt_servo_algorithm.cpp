@@ -20,6 +20,13 @@ wgt_servo_algorithm::wgt_servo_algorithm(QString _widget_label, mrrocpp::ui::com
 	robot = dynamic_cast <mrrocpp::ui::common_012::UiRobot *>(robo);
 	ui->setupUi(this);
 	dwgt->setWindowTitle(QString::fromStdString((robo->getName())) + " sa");
+
+	setup_ui(ui->grid_up, robot->number_of_servos);
+
+	for (int i = 0; i < robot->number_of_servos; ++i) {
+		axis_labels[i]->setText(QString("q%1").arg(i));
+	}
+
 }
 
 wgt_servo_algorithm::~wgt_servo_algorithm()

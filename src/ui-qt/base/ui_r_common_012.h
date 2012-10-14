@@ -14,6 +14,7 @@
 
 class wgt_single_motor_move;
 class wgt_kinematic;
+class wgt_servo_algorithm;
 
 namespace Ui {
 class MenuBar;

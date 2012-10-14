@@ -7,6 +7,7 @@
 #include "interface.h"
 
 #include "wgt_kinematic.h"
+#include "wgt_servo_algorithm.h"
 #include "mainwindow.h"
 #include "menu_bar.h"
 #include "menu_bar_action.h"
@@ -28,6 +29,7 @@ UiRobot::UiRobot(common::Interface& _interface, lib::robot_name_t _robot_name, i
 		common::UiRobot(_interface, _robot_name, _number_of_servos)
 {
 	add_wgt <wgt_kinematic>(WGT_KINEMATIC, "Kinematic");
+	add_wgt <wgt_servo_algorithm>(WGT_SERVO_ALGORITHM, "Servo Algorithm");
 }
 
 void UiRobot::unsynchronise()
@@ -55,7 +57,8 @@ void UiRobot::setup_menubar()
 	action_UnSynchronisation = new Ui::MenuBarAction(QString("&UnSynchronisation"), this, menuBar);
 	action_Synchronisation = new Ui::MenuBarAction(QString("&Synchronisation"), this, menuBar);
 	action_Kinematics = new Ui::MenuBarAction(QString("&Kinematic"), wgts[WGT_KINEMATIC], signalDispatcher, menuBar);
-	action_Servo_Algorithm = new Ui::MenuBarAction(QString("Servo Algorit&hm"), this, menuBar);
+	action_Servo_Algorithm =
+			new Ui::MenuBarAction(QString("Servo Algorit&hm"), wgts[WGT_SERVO_ALGORITHM], signalDispatcher, menuBar);
 	action_Synchro_Position = new Ui::MenuBarAction(QString("&Synchro Position"), this, menuBar);
 	action_Position_0 = new Ui::MenuBarAction(QString("Position &0"), this, menuBar);
 	action_Position_1 = new Ui::MenuBarAction(QString("Position &1"), this, menuBar);

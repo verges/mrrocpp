@@ -1,16 +1,16 @@
 #include "wgt_kinematic.h"
 #include "interface.h"
-#include "ui_robot.h"
+#include "ui_r_common_012.h"
 #include "allrobots.h"
 #include "mp.h"
+#include "ui_ecp_robot/ui_ecp_r_common_012.h"
 
 wgt_kinematic::wgt_kinematic(QString _widget_label, mrrocpp::ui::common::Interface& _interface, mrrocpp::ui::common::UiRobot *robo, QWidget *parent) :
-		wgt_base(QString::fromStdString(robo->getName()), _interface, parent),
-		ui(new Ui::wgt_kinematicClass),
-		robot(robo)
+		wgt_base(QString::fromStdString(robo->getName()), _interface, parent), ui(new Ui::wgt_kinematicClass)
 {
+	robot = dynamic_cast <mrrocpp::ui::common_012::UiRobot *>(robo);
 	ui->setupUi(this);
-	dwgt->setWindowTitle(QString::fromStdString((robo->getName()))+ " kinematic");
+	dwgt->setWindowTitle(QString::fromStdString((robo->getName())) + " kinematic");
 	connect(this, SIGNAL(process_control_window_init_signal()), this, SLOT(process_control_window_init_slot()), Qt::QueuedConnection);
 }
 
@@ -40,100 +40,27 @@ void wgt_kinematic::my_open(bool set_on_top)
 	process_control_window_init();
 }
 
-//ECP
-void wgt_kinematic::on_ecp_trigger_pushButton_clicked()
+void wgt_kinematic::on_pushButton_read_clicked()
 {
-	interface.all_robots->pulse_trigger_ecp(robot);
+	uint8_t kinematic_model_no;
+	robot->ui_ecp_robot->get_kinematic(&kinematic_model_no);
+	ui->spinBox_current_kinematics->setValue(kinematic_model_no);
 }
 
-// Reader
-void wgt_kinematic::on_reader_start_pushButton_clicked()
+void wgt_kinematic::on_pushButton_set_clicked()
 {
-	interface.all_robots->pulse_start_reader(robot);
-}
+	uint8_t kinematic_model_no;
 
-void wgt_kinematic::on_reader_stop_pushButton_clicked()
-{
-	interface.all_robots->pulse_stop_reader(robot);
-}
+	kinematic_model_no = ui->spinBox_desired_kinematics->value();
+	robot->ui_ecp_robot->set_kinematic(kinematic_model_no);
 
-void wgt_kinematic::on_reader_trigger_pushButton_clicked()
-{
-	interface.all_robots->pulse_trigger_reader(robot);
 }
 
 // aktualizacja ustawien przyciskow
 void wgt_kinematic::init()
-
 {
-//	interface.ui_msg->message("wgt_kinematic::init()");
-	bool wlacz_PtButton_wnd_processes_control_all_reader_start = false;
-	bool wlacz_PtButton_wnd_processes_control_all_reader_stop = false;
-	bool wlacz_PtButton_wnd_processes_control_all_reader_trigger = false;
-
-	// Dla READER'A
-
-//	ui->reader_start_pushButton->setDisabled(true);
-//	ui->reader_stop_pushButton->setDisabled(true);
-//	ui->reader_trigger_pushButton->setDisabled(true);
-
-// Dla irp6_on_track
-
-	if (!(robot->is_edp_loaded())) { // edp wylaczone
-
-	} else if (robot->state.edp.state == mrrocpp::ui::common::UI_EDP_WAITING_TO_START_READER) { // edp wlaczone reader czeka na start
-		wlacz_PtButton_wnd_processes_control_all_reader_start = true;
-
-	} else if (robot->state.edp.state == mrrocpp::ui::common::UI_EDP_WAITING_TO_STOP_READER) { // edp wlaczone reader czeka na stop
-		wlacz_PtButton_wnd_processes_control_all_reader_stop = true;
-		wlacz_PtButton_wnd_processes_control_all_reader_trigger = true;
-
-	}
-
-	if (wlacz_PtButton_wnd_processes_control_all_reader_start) {
-		//	ui->reader_start_pushButton->setDisabled(false);
-
-	}
-
-	if (wlacz_PtButton_wnd_processes_control_all_reader_stop) {
-		//	ui->reader_stop_pushButton->setDisabled(false);
-
-	}
-
-	if (wlacz_PtButton_wnd_processes_control_all_reader_trigger) {
-		//	ui->reader_trigger_pushButton->setDisabled(false);
-
-	}
-
-	switch (interface.mp->mp_state.state)
-	{
-		case ui::common::UI_MP_NOT_PERMITED_TO_RUN:
-		case ui::common::UI_MP_PERMITED_TO_RUN:
-			block_ecp_trigger_widgets();
-			break;
-		case ui::common::UI_MP_WAITING_FOR_START_PULSE:
-			block_ecp_trigger_widgets();
-			break;
-		case ui::common::UI_MP_TASK_RUNNING:
-			unblock_ecp_trigger_widgets();
-			break;
-		case ui::common::UI_MP_TASK_PAUSED:
-
-			block_ecp_trigger_widgets();
-			break;
-		default:
-
-			break;
-	}
-}
-
-void wgt_kinematic::block_ecp_trigger_widgets()
-{
-//	ui->ecp_trigger_pushButton->setDisabled(true);
-}
-
-void wgt_kinematic::unblock_ecp_trigger_widgets()
-
-{
-//	ui->ecp_trigger_pushButton->setDisabled(false);
+	uint8_t kinematic_model_no;
+	robot->ui_ecp_robot->get_kinematic(&kinematic_model_no);
+	ui->spinBox_current_kinematics->setValue(kinematic_model_no);
+	ui->spinBox_desired_kinematics->setValue(kinematic_model_no);
 }

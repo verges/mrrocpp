@@ -11,8 +11,11 @@ namespace mrrocpp {
 namespace ui {
 namespace common {
 class Interface;
-class UiRobot;
 class AllRobots;
+
+}
+namespace common_012 {
+class UiRobot;
 
 }
 }
@@ -32,8 +35,7 @@ public:
 	void my_open(bool set_on_top = false);
 
 	Ui::wgt_kinematicClass * get_ui();
-	void block_ecp_trigger_widgets();
-	void unblock_ecp_trigger_widgets();
+
 	virtual void add_button(QPushButton *button, int row, int space)
 	{
 	}
@@ -44,7 +46,7 @@ public:
 private:
 	Ui::wgt_kinematicClass* ui;
 
-	mrrocpp::ui::common::UiRobot *robot;
+	mrrocpp::ui::common_012::UiRobot* robot;
 
 	// aktualizacja ustawien przyciskow
 	void init();
@@ -56,13 +58,9 @@ public slots:
 	void process_control_window_init_slot();
 
 private slots:
-	// ECP
-	void on_ecp_trigger_pushButton_clicked();
 
-	// Reader
-	void on_reader_start_pushButton_clicked();
-	void on_reader_stop_pushButton_clicked();
-	void on_reader_trigger_pushButton_clicked();
+	void on_pushButton_read_clicked();
+	void on_pushButton_set_clicked();
 
 };
 

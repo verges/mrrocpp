@@ -1,83 +1,83 @@
-#include "wgt_robot_process_control.h"
+#include "wgt_kinematic.h"
 #include "interface.h"
 #include "ui_robot.h"
 #include "allrobots.h"
 #include "mp.h"
 
-wgt_robot_process_control::wgt_robot_process_control(QString _widget_label, mrrocpp::ui::common::Interface& _interface, mrrocpp::ui::common::UiRobot *robo, QWidget *parent) :
+wgt_kinematic::wgt_kinematic(QString _widget_label, mrrocpp::ui::common::Interface& _interface, mrrocpp::ui::common::UiRobot *robo, QWidget *parent) :
 		wgt_base(QString::fromStdString(robo->getName()), _interface, parent),
-		ui(new Ui::wgt_robot_process_controlClass),
+		ui(new Ui::wgt_kinematicClass),
 		robot(robo)
 {
 	ui->setupUi(this);
-	ui->robot_label->setText(QString::fromStdString((robo->getName())));
+//	ui->robot_label->setText(QString::fromStdString((robo->getName())));
 	connect(this, SIGNAL(process_control_window_init_signal()), this, SLOT(process_control_window_init_slot()), Qt::QueuedConnection);
 }
 
-wgt_robot_process_control::~wgt_robot_process_control()
+wgt_kinematic::~wgt_kinematic()
 {
 	delete ui;
 }
 
-Ui::wgt_robot_process_controlClass * wgt_robot_process_control::get_ui()
+Ui::wgt_kinematicClass * wgt_kinematic::get_ui()
 {
 	return ui;
 }
 
-void wgt_robot_process_control::process_control_window_init()
+void wgt_kinematic::process_control_window_init()
 {
 	emit process_control_window_init_signal();
 }
 
-void wgt_robot_process_control::process_control_window_init_slot()
+void wgt_kinematic::process_control_window_init_slot()
 {
 	init();
 }
 
-void wgt_robot_process_control::my_open(bool set_on_top)
+void wgt_kinematic::my_open(bool set_on_top)
 {
 	wgt_base::my_open(set_on_top);
 	process_control_window_init();
 }
 
 //ECP
-void wgt_robot_process_control::on_ecp_trigger_pushButton_clicked()
+void wgt_kinematic::on_ecp_trigger_pushButton_clicked()
 {
 	interface.all_robots->pulse_trigger_ecp(robot);
 }
 
 // Reader
-void wgt_robot_process_control::on_reader_start_pushButton_clicked()
+void wgt_kinematic::on_reader_start_pushButton_clicked()
 {
 	interface.all_robots->pulse_start_reader(robot);
 }
 
-void wgt_robot_process_control::on_reader_stop_pushButton_clicked()
+void wgt_kinematic::on_reader_stop_pushButton_clicked()
 {
 	interface.all_robots->pulse_stop_reader(robot);
 }
 
-void wgt_robot_process_control::on_reader_trigger_pushButton_clicked()
+void wgt_kinematic::on_reader_trigger_pushButton_clicked()
 {
 	interface.all_robots->pulse_trigger_reader(robot);
 }
 
 // aktualizacja ustawien przyciskow
-void wgt_robot_process_control::init()
+void wgt_kinematic::init()
 
 {
-//	interface.ui_msg->message("wgt_robot_process_control::init()");
+//	interface.ui_msg->message("wgt_kinematic::init()");
 	bool wlacz_PtButton_wnd_processes_control_all_reader_start = false;
 	bool wlacz_PtButton_wnd_processes_control_all_reader_stop = false;
 	bool wlacz_PtButton_wnd_processes_control_all_reader_trigger = false;
 
 	// Dla READER'A
 
-	ui->reader_start_pushButton->setDisabled(true);
-	ui->reader_stop_pushButton->setDisabled(true);
-	ui->reader_trigger_pushButton->setDisabled(true);
+//	ui->reader_start_pushButton->setDisabled(true);
+//	ui->reader_stop_pushButton->setDisabled(true);
+//	ui->reader_trigger_pushButton->setDisabled(true);
 
-	// Dla irp6_on_track
+// Dla irp6_on_track
 
 	if (!(robot->is_edp_loaded())) { // edp wylaczone
 
@@ -91,17 +91,17 @@ void wgt_robot_process_control::init()
 	}
 
 	if (wlacz_PtButton_wnd_processes_control_all_reader_start) {
-		ui->reader_start_pushButton->setDisabled(false);
+		//	ui->reader_start_pushButton->setDisabled(false);
 
 	}
 
 	if (wlacz_PtButton_wnd_processes_control_all_reader_stop) {
-		ui->reader_stop_pushButton->setDisabled(false);
+		//	ui->reader_stop_pushButton->setDisabled(false);
 
 	}
 
 	if (wlacz_PtButton_wnd_processes_control_all_reader_trigger) {
-		ui->reader_trigger_pushButton->setDisabled(false);
+		//	ui->reader_trigger_pushButton->setDisabled(false);
 
 	}
 
@@ -127,13 +127,13 @@ void wgt_robot_process_control::init()
 	}
 }
 
-void wgt_robot_process_control::block_ecp_trigger_widgets()
+void wgt_kinematic::block_ecp_trigger_widgets()
 {
-	ui->ecp_trigger_pushButton->setDisabled(true);
+//	ui->ecp_trigger_pushButton->setDisabled(true);
 }
 
-void wgt_robot_process_control::unblock_ecp_trigger_widgets()
+void wgt_kinematic::unblock_ecp_trigger_widgets()
 
 {
-	ui->ecp_trigger_pushButton->setDisabled(false);
+//	ui->ecp_trigger_pushButton->setDisabled(false);
 }

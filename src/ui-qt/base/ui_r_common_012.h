@@ -52,6 +52,8 @@ private:
 
 	QAction *action_UnSynchronisation;
 	QAction *action_Synchronisation;
+	QAction *action_Kinematics;
+	QAction *action_Servo_Algorithm;
 
 	QAction *action_Synchro_Position;
 	QAction *action_Front_Position;

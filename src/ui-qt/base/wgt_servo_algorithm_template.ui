@@ -32,7 +32,7 @@
      <item row="0" column="1">
       <widget class="QLabel" name="label_7">
        <property name="text">
-        <string>current kinematics no.</string>
+        <string>current servo algorithm no.</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignBottom|Qt::AlignHCenter</set>
@@ -51,7 +51,7 @@
         </size>
        </property>
        <property name="text">
-        <string>desired kinematics no.</string>
+        <string>desired servo algorithm no.</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignBottom|Qt::AlignHCenter</set>

@@ -67,6 +67,7 @@ SET(GUI_CXX_SRCS
     base/WgtToolBase.cpp
     base/wgt_process_control.cpp
 	base/wgt_robot_process_control.cpp
+	base/wgt_kinematic.cpp
     base/ui_ecp_dialogs/wgt_yes_no.cpp    
     base/ui_ecp_dialogs/wgt_message.cpp
     base/ui_ecp_dialogs/wgt_input_integer.cpp
@@ -133,6 +134,7 @@ SET(GUI_MOC_SRCS
     base/wgt_base.h
     base/wgt_process_control.h
 	base/wgt_robot_process_control.h
+	base/wgt_kinematic.h
     base/ui_ecp_dialogs/wgt_yes_no.h
     base/ui_ecp_dialogs/wgt_swarm.h
     base/ui_ecp_dialogs/wgt_message.h

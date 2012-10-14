@@ -1,4 +1,5 @@
 #include "wgt_kinematic.h"
+#include "ui_robot.h"
 #include "interface.h"
 #include "ui_r_common_012.h"
 #include "allrobots.h"
@@ -42,21 +43,24 @@ void wgt_kinematic::my_open(bool set_on_top)
 
 void wgt_kinematic::on_pushButton_read_clicked()
 {
-	uint8_t kinematic_model_no;
-	robot->ui_ecp_robot->get_kinematic(&kinematic_model_no);
-	ui->spinBox_current_kinematics->setValue(kinematic_model_no);
-}
+	try {
+		uint8_t kinematic_model_no;
+		robot->ui_ecp_robot->get_kinematic(&kinematic_model_no);
+		ui->spinBox_current_kinematics->setValue(kinematic_model_no);
+	}
+	CATCH_SECTION_UI_PTR
 
-void wgt_kinematic::on_pushButton_set_clicked()
+} void wgt_kinematic::on_pushButton_set_clicked()
 {
-	uint8_t kinematic_model_no;
+	try {
+		uint8_t kinematic_model_no;
 
-	kinematic_model_no = ui->spinBox_desired_kinematics->value();
-	robot->ui_ecp_robot->set_kinematic(kinematic_model_no);
+		kinematic_model_no = ui->spinBox_desired_kinematics->value();
+		robot->ui_ecp_robot->set_kinematic(kinematic_model_no);
+	}
+	CATCH_SECTION_UI_PTR
 
-}
-
-// aktualizacja ustawien przyciskow
+}	// aktualizacja ustawien przyciskow
 void wgt_kinematic::init()
 {
 	uint8_t kinematic_model_no;

@@ -12,7 +12,7 @@ wgt_kinematic::wgt_kinematic(QString _widget_label, mrrocpp::ui::common::Interfa
 	robot = dynamic_cast <mrrocpp::ui::common_012::UiRobot *>(robo);
 	ui->setupUi(this);
 	dwgt->setWindowTitle(QString::fromStdString((robo->getName())) + " kinematic");
-	connect(this, SIGNAL(process_control_window_init_signal()), this, SLOT(process_control_window_init_slot()), Qt::QueuedConnection);
+	connect(this, SIGNAL(window_init_signal()), this, SLOT(window_init_slot()), Qt::QueuedConnection);
 }
 
 wgt_kinematic::~wgt_kinematic()
@@ -25,12 +25,12 @@ Ui::wgt_kinematicClass * wgt_kinematic::get_ui()
 	return ui;
 }
 
-void wgt_kinematic::process_control_window_init()
+void wgt_kinematic::window_init()
 {
-	emit process_control_window_init_signal();
+	emit window_init_signal();
 }
 
-void wgt_kinematic::process_control_window_init_slot()
+void wgt_kinematic::window_init_slot()
 {
 	init();
 }
@@ -38,7 +38,7 @@ void wgt_kinematic::process_control_window_init_slot()
 void wgt_kinematic::my_open(bool set_on_top)
 {
 	wgt_base::my_open(set_on_top);
-	process_control_window_init();
+	window_init();
 }
 
 void wgt_kinematic::on_pushButton_read_clicked()
@@ -61,6 +61,7 @@ void wgt_kinematic::on_pushButton_read_clicked()
 	CATCH_SECTION_UI_PTR
 
 }	// aktualizacja ustawien przyciskow
+
 void wgt_kinematic::init()
 {
 	uint8_t kinematic_model_no;

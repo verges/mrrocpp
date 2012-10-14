@@ -7,6 +7,20 @@
 #include <iostream>
 #include "ui_wgt_servo_algorithm_template.h"
 
+namespace mrrocpp {
+namespace ui {
+namespace common {
+class Interface;
+class AllRobots;
+
+}
+namespace common_012 {
+class UiRobot;
+
+}
+}
+}
+
 class wgt_servo_algorithm : public wgt_base
 {
 Q_OBJECT
@@ -23,7 +37,7 @@ public:
 	const static int inc_move_column = 7;
 
 protected:
-	Ui::wgt_servo_algorithm_template ui;
+
 	QVector <QDoubleSpinBox*> current_pos_spin_boxes;
 	QVector <QLabel*> axis_labels;
 	//QDoubleSpinBox *step_spinbox;
@@ -41,6 +55,9 @@ protected:
 	virtual void add_current_position_spin_box(QDoubleSpinBox *spin_box, int row);
 
 private:
+	Ui::wgt_servo_algorithm_templateClass *ui;
+	mrrocpp::ui::common_012::UiRobot* robot;
+
 	void create_buttons();
 
 	int copy();

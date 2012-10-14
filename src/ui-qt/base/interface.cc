@@ -852,7 +852,7 @@ void Interface::manage_pc(void)
 	BOOST_FOREACH(const common::robot_pair_t & robot_node, robot_m)
 			{
 				if ((robot_node.second->state.is_active) && (robot_node.second->is_edp_loaded())) {
-					robot_node.second->get_wgt_robot_pc()->process_control_window_init();
+					robot_node.second->get_wgt_robot_pc()->window_init();
 				}
 			}
 
@@ -882,7 +882,7 @@ void Interface::manage_interface_slot()
 			{
 				if ((robot_node.second->state.is_active) && (robot_node.second->is_edp_loaded())
 						&& robot_node.second->get_wgt_robot_pc()) {
-					robot_node.second->get_wgt_robot_pc()->process_control_window_init();
+					robot_node.second->get_wgt_robot_pc()->window_init();
 				}
 			}
 

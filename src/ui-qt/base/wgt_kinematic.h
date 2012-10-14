@@ -30,7 +30,7 @@ public:
 			0);
 	~wgt_kinematic();
 
-	void process_control_window_init();
+	void window_init();
 
 	void my_open(bool set_on_top = false);
 
@@ -52,10 +52,10 @@ private:
 	void init();
 
 signals:
-	void process_control_window_init_signal();
+	void window_init_signal();
 
 public slots:
-	void process_control_window_init_slot();
+	void window_init_slot();
 
 private slots:
 

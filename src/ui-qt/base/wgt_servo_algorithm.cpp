@@ -6,14 +6,20 @@
  */
 
 #include "wgt_servo_algorithm.h"
+#include "mainwindow.h"
 #include "ui_robot.h"
 #include "interface.h"
-#include "mainwindow.h"
+#include "ui_r_common_012.h"
+#include "allrobots.h"
+#include "mp.h"
+#include "ui_ecp_robot/ui_ecp_r_common_012.h"
 
 wgt_servo_algorithm::wgt_servo_algorithm(QString _widget_label, mrrocpp::ui::common::Interface& _interface, mrrocpp::ui::common::UiRobot *robo, QWidget *parent) :
 		wgt_base(_widget_label, _interface, robo, parent)
 {
-
+	robot = dynamic_cast <mrrocpp::ui::common_012::UiRobot *>(robo);
+	//ui->setupUi(this);
+	dwgt->setWindowTitle(QString::fromStdString((robo->getName())) + " sa");
 }
 
 wgt_servo_algorithm::~wgt_servo_algorithm()
@@ -23,17 +29,19 @@ wgt_servo_algorithm::~wgt_servo_algorithm()
 
 void wgt_servo_algorithm::setup_ui(QGridLayout *layout, int _rows_number)
 {
-	wgt_base::setup_ui(layout, _rows_number);
+	/*
+	 wgt_base::setup_ui(layout, _rows_number);
 
-	create_buttons_and_spin_boxes();
+	 create_buttons_and_spin_boxes();
 
-	for (int i = 0; i < rows_number; i++) {
-		gridLayout->addWidget(create_label_to_vector(axis_labels), i + 1, 0, 1, 1);
-	}
+	 for (int i = 0; i < rows_number; i++) {
+	 gridLayout->addWidget(create_label_to_vector(axis_labels), i + 1, 0, 1, 1);
+	 }
 
-	create_buttons();
+	 create_buttons();
 
-	wgt_base::create_buttons_and_spin_boxes(desired_pos_column, inc_move_column, rows_number);
+	 wgt_base::create_buttons_and_spin_boxes(desired_pos_column, inc_move_column, rows_number);
+	 */
 }
 
 void wgt_servo_algorithm::create_buttons_and_spin_boxes()
@@ -59,7 +67,7 @@ void wgt_servo_algorithm::synchro_depended_widgets_disable(bool set_disabled)
 {
 	copy_button->setDisabled(set_disabled);
 	//ui.pushButton_execute->setDisabled(set_disabled);
-	ui.pushButton_read->setDisabled(set_disabled);
+	ui->pushButton_read->setDisabled(set_disabled);
 //	ui.pushButton_import->setDisabled(set_disabled);
 	//ui.pushButton_export->setDisabled(set_disabled);
 

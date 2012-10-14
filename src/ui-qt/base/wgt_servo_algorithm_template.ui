@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>wgt_servo_algorithm_template</class>
- <widget class="QWidget" name="wgt_servo_algorithm_template">
+ <class>wgt_servo_algorithm_templateClass</class>
+ <widget class="QWidget" name="wgt_servo_algorithm_templateClass">
   <property name="geometry">
    <rect>
     <x>0</x>

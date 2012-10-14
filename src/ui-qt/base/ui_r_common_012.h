@@ -27,6 +27,9 @@ class Interface;
 }
 namespace common_012 {
 
+const std::string WGT_KINEMATIC = "WGT_KINEMATIC";
+const std::string WGT_SERVO_ALGORITHM = "WGT_SERVO_ALGORITHM";
+
 class EcpRobot;
 
 class UiRobot : public common::UiRobot

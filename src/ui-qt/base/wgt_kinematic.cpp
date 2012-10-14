@@ -10,7 +10,7 @@ wgt_kinematic::wgt_kinematic(QString _widget_label, mrrocpp::ui::common::Interfa
 		robot(robo)
 {
 	ui->setupUi(this);
-//	ui->robot_label->setText(QString::fromStdString((robo->getName())));
+	dwgt->setWindowTitle(QString::fromStdString((robo->getName()))+ " kinematic");
 	connect(this, SIGNAL(process_control_window_init_signal()), this, SLOT(process_control_window_init_slot()), Qt::QueuedConnection);
 }
 

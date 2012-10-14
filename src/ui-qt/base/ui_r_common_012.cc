@@ -15,7 +15,7 @@
 namespace mrrocpp {
 namespace ui {
 namespace common_012 {
-const std::string WGT_KINEMATIC = "WGT_KINEMATIC";
+
 // extern ui_state_def ui_state;
 
 //

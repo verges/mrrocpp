@@ -10,7 +10,8 @@ wgt_robot_process_control::wgt_robot_process_control(QString _widget_label, mrro
 		robot(robo)
 {
 	ui->setupUi(this);
-	ui->robot_label->setText(QString::fromStdString((robo->getName())));
+	ui->robot_label->setText(QString::fromStdString((robo->getName())) + " pc");
+	dwgt->setWindowTitle(QString::fromStdString((robo->getName())) + " pc");
 	connect(this, SIGNAL(process_control_window_init_signal()), this, SLOT(process_control_window_init_slot()), Qt::QueuedConnection);
 }
 

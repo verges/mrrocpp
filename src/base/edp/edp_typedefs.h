@@ -8,6 +8,8 @@
 #ifndef __EDP_TYPEDEFS_H
 #define __EDP_TYPEDEFS_H
 
+#include <string>
+
 namespace mrrocpp {
 namespace edp {
 namespace common {
@@ -27,6 +29,11 @@ enum ERROR_TYPE
 {
 	NO_ERROR, Fatal_erroR, NonFatal_erroR_2, NonFatal_erroR_3, NonFatal_erroR_4, System_erroR
 };
+
+
+const std::string FORCE_SENSOR_TEST_MODE = "force_sensor_test_mode";
+const std::string IMU_SENSOR_TEST_MODE = "imu_sensor_test_mode";
+const std::string IMU_GRAVITY_COMPENSATION = "imu_gravity_compensation";
 
 } // namespace common
 } // namespace edp

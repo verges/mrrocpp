@@ -126,6 +126,7 @@ void force::operator()()
 
 force::force(common::manip_effector &_master) :
 		imu_sensor_test_mode(true),
+		imu_gravity_compensation(true),
 		force_sensor_test_mode(true),
 		is_reading_ready(false), //!< nie ma zadnego gotowego odczytu
 		is_right_turn_frame(true),
@@ -142,12 +143,16 @@ force::force(common::manip_effector &_master) :
 
 	sr_msg->message("force");
 
-	if (master.config.exists(lib::IMU_SENSOR_TEST_MODE)) {
-		imu_sensor_test_mode = master.config.exists_and_true(lib::IMU_SENSOR_TEST_MODE);
+	if (master.config.exists(common::IMU_SENSOR_TEST_MODE)) {
+		imu_sensor_test_mode = master.config.exists_and_true(common::IMU_SENSOR_TEST_MODE);
 	}
 
-	if (master.config.exists(lib::FORCE_SENSOR_TEST_MODE)) {
-		force_sensor_test_mode = master.config.exists_and_true(lib::FORCE_SENSOR_TEST_MODE);
+	if (master.config.exists(common::IMU_GRAVITY_COMPENSATION)) {
+		imu_gravity_compensation = master.config.exists_and_true(common::IMU_GRAVITY_COMPENSATION);
+	}
+
+	if (master.config.exists(common::FORCE_SENSOR_TEST_MODE)) {
+		force_sensor_test_mode = master.config.exists_and_true(common::FORCE_SENSOR_TEST_MODE);
 	}
 
 	if (force_sensor_test_mode) {
@@ -422,8 +427,12 @@ lib::Ft_vector force::compute_inertial_force(lib::Xyz_Angle_Axis_vector & output
 
 //	msr_acc = lib::Xi_v(imu_frame) * msr_acc;
 
-	output_acc = msr_acc - ga_in_current_orientation;
-//	output_acc = msr_acc;
+	if (imu_gravity_compensation) {
+
+		output_acc = msr_acc - ga_in_current_orientation;
+	} else {
+		output_acc = msr_acc;
+	}
 //	output_acc = ga_in_current_orientation;
 	// zamieniamy ciężar na masę
 	output_force[0] = output_acc[0] * next_force_tool_weight / lib::G_ACC;

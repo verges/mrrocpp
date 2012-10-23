@@ -139,8 +139,8 @@ imu::imu(common::manip_effector &_master) :
 
 	sr_msg->message("imu constructor");
 
-	if (master.config.exists(lib::IMU_SENSOR_TEST_MODE)) {
-		imu_sensor_test_mode = master.config.exists_and_true(lib::IMU_SENSOR_TEST_MODE);
+	if (master.config.exists(common::IMU_SENSOR_TEST_MODE)) {
+		imu_sensor_test_mode = master.config.exists_and_true(common::IMU_SENSOR_TEST_MODE);
 	}
 
 	if (imu_sensor_test_mode) {

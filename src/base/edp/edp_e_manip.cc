@@ -43,8 +43,8 @@ bool manip_effector::compute_servo_joints_and_frame(void)
 		get_current_kinematic_model()->i2e_transform(servo_current_joints, local_matrix);
 		// Pobranie wsp. zewnetrznych w ukladzie
 
-		lib::Xyz_Euler_Zyz_vector servo_real_kartez_pos; // by Y polozenie we wspolrzednych xyz_euler_zyz obliczane co krok servo   XXXXX
-		local_matrix.get_xyz_euler_zyz(servo_real_kartez_pos);
+		lib::Xyz_Angle_Axis_vector servo_real_kartez_pos; // by Y polozenie we wspolrzednych xyz_euler_zyz obliczane co krok servo   XXXXX
+		local_matrix.get_xyz_angle_axis(servo_real_kartez_pos);
 
 		//obliczanie zadanej pozycji koncowki wedlug aktualnego rozkazu przetwarzanego w servo
 
@@ -62,8 +62,8 @@ bool manip_effector::compute_servo_joints_and_frame(void)
 		get_current_kinematic_model()->i2e_transform(servo_desired_joints, local_matrix);
 		// Pobranie wsp. zewnetrznych w ukladzie
 
-		lib::Xyz_Euler_Zyz_vector servo_desired_kartez_pos; // by Y polozenie we wspolrzednych xyz_euler_zyz obliczane co krok servo   XXXXX
-		local_matrix.get_xyz_euler_zyz(servo_desired_kartez_pos);
+		lib::Xyz_Angle_Axis_vector servo_desired_kartez_pos; // by Y polozenie we wspolrzednych xyz_euler_zyz obliczane co krok servo   XXXXX
+		local_matrix.get_xyz_angle_axis(servo_desired_kartez_pos);
 
 		// scope-locked reader data update
 		{

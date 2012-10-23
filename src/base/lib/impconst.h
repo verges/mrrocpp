@@ -63,8 +63,6 @@ const double TORQUE_RECIPROCAL_DAMPING = 0.1;
 const double G_ACC = 9.81;
 
 const std::string ROBOT_TEST_MODE = "robot_test_mode";
-const std::string FORCE_SENSOR_TEST_MODE = "force_sensor_test_mode";
-const std::string IMU_SENSOR_TEST_MODE = "imu_sensor_test_mode";
 
 // Stale czasowe
 

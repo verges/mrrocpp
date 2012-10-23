@@ -69,6 +69,13 @@ protected:
 	bool imu_sensor_test_mode;
 
 	/*!
+	 * \brief Decides if gravitational acceleration should be removed from imu measures
+	 *
+	 * It is taken from configuration data.
+	 */
+	bool imu_gravity_compensation;
+
+	/*!
 	 * \brief Info if the force sensor test mode is active.
 	 *
 	 * It is taken from configuration data.

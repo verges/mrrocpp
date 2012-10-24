@@ -132,12 +132,19 @@ void imu::configure_sensor(void)
 }
 
 imu::imu(common::manip_effector &_master) :
-		imu_sensor_test_mode(true), master(_master), new_edp_command(false), cb(IMU_BUFFER_LENGHT)
+		imu_sensor_test_mode(true), imu_buffer_length(1), master(_master), new_edp_command(false)
 {
+
 	sr_msg =
 			boost::shared_ptr <lib::sr_vsp>(new lib::sr_vsp(lib::EDP, "i_" + master.config.robot_name, master.config.get_sr_attach_point()));
 
 	sr_msg->message("imu constructor");
+
+	if (master.config.exists(common::IMU_BUFFER_LENGTH)) {
+		imu_buffer_length = master.config.value <int>(common::IMU_BUFFER_LENGTH);
+	}
+
+	cb = new boost::circular_buffer <lib::Xyz_Angle_Axis_vector>(imu_buffer_length);
 
 	if (master.config.exists(common::IMU_SENSOR_TEST_MODE)) {
 		imu_sensor_test_mode = master.config.exists_and_true(common::IMU_SENSOR_TEST_MODE);
@@ -149,10 +156,10 @@ imu::imu(common::manip_effector &_master) :
 
 	lib::Xyz_Angle_Axis_vector zero_data;
 
-	cb.clear();
+	cb->clear();
 
-	for (int i = 0; i < IMU_BUFFER_LENGHT; i++) {
-		cb.push_back(zero_data);
+	for (int i = 0; i < imu_buffer_length; i++) {
+		cb->push_back(zero_data);
 	}
 
 }
@@ -192,7 +199,7 @@ void imu::get_reading(void)
 	imu_acc[5] = ldata.angularAcceleration[2];
 
 	// dodanie nowej sily do bufora dla celow usredniania (filtracji dolnoprzepustowej)
-	cb.push_back(imu_acc);
+	cb->push_back(imu_acc);
 
 	lib::Xyz_Angle_Axis_vector imu_out;
 	// usredniamy za FORCE_BUFFER_LENGHT pomiarow
@@ -200,12 +207,10 @@ void imu::get_reading(void)
 		imu_out[j] = 0.0;
 	}
 
-	for (int i = 0; i < IMU_BUFFER_LENGHT; i++) {
-
+	for (int i = 0; i < imu_buffer_length; i++) {
 		for (int j = 0; j < 6; j++) {
-			imu_out[j] += (cb[i][j]) / (double) IMU_BUFFER_LENGHT;
+			imu_out[j] += ((*cb)[i][j]) / (double) imu_buffer_length;
 		}
-
 	}
 
 	master.imu_acc_dp.write(imu_out);

@@ -34,6 +34,8 @@ enum ERROR_TYPE
 const std::string FORCE_SENSOR_TEST_MODE = "force_sensor_test_mode";
 const std::string IMU_SENSOR_TEST_MODE = "imu_sensor_test_mode";
 const std::string IMU_GRAVITY_COMPENSATION = "imu_gravity_compensation";
+const std::string IMU_BUFFER_LENGTH = "imu_buffer_length";
+
 
 } // namespace common
 } // namespace edp

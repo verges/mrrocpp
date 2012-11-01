@@ -66,8 +66,6 @@ SET(GUI_CXX_SRCS
     base/WgtToolBase.cpp
     base/wgt_process_control.cpp
 	base/wgt_robot_process_control.cpp
-	base/wgt_kinematic.cpp
-	base/wgt_servo_algorithm.cpp
     base/ui_ecp_dialogs/wgt_yes_no.cpp    
     base/ui_ecp_dialogs/wgt_message.cpp
     base/ui_ecp_dialogs/wgt_input_integer.cpp
@@ -83,7 +81,6 @@ SET(GUI_CXX_SRCS
 	base/ui_ecp.cc
 	base/ui.cc
 	base/ui_robot.cc
-	base/ui_r_common_012.cc
 	base/signal_dispatcher.cpp
 	base/ui_ecp_robot/ui_ecp_r_base.cc
 )
@@ -121,8 +118,11 @@ SET(GUI_CXX_SRCS
 	irp6ot_tfg/ui_r_irp6ot_tfg.cc
 	sarkofag/ui_r_sarkofag.cc
 	conveyor/ui_r_conveyor.cc
+	base/ui_r_common_012.cc
 	base/ui_ecp_robot/ui_ecp_r_common_012.cc
     base/wgt_single_motor_move.cpp
+    base/wgt_kinematic.cpp
+	base/wgt_servo_algorithm.cpp
 )
 endif(ROBOTS_012)
 
@@ -134,8 +134,7 @@ SET(GUI_MOC_SRCS
     base/wgt_base.h
     base/wgt_process_control.h
 	base/wgt_robot_process_control.h
-	base/wgt_kinematic.h
-	base/wgt_servo_algorithm.h
+
     base/ui_ecp_dialogs/wgt_yes_no.h
     base/ui_ecp_dialogs/wgt_swarm.h
     base/ui_ecp_dialogs/wgt_message.h
@@ -179,6 +178,8 @@ SET(GUI_MOC_SRCS
 	irp6p_m/ui_r_irp6p_m.h
 	irp6p_tfg/ui_r_irp6p_tfg.h
 	base/wgt_single_motor_move.h
+	base/wgt_kinematic.h
+	base/wgt_servo_algorithm.h
 )
 endif(ROBOTS_012)
 
@@ -198,8 +199,6 @@ SET(GUI_UI
     base/ui_ecp_dialogs/wgt_choose_option.ui
     base/ui_ecp_dialogs/wgt_teaching.ui
     base/wgt_absolute_template.ui 
-    base/wgt_kinematic.ui
-    base/wgt_servo_algorithm_template.ui
     base/wgt_relative_template.ui
     base/wgt_tool_template.ui
 )
@@ -216,6 +215,8 @@ if(ROBOTS_012)
 SET(GUI_UI
     ${GUI_UI}
     base/wgt_single_motor_move.ui
+    base/wgt_kinematic.ui
+    base/wgt_servo_algorithm_template.ui
 )
 endif(ROBOTS_012)
 

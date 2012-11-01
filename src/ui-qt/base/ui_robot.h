@@ -179,14 +179,8 @@ public:
 		return 0;
 	}
 
-	virtual double* getCurrentPos()
-	{
-		return NULL;
-	}
-	virtual double* getDesiredPos()
-	{
-		return NULL;
-	}
+	double getCurrentPos(int i);
+	double getDesiredPos(int i);
 
 	virtual void synchronise() = 0;
 	virtual void unsynchronise() = 0;

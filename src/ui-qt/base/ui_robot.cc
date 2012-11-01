@@ -75,6 +75,17 @@ void UiRobot::create_thread()
 	}
 }
 
+double UiRobot::getCurrentPos(int i)
+{
+	return current_pos[i];
+}
+
+double UiRobot::getDesiredPos(int i)
+{
+	return desired_pos[i];
+}
+
+
 void UiRobot::setup_menubar()
 {
 	Ui::MenuBar *menuBar = interface.get_main_window()->getMenuBar();

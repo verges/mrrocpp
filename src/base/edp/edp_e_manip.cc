@@ -54,7 +54,7 @@ bool manip_effector::compute_servo_joints_and_frame(void)
 			usleep(1000);
 		}
 
-		lib::MotorArray servo_desired_motor_pos(sb->command.parameters.move.abs_position, number_of_servos);
+		lib::MotorArray servo_desired_motor_pos(sb->command.parameters.move.servo_desired_motor_pos_new, number_of_servos);
 
 		lib::JointArray servo_desired_joints(number_of_servos);
 

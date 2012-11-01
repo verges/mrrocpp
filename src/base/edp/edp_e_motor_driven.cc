@@ -67,7 +67,7 @@ void motor_driven_effector::get_arm_position_read_hardware_sb()
 
 	 if (is_synchronised()) {
 	 //  check_motor_position(desired_motor_pos_new);
-	 // dla sprawdzenia ograncizen w joints i motors
+	 // dla sprawdzenia ograniczen w joints i motors
 
 	 get_current_kinematic_model()->mp2i_transform(desired_motor_pos_new, desired_joints_tmp);
 
@@ -298,17 +298,6 @@ bool motor_driven_effector::compute_servo_joints_and_frame(void)
 			printf("servo thread compute_servo_joints_and_frame throw catch exception\n");
 		ret_val = false;
 	} //: catch
-
-	{
-		boost::mutex::scoped_lock lock(effector_mutex);
-
-		// przepisnie danych na zestaw globalny
-		for (int i = 0; i < number_of_servos; i++) {
-			servo_current_motor_pos[i];
-			servo_current_joints[i];
-		} //: for
-
-	}
 
 	return ret_val;
 }
@@ -589,11 +578,13 @@ lib::REPLY_TYPE motor_driven_effector::rep_type(const lib::c_buffer &instruction
 		}
 	}
 	//printf("receive_instruction 100\n");
-	flushall();
+	flushall()
+	;
 	// by Y
 	if (instruction.is_get_controller_state()) {
-	//	printf("receive_instruction 101\n");
-		flushall();
+		//	printf("receive_instruction 101\n");
+		flushall()
+		;
 		reply.reply_type = lib::CONTROLLER_STATE;
 	}
 
@@ -758,8 +749,9 @@ void motor_driven_effector::move_servos()
 	//		printf("edp_irp6s_and_conv_effector::move_servos: %f, %f\n", desired_motor_pos_new[1], desired_motor_pos_old[1]);
 
 	for (int i = 0; i < number_of_servos; i++) {
-		sb->servo_command.parameters.move.macro_step[i] = desired_motor_pos_new[i] - desired_motor_pos_old[i];
-		sb->servo_command.parameters.move.abs_position[i] = desired_motor_pos_new[i]; // by Y
+		sb->servo_command.parameters.move.servo_desired_motor_pos_new[i] = desired_motor_pos_new[i];
+		sb->servo_command.parameters.move.servo_desired_motor_pos_old[i] = desired_motor_pos_old[i];
+
 		//    nowa wartosc zadana staje sie stara
 
 		desired_motor_pos_old[i] = desired_motor_pos_new[i];
@@ -815,42 +807,49 @@ void motor_driven_effector::get_controller_state(lib::c_buffer &instruction)
 void motor_driven_effector::pre_synchro_loop(STATE& next_state)
 {
 	printf("receive_instruction\n");
-	flushall();
+	flushall()
+	;
 
 	while ((next_state != GET_INSTRUCTION) && (next_state != GET_SYNCHRO)) {
-	//	printf("receive_instruction 2\n");
-		flushall();
+		//	printf("receive_instruction 2\n");
+		flushall()
+		;
 		try { // w tym bloku beda wylapywane wyjatki (bledy)
 			switch (next_state)
 			{
 				case GET_STATE:
-			//		printf("receive_instruction 3\n");
-					flushall();
+					//		printf("receive_instruction 3\n");
+					flushall()
+					;
 					// wstepna interpretacja nadeslanego polecenia w celu wykrycia nieprawidlowosci
 					switch (receive_instruction())
 					{
 
 						case lib::GET:
-				//			printf("receive_instruction 4\n");
-							flushall();
+							//			printf("receive_instruction 4\n");
+							flushall()
+							;
 							// potwierdzenie przyjecia polecenia (dla ECP)
 							//            printf("SET_GET\n");
 
-							flushall();
+							flushall()
+							;
 
-					//		std::cout << "AA: " << (int) instruction.get_type << std::endl;
+							//		std::cout << "AA: " << (int) instruction.get_type << std::endl;
 
 							if ((rep_type(instruction)) == lib::CONTROLLER_STATE) {
 								// master_order(MT_GET_CONTROLLER_STATE, 0);
 								reply.reply_type = lib::ACKNOWLEDGE;
 								reply.reply_type = lib::ACKNOWLEDGE;
 								variant_reply_to_instruction();
-							//	printf("receive_instruction 5\n");
-						//		printf("receive_instruction 6\n");
-								flushall();
+								//	printf("receive_instruction 5\n");
+								//		printf("receive_instruction 6\n");
+								flushall()
+								;
 								interpret_instruction(instruction);
-							//	printf("receive_instruction 7\n");
-								flushall();
+								//	printf("receive_instruction 7\n");
+								flushall()
+								;
 							} else {
 								BOOST_THROW_EXCEPTION(nfe_1() << mrrocpp_error0(INVALID_INSTRUCTION_TYPE));
 
@@ -1329,7 +1328,8 @@ void motor_driven_effector::post_synchro_loop(STATE& next_state)
 
 			uint64_t error0 = 0;
 			printf("catch NonFatal_error_2 p3\n");
-			flushall();
+			flushall()
+			;
 			if (uint64_t const * tmp = boost::get_error_info <mrrocpp_error0>(error)) {
 				error0 = *tmp;
 			}

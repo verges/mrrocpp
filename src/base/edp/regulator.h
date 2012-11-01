@@ -94,6 +94,13 @@ public:
 	// obliczenie nastepnej wartosci zadanej dla napedu - metoda abstrakcyjna
 
 	double get_set_value(void) const;
+
+	// regulator desired abs position for particular step
+	double reg_abs_desired_motor_pos;
+
+	// regulator current abs position for particular step
+	double reg_abs_current_motor_pos;
+
 	double previous_abs_position; // poprzednia pozycja absolutna dla potrzeb trybu testowego
 	void insert_new_step(double ns);
 	void insert_measured_current(int measured_current_l);

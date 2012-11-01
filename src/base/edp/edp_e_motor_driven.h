@@ -149,7 +149,7 @@ protected:
 	void move_servos();
 
 	/*!
-	 * \brief motor position  currently computed in the servo
+	 * \brief current motor position taken in servo thread from hardware interface
 	 *
 	 * for the single step of servo control
 	 */

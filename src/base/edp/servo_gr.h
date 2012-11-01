@@ -69,9 +69,11 @@ struct edp_master_command
 			 */
 			uint16_t return_value_in_step_no;
 			/*! Length of a macrostep (given value of a macrostep - increase). */
-			double macro_step[lib::MAX_SERVOS_NR];
-			/*! Given absolute position at the end of a macrostep. */
-			double abs_position[lib::MAX_SERVOS_NR];
+
+			// rewritten for edp command
+			double servo_desired_motor_pos_new[lib::MAX_SERVOS_NR];
+			double servo_desired_motor_pos_old[lib::MAX_SERVOS_NR];
+
 		} move;
 		//------------------------------------------------------
 		struct
@@ -161,7 +163,7 @@ public:
 
 	lib::condition_synchroniser thread_started;
 
-	edp_master_command command; // polecenie z EDP_MASTER dla SERVO
+	edp_master_command command; // polecenie z EDP_MASTER dla SERVO po przepisaniu
 	double axe_inc_per_revolution[lib::MAX_SERVOS_NR];
 	double synchro_step_coarse[lib::MAX_SERVOS_NR];
 	double synchro_step_fine[lib::MAX_SERVOS_NR];

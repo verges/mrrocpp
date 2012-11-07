@@ -74,6 +74,17 @@ protected:
 
 	lib::GRIPPER_STATE_ENUM reg_state, next_reg_state, prev_reg_state; // stany w ktorych moze byc regulator
 
+	// uchyb polozenia osi
+	double abs_pos_dev;
+	// uchyb polozenia osi w poprzednim kroku
+	double abs_pos_dev_old;
+	// przyrost uchybu polozenia wzgledem poprzedniego kroku
+	double delta_abs_pos_dev;
+	// calka uchybu (od poczatku ruchu)
+	double abs_pos_dev_int;
+	// calka uchybu w poprzednim kroku
+	double abs_pos_dev_int_old;
+
 	// maksymalny predkosc zadana (przyrost na jeden krok) w radianach na wale silnika
 	double desired_velocity_limit;
 

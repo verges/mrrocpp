@@ -34,6 +34,8 @@ NL_regulator_8_sarkofag::NL_regulator_8_sarkofag(uint8_t _axis_number, uint8_t r
 	sum_of_currents = current_index = 0;
 
 	display = 0;
+	deviation = 0;
+	deviation_integral = 0;
 
 	// Konstruktor regulatora konkretnego
 	// Przy inicjacji nalezy dopilnowac, zeby numery algorytmu regulacji oraz zestawu jego parametrow byly
@@ -177,6 +179,33 @@ uint8_t NL_regulator_8_sarkofag::compute_set_value(void)
 						break;
 				} // end: switch (algorithm_parameters_no)
 				break;
+			case 2:
+				switch (algorithm_parameters_no)
+				{
+					case 0: // zestaw parametrow nr 0
+						current_algorithm_parameters_no = algorithm_parameters_no;
+						current_algorithm_no = algorithm_no;
+						a = 0;
+						b0 = 0;
+						b1 = 0;
+						k_feedforward = 0;
+						break;
+					case 1: // zestaw parametrow nr 1
+						current_algorithm_parameters_no = algorithm_parameters_no;
+						current_algorithm_no = algorithm_no;
+						a = 0;
+						b0 = 0;
+						b1 = 0;
+						k_feedforward = 0;
+						break;
+					default: // blad - nie ma takiego zestawu parametrow dla tego algorytmu
+						// => przywrocic stary algorytm i j stary zestaw parametrow
+						algorithm_no = current_algorithm_no;
+						algorithm_parameters_no = current_algorithm_parameters_no;
+						alg_par_status = common::UNIDENTIFIED_ALGORITHM_PARAMETERS_NO;
+						break;
+				} // end: switch (algorithm_parameters_no)
+				break;
 			default: // blad - nie ma takiego algorytmu
 				// => przywrocic stary algorytm i j stary zestaw parametrow
 				algorithm_no = current_algorithm_no;
@@ -186,8 +215,11 @@ uint8_t NL_regulator_8_sarkofag::compute_set_value(void)
 		}; // end: switch (algorithm_no)
 	}
 
-	double kp = 0.5;
-	double ki = 0.02;
+	double kp = 1;
+	double ki = 0.05;
+
+	double szym_kp = 1;
+	double szym_ki = 0.5;
 
 	a = 0;
 	b0 = kp * (1 + ki);
@@ -201,13 +233,31 @@ uint8_t NL_regulator_8_sarkofag::compute_set_value(void)
 			// obliczenie nowej wartosci wypelnienia PWM algorytm PD + I
 
 			set_value_new = (1 + a) * set_value_old - a * set_value_very_old + b0 * delta_eint - b1 * delta_eint_old;
+			//set_value_new = set_value_old + kp * deviation + ki * delta_eint;
 
 			break;
+
 		case 1: // algorytm nr 1
 			// obliczenie nowej wartosci wypelnienia PWM algorytm PD + I
 			set_value_new = (1 + a) * set_value_old - a * set_value_very_old
 					+ b0 * (step_new_pulse - position_increment_new) - b1 * (step_old_pulse - position_increment_old);
 			break;
+
+		case 2:
+
+			abs_pos_dev = reg_abs_desired_motor_pos - reg_abs_current_motor_pos;
+			abs_pos_dev_int = abs_pos_dev_int_old + abs_pos_dev * lib::EDP_STEP;
+
+			// przyrost calki uchybu, czyli calka w tym kroku minus calka w poprzednim, obie znamy
+			delta_eint = abs_pos_dev_int - abs_pos_dev_int_old;
+			// przyrost uchybu polozenia wzgledem poprzedniego kroku
+			delta_abs_pos_dev = abs_pos_dev_old - abs_pos_dev;
+
+			// 								czlon proporcjonalny		czlon calkujacy
+			//set_value_new = set_value_old + (kp * delta_abs_pos_dev) + (ki * delta_eint);
+			set_value_new = szym_kp * abs_pos_dev + szym_ki * abs_pos_dev_int;
+			break;
+
 		default: // w tym miejscu nie powinien wystapic blad zwiazany z
 			// nieistniejacym numerem algorytmu
 			set_value_new = 0; // zerowe nowe sterowanie

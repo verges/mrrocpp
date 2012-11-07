@@ -753,7 +753,10 @@ void motor_driven_effector::move_servos()
 		sb->servo_command.parameters.move.servo_desired_motor_pos_old[i] = desired_motor_pos_old[i];
 
 		//    nowa wartosc zadana staje sie stara
-
+		/*
+		 std::cout << "servo desired pos: " << desired_motor_pos_new[i] << "\desired_motor_pos_old.: "
+		 << desired_motor_pos_old[i] << "\n";
+		 */
 		desired_motor_pos_old[i] = desired_motor_pos_new[i];
 	}
 

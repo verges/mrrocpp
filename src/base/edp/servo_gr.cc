@@ -137,6 +137,9 @@ void servo_buffer::compute_current_measurement_statistics()
 /*-----------------------------------------------------------------------*/
 uint8_t servo_buffer::Move_a_step(void)
 {
+
+	static bool reg_abs_desired_motor_pos_initialized = false;
+
 	// obliczenie statystyk pradu
 	compute_current_measurement_statistics();
 	// wykonac ruch o krok nie reagujac na SYNCHRO_SWITCH oraz SYNCHRO_ZERO
@@ -148,6 +151,13 @@ uint8_t servo_buffer::Move_a_step(void)
 			double abs_pos = hi->get_position(i) * (2 * M_PI) / axe_inc_per_revolution[i];
 			master.update_servo_current_motor_pos_abs(abs_pos, i);
 			regulator_ptr[i]->reg_abs_current_motor_pos = abs_pos;
+			if (!reg_abs_desired_motor_pos_initialized) {
+				reg_abs_desired_motor_pos_initialized = true;
+				command.parameters.move.servo_desired_motor_pos_old[i] =
+						command.parameters.move.servo_desired_motor_pos_new[i] = abs_pos;
+				regulator_ptr[i]->reg_abs_desired_motor_pos = abs_pos;
+			}
+
 		}
 	}
 
@@ -562,7 +572,6 @@ void servo_buffer::Move(void)
 
 		for (int k = 0; k < master.number_of_servos; k++) {
 			regulator_ptr[k]->insert_new_step(new_increment[k]);
-
 			regulator_ptr[k]->reg_abs_desired_motor_pos = command.parameters.move.servo_desired_motor_pos_old[k]
 					+ step_number_in_macrostep
 							* (command.parameters.move.servo_desired_motor_pos_new[k]

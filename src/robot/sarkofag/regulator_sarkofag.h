@@ -24,6 +24,9 @@ class NL_regulator_8_sarkofag : public common::NL_regulator
 	// Obiekt z algorytmem regulacji
 	long gripper_blocked_start_time;
 	int sum_of_currents, current_index;
+	double deviation;
+	double deviation_integral;
+
 
 public:
 	NL_regulator_8_sarkofag(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, double aa, double bb0, double bb1, double k_ff, common::motor_driven_effector &_master, common::REG_OUTPUT _reg_output); // konstruktor

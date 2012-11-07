@@ -62,6 +62,12 @@ regulator::regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, c
 
 	measured_current = 0; // prad zmierzony
 	PWM_value = 0; // zadane wypelnienie PWM
+
+	abs_pos_dev = 0;
+	abs_pos_dev_int = 0;
+	abs_pos_dev_int_old = 0;
+	reg_abs_current_motor_pos = 0;
+	reg_abs_desired_motor_pos = 0;
 }
 /*-----------------------------------------------------------------------*/
 
@@ -252,7 +258,7 @@ void NL_regulator::compute_set_value_final_computations()
 		set_value_new = -MAX_PWM;
 
 	// use existing axis_number to display particular regulator data, otherwise set to 10
-	int display_axis_number = 10;
+	int display_axis_number = 0;
 
 	if (axis_number == display_axis_number) {
 		if (last_servo_mode != master.servo_mode) {
@@ -267,7 +273,8 @@ void NL_regulator::compute_set_value_final_computations()
 
 			output_value = set_value_new;
 			// use axis_number to display particular regulator data
-			if ((axis_number == display_axis_number) && (master.servo_mode == true)) {
+			//	if ((axis_number == display_axis_number) && (master.servo_mode == true)) {
+			if ((axis_number == display_axis_number)) {
 				std::cout << "pwm_a: " << display_axis_number << " sm: " << master.servo_mode << " meassured_current: "
 						<< measured_current << " desired_pwm: " << output_value << " kp: "
 						<< measured_current / output_value << " pin: " << position_increment_new << std::endl;
@@ -285,12 +292,18 @@ void NL_regulator::compute_set_value_final_computations()
 				output_value = -max_output_current;
 			}
 			// use axis_number to display particular regulator data
-			if ((axis_number == display_axis_number) && (master.servo_mode == true))
-			//if ((axis_number == display_axis_number))
-					{
-				std::cout << "cascade_a: " << display_axis_number << " sm: " << master.servo_mode
-						<< " meassured_current: " << measured_current << " desired_current: " << output_value
-						<< " pin: " << position_increment_new << std::endl;
+			//	if ((axis_number == display_axis_number) && (master.servo_mode == true))
+			if ((axis_number == display_axis_number)) {
+				//if ((axis_number == display_axis_number))				{
+				double dev = reg_abs_desired_motor_pos - reg_abs_current_motor_pos;
+				double des = reg_abs_desired_motor_pos;
+				double cur = reg_abs_current_motor_pos;
+				/*std::cout << "cascade_a: " << display_axis_number << " sm: " << master.servo_mode
+				 << " meassured_current: " << measured_current << " desired_current: " << output_value
+				 << " pin: " << position_increment_new << std::endl;*/
+				std::cout << "desired pos.: " << des << "\tcurrent pos.: " << cur << "\tdeviation: " << dev
+						<< "\tdev_integral: " << abs_pos_dev_int << "\tdes. current: " << output_value
+						<< "\tmeas. current: " << measured_current << "\n";
 			}
 
 		}
@@ -304,6 +317,9 @@ void NL_regulator::compute_set_value_final_computations()
 	set_value_very_old = set_value_old;
 	set_value_old = set_value_new;
 	PWM_value = (int) set_value_new;
+
+	abs_pos_dev_old = abs_pos_dev;
+	abs_pos_dev_int_old = abs_pos_dev_int;
 }
 
 NL_regulator::~NL_regulator()

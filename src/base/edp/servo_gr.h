@@ -240,6 +240,8 @@ public:
 	//! wydruk - do celow uruchomieniowych !!!
 	void ppp(void) const;
 
+	int display_axis_number;
+
 };
 /*-----------------------------------------------------------------------*/
 

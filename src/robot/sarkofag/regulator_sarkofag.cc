@@ -218,8 +218,8 @@ uint8_t NL_regulator_8_sarkofag::compute_set_value(void)
 	double kp = 1;
 	double ki = 0.05;
 
-	double szym_kp = 1;
-	double szym_ki = 0.5;
+	double szym_kp = 40;
+	double szym_ki = 5;
 
 	a = 0;
 	b0 = kp * (1 + ki);

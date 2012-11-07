@@ -68,6 +68,7 @@ regulator::regulator(uint8_t _axis_number, uint8_t reg_no, uint8_t reg_par_no, c
 	abs_pos_dev_int_old = 0;
 	reg_abs_current_motor_pos = 0;
 	reg_abs_desired_motor_pos = 0;
+
 }
 /*-----------------------------------------------------------------------*/
 
@@ -257,8 +258,7 @@ void NL_regulator::compute_set_value_final_computations()
 	if (set_value_new < -MAX_PWM)
 		set_value_new = -MAX_PWM;
 
-	// use existing axis_number to display particular regulator data, otherwise set to 10
-	int display_axis_number = 0;
+	int display_axis_number = master.sb->display_axis_number;
 
 	if (axis_number == display_axis_number) {
 		if (last_servo_mode != master.servo_mode) {

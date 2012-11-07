@@ -383,7 +383,8 @@ SERVO_COMMAND servo_buffer::command_type() const
 servo_buffer::servo_buffer(motor_driven_effector & _master) :
 		servo_command_rdy(false), sg_reply_rdy(false), step_number_in_macrostep(0), thread_started(), master(_master)
 {
-
+	// to be changed in particular robot sb;
+	display_axis_number = 10;
 }
 
 /*-----------------------------------------------------------------------*/

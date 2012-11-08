@@ -189,6 +189,9 @@ void UiRobot::setup_menubar()
 	action_Tool_Xyz_Angle_Axis =
 			new Ui::MenuBarAction(QString("Xyz &Angle Axis"), wgts[WGT_TOOL_ANGLE_AXIS], signalDispatcher, menuBar);
 
+	action_Front_Position = new Ui::MenuBarAction(QString("&Front Position"), this, menuBar);
+	menu_Preset_Positions->addAction(action_Front_Position);
+
 	menu_Absolute_Moves = new QMenu(robot_menu);
 	menu_Relative_Moves = new QMenu(robot_menu);
 	menu_Tool = new QMenu(robot_menu);
@@ -210,6 +213,9 @@ void UiRobot::setup_menubar()
 	menu_Absolute_Moves->setTitle(QApplication::translate("MainWindow", "A&bsolute moves", 0, QApplication::UnicodeUTF8));
 	menu_Relative_Moves->setTitle(QApplication::translate("MainWindow", "Re&lative Moves", 0, QApplication::UnicodeUTF8));
 	menu_Tool->setTitle(QApplication::translate("MainWindow", "&Tool", 0, QApplication::UnicodeUTF8));
+
+	connect(action_Front_Position, SIGNAL(triggered(mrrocpp::ui::common::UiRobot*)), signalDispatcher, SLOT(on_Front_Position_triggered(mrrocpp::ui::common::UiRobot*)), Qt::AutoCompatConnection);
+
 
 }
 

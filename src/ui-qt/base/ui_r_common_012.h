@@ -50,9 +50,10 @@ public:
 protected:
 
 	QMenu *menu_Pre_Synchro_Moves;
+	QMenu *menu_Preset_Positions;
 
 private:
-	QMenu *menu_Preset_Positions;
+
 	QMenu *menu_Special;
 
 	QAction *action_UnSynchronisation;
@@ -61,7 +62,6 @@ private:
 	QAction *action_Servo_Algorithm;
 
 	QAction *action_Synchro_Position;
-	QAction *action_Front_Position;
 	QAction *action_Position_0;
 	QAction *action_Position_1;
 	QAction *action_Position_2;

@@ -53,7 +53,6 @@ public:
 
 	virtual void synchronise();
 
-
 	int execute_motor_motion();
 	int execute_joint_motion();
 
@@ -67,8 +66,6 @@ public:
 
 protected:
 
-
-
 private:
 
 	QAction *action_Pre_Synchro_Moves_Motors;
@@ -79,7 +76,7 @@ private:
 	QAction *action_Tool_Xyz_Euler_Zyz;
 	QAction *action_Tool_Xyz_Angle_Axis;
 	QAction *action_Absolute_Moves_Motors;
-
+	QAction *action_Front_Position;
 
 	QMenu *menu_Absolute_Moves;
 	QMenu *menu_Relative_Moves;

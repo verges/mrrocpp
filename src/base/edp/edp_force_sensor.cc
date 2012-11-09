@@ -417,22 +417,23 @@ lib::Ft_vector force::compute_inertial_force(lib::Xyz_Angle_Axis_vector & output
 
 	lib::Xyz_Angle_Axis_vector msr_acc = master.imu_acc_dp.read();
 
-	lib::Xyz_Angle_Axis_vector ga_in_current_orientation = lib::Xi_star(!curr_frame) * gravitational_acceleration;
+	lib::Xyz_Angle_Axis_vector ga_in_current_orientation = lib::Xi_star(!imu_frame) * lib::Xi_star(!curr_frame)
+			* gravitational_acceleration;
 	/*
 	 msr_acc[3] = 0.0;
 	 msr_acc[4] = 0.0;
 	 msr_acc[5] = 0.0;
 	 */
-	msr_acc = lib::Xi_v(!tool_mass_center_translation) * lib::Xi_v(imu_frame) * msr_acc;
-
-//	msr_acc = lib::Xi_v(imu_frame) * msr_acc;
 
 	if (imu_gravity_compensation) {
 
-		output_acc = msr_acc - ga_in_current_orientation;
-	} else {
-		output_acc = msr_acc;
+		msr_acc = msr_acc - ga_in_current_orientation;
 	}
+
+	msr_acc = lib::Xi_v(!tool_mass_center_translation) * lib::Xi_v(imu_frame) * msr_acc;
+
+	output_acc = msr_acc;
+
 //	output_acc = ga_in_current_orientation;
 	// zamieniamy ciężar na masę
 	output_force[0] = output_acc[0] * next_force_tool_weight / lib::G_ACC;

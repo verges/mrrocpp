@@ -39,21 +39,21 @@ tff_nose_run::tff_nose_run(common::task::task& _ecp_task, int step) :
 
 void tff_nose_run::conditional_execution()
 {
-	ecp_mp::generator::tff_nose_run::behaviour_specification_data_type beh;
 
 	switch ((ecp_mp::generator::tff_nose_run::communication_type) ecp_t.mp_command.ecp_next_state.variant)
-        {
+	{
 
-		case ecp_mp::generator::tff_nose_run::behaviour_specification:
+		case ecp_mp::generator::tff_nose_run::behaviour_specification: {
+			ecp_mp::generator::tff_nose_run::behaviour_specification_data_type beh;
 			ecp_t.mp_command.ecp_next_state.sg_buf.get(beh);
+			configure_behaviour(beh.behaviour[0], beh.behaviour[1], beh.behaviour[2], beh.behaviour[3], beh.behaviour[4], beh.behaviour[5]);
 			break;
+		}
 		case ecp_mp::generator::tff_nose_run::no_data:
 			break;
 		default:
 			break;
 	}
-
-	configure_behaviour(beh.behaviour[0], beh.behaviour[1], beh.behaviour[2], beh.behaviour[3], beh.behaviour[4], beh.behaviour[5]);
 
 	Move();
 }

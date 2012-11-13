@@ -46,29 +46,18 @@ void imu::create_robots()
 	ACTIVATE_MP_ROBOT(irp6ot_m);
 
 	ACTIVATE_MP_ROBOT(irp6p_m);
+	sr_ecp_msg->message("MP IMU LOADED");
 
 }
 
 void imu::main_task_algorithm(void)
 {
 
-	sr_ecp_msg->message("New edge_follow_mr series");
-
-	std::stringstream ss(std::stringstream::in | std::stringstream::out);
-
-	lib::Xyz_Euler_Zyz_vector rel_eu(0, 0, 0, -1.57, 1.57, 1.57);
-	lib::Homog_matrix tmp_hm(rel_eu);
-	lib::Xyz_Angle_Axis_vector rel_aa;
-	tmp_hm.get_xyz_angle_axis(rel_aa);
-
-	ss << rel_aa;
-
-	sr_ecp_msg->message(ss.str().c_str());
+	sr_ecp_msg->message("MP IMU STARTED");
 
 	// wybor manipulatora do sterowania na podstawie konfiguracji
 
 	lib::robot_name_t manipulator_name;
-
 
 	// ROBOT IRP6_ON_TRACK
 	if (config.exists_and_true("is_active", "[edp_irp6ot_m]")) {

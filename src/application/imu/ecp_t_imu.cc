@@ -47,7 +47,9 @@ ecp_imu::ecp_imu(lib::configurator &_config) :
 
 	{
 		common::generator::tff_nose_run *ecp_gen = new common::generator::tff_nose_run(*this, 8);
-		ecp_gen->configure_pulse_check(true);
+		ecp_gen->configure_pulse_check(false);
+		ecp_gen->configure_behaviour(lib::UNGUARDED_MOTION, lib::UNGUARDED_MOTION, lib::CONTACT, lib::UNGUARDED_MOTION, lib::UNGUARDED_MOTION, lib::UNGUARDED_MOTION);
+		ecp_gen->configure_velocity(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		register_generator(ecp_gen);
 	}
 

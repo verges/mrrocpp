@@ -29,6 +29,7 @@ add_subdirectory (wii_teach)
 add_subdirectory (android_teach)
 add_subdirectory (trajectory_stats)
 add_subdirectory (en_labyrinth)
+add_subdirectory (imu)
 endif(ROBOTS_012)
 
 if(ROBOT_BIRD_HAND)

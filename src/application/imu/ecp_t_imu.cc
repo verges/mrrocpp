@@ -48,8 +48,31 @@ ecp_imu::ecp_imu(lib::configurator &_config) :
 	{
 		common::generator::tff_nose_run *ecp_gen = new common::generator::tff_nose_run(*this, 8);
 		ecp_gen->configure_pulse_check(false);
-		ecp_gen->configure_behaviour(lib::UNGUARDED_MOTION, lib::UNGUARDED_MOTION, lib::CONTACT, lib::UNGUARDED_MOTION, lib::UNGUARDED_MOTION, lib::UNGUARDED_MOTION);
-		ecp_gen->configure_velocity(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+		double rod = 0.0;
+		double inertia = 0.0;
+		double velocity = 0.0;
+
+		if (config.exists("reciprocal_of_damping", "[motion]")) {
+
+			rod = config.value <double>("reciprocal_of_damping", "[motion]");
+		}
+
+		if (config.exists("inertia", "[motion]")) {
+
+			inertia = config.value <double>("inertia", "[motion]");
+		}
+
+		if (config.exists("velocity", "[motion]")) {
+
+			velocity = config.value <double>("velocity", "[motion]");
+		}
+
+		ecp_gen->configure_behaviour(lib::UNGUARDED_MOTION, lib::UNGUARDED_MOTION, lib::GUARDED_MOTION, lib::UNGUARDED_MOTION, lib::UNGUARDED_MOTION, lib::UNGUARDED_MOTION);
+		ecp_gen->configure_velocity(0.0, 0.0, velocity, 0.0, 0.0, 0.0);
+		ecp_gen->configure_reciprocal_damping(0.0, 0.0, rod, 0.0, 0.0, 0.0);
+		ecp_gen->configure_inertia(0.0, 0.0, inertia, 0.0, 0.0, 0.0);
+
 		register_generator(ecp_gen);
 	}
 

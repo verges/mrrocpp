@@ -54,17 +54,14 @@ ecp_imu::ecp_imu(lib::configurator &_config) :
 		double velocity = 0.0;
 
 		if (config.exists("reciprocal_of_damping", "[motion]")) {
-
 			rod = config.value <double>("reciprocal_of_damping", "[motion]");
 		}
 
 		if (config.exists("inertia", "[motion]")) {
-
 			inertia = config.value <double>("inertia", "[motion]");
 		}
 
 		if (config.exists("velocity", "[motion]")) {
-
 			velocity = config.value <double>("velocity", "[motion]");
 		}
 

@@ -71,18 +71,27 @@ ImuData IMU::getReading()
 
 		int select_retval = select(fd + 1, &rfds, NULL, NULL, &timeout);
 
-		if (select_retval == 0) {
-			printf("imu 16362 timeout !!! \n");
-			throw std::runtime_error("imu 16362 timeout !!!");
+		if (select_retval < 0) {
+			printf("imu 16362 <0 !! \n");
+			//	throw std::runtime_error("imu 16362 <0 !!!");
+		} else if (select_retval == 0) {
+			printf("imu 16362 ==0 timeout !!! \n");
+			//	throw std::runtime_error("imu 16362 ==0  timeout !!!");
 		} else {
+			//printf("imu 16362 >0  \n");
 			int ret = read(fd, data + dlen, 50 - dlen);
 			if (ret <= 0)
 				continue;
+			//	printf("imu 16362 >0 2  \n");
 			dlen += ret;
+			bool myexit = false;
 			for (unsigned int i = 0; i < dlen; i++) {
+
 				if (data[i] == '\n') {
-					if (i > 21)
+					if (i > 21) {
 						interpret(data + i - 22);
+						myexit = true;
+					}
 					unsigned int k = 0;
 
 					for (unsigned int j = i + 1; j < dlen; j++) {
@@ -92,9 +101,15 @@ ImuData IMU::getReading()
 					dlen = k;
 
 					i = 0;
+
 				}
 			}
-			return imu_data;
+
+			if (myexit) {
+				//	printf("imu 16362 >0 3  \n");
+				return imu_data;
+			}
+
 		}
 	}
 }

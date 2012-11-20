@@ -158,6 +158,12 @@ public:
 	virtual void synchronise(void) = 0;
 
 	/**
+	 * @brief send the unsynchronise command to EDP
+	 *
+	 */
+	virtual void unsynchronise(void) = 0;
+
+	/**
 	 * @brief returns synchronised flag - synchronisation status
 	 */
 	bool is_synchronised(void) const;
@@ -372,6 +378,16 @@ public:
 		query(); // Odebranie wyniku zlecenia
 
 		synchronised = (reply_package.reply_type == lib::SYNCHRO_OK);
+	}
+
+	void unsynchronise(void)
+	{
+		// komunikacja wlasciwa
+		ecp_command.instruction_type = lib::UNSYNCHRO;
+
+		send(); // Wyslanie zlecenia synchronizacji
+		query(); // Odebranie wyniku zlecenia
+
 	}
 
 	void send()

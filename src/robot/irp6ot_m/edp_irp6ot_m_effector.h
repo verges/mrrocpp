@@ -34,7 +34,8 @@ protected:
 	// Metoda tworzy modele kinematyczne dla robota IRp-6 na postumencie.
 	virtual void create_kinematic_models_for_given_robot(void);
 
-	boost::thread thread_id;
+	boost::thread vs_tid;
+	boost::thread imu_tid;
 
 public:
 	effector(common::shell &_shell);

@@ -214,7 +214,7 @@ namespace mrrocpp {
                             desired_position_matrix.set_from_xyz_angle_axis(coordinates);
                             ((!start_position_matrix) * desired_position_matrix).get_xyz_angle_axis(relative_angle_axis_vector);
 
-                            it->xsi_star_matrix = lib::Ft_tr(!start_position_matrix.return_with_with_removed_translation());
+                            it->xsi_star_matrix = lib::Xi_f(!start_position_matrix.return_with_with_removed_translation());
                             relative_angle_axis_vector_with_changed_configuration = it->xsi_star_matrix * relative_angle_axis_vector;
 
                             relative_angle_axis_vector_with_changed_configuration.to_vector(it->coordinates);

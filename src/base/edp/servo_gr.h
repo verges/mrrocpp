@@ -45,7 +45,7 @@ const int SYNCHRO_FINAL_STOP_STEP_NUMBER = 25; // liczba krokow zatrzymania podc
 //------------------------------------------------------------------------------
 enum SERVO_COMMAND
 {
-	MOVE, READ, SYNCHRONISE, SERVO_ALGORITHM_AND_PARAMETERS
+	MOVE, READ, SYNCHRONISE, UNSYNCHRONISE, SERVO_ALGORITHM_AND_PARAMETERS
 };
 
 //------------------------------------------------------------------------------
@@ -69,9 +69,11 @@ struct edp_master_command
 			 */
 			uint16_t return_value_in_step_no;
 			/*! Length of a macrostep (given value of a macrostep - increase). */
-			double macro_step[lib::MAX_SERVOS_NR];
-			/*! Given absolute position at the end of a macrostep. */
-			double abs_position[lib::MAX_SERVOS_NR];
+
+			// rewritten for edp command
+			double servo_desired_motor_pos_new[lib::MAX_SERVOS_NR];
+			double servo_desired_motor_pos_old[lib::MAX_SERVOS_NR];
+
 		} move;
 		//------------------------------------------------------
 		struct
@@ -161,7 +163,7 @@ public:
 
 	lib::condition_synchroniser thread_started;
 
-	edp_master_command command; // polecenie z EDP_MASTER dla SERVO
+	edp_master_command command; // polecenie z EDP_MASTER dla SERVO po przepisaniu
 	double axe_inc_per_revolution[lib::MAX_SERVOS_NR];
 	double synchro_step_coarse[lib::MAX_SERVOS_NR];
 	double synchro_step_fine[lib::MAX_SERVOS_NR];
@@ -210,6 +212,10 @@ public:
 
 	virtual void synchronise(void);
 
+	//! synchronizacja
+
+	virtual void unsynchronise(void);
+
 	//! ustawia flage w hardware interfejs powodujaca stop awaryjny
 	void set_hi_panic(void);
 
@@ -229,10 +235,12 @@ public:
 	int synchro_move_to_encoder_zero(common::regulator* &crp, int j);
 
 	//! obliczenie nastepnej wartosci zadanej dla wszystkich napedow
-	uint64_t compute_all_set_values(void);
+	virtual uint64_t compute_all_set_values(void);
 
 	//! wydruk - do celow uruchomieniowych !!!
 	void ppp(void) const;
+
+	int display_axis_number;
 
 };
 /*-----------------------------------------------------------------------*/

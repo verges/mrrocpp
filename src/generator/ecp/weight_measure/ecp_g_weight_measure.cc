@@ -111,7 +111,7 @@ bool weight_measure::next_step()
 
 	//	std::cout << 	current_frame_wo_offset << std::endl;
 
-	lib::Ft_v_vector force_torque(lib::Ft_tr(current_frame_wo_offset)
+	lib::Ft_v_vector force_torque(lib::Xi_f(current_frame_wo_offset)
 			* lib::Ft_vector(the_robot->reply_package.arm.pf_def.force_xyz_torque_xyz));
 
 	insert_in_buffer(-force_torque[2]);

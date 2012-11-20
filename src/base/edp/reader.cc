@@ -36,7 +36,7 @@ namespace edp {
 namespace common {
 
 reader_config::reader_config() :
-	step(false), measure_time(false), servo_mode(false)
+		step(false), measure_time(false), servo_mode(false)
 {
 	for (std::size_t i = 0; i < lib::MAX_SERVOS_NR; ++i) {
 		desired_inc[i] = false;
@@ -45,13 +45,14 @@ reader_config::reader_config() :
 		uchyb[i] = false;
 		abs_pos[i] = false;
 		current_joints[i] = false;
-                desired_joints[i] = false;
+		desired_joints[i] = false;
 	}
 
 	for (int i = 0; i < 6; ++i) {
-		force[i] = false;
+		computed_force[i] = false;
 		desired_force[i] = false;
-		filtered_force[i] = false;
+		adjusted_force[i] = false;
+		inertial_force[i] = false;
 		desired_cartesian_position[i] = false;
 		real_cartesian_position[i] = false;
 		real_cartesian_vel[i] = false;
@@ -60,7 +61,7 @@ reader_config::reader_config() :
 }
 
 reader_buffer::reader_buffer(motor_driven_effector &_master) :
-	new_data(false), master(_master), write_csv(true)
+		new_data(false), master(_master), write_csv(true)
 {
 	thread_id = boost::thread(boost::bind(&reader_buffer::operator(), this));
 }
@@ -90,7 +91,7 @@ void reader_buffer::operator()()
 	std::string reader_meassures_dir;
 
 	if (master.config.exists("reader_meassures_dir")) {
-		reader_meassures_dir = master.config.value <std::string> ("reader_meassures_dir", lib::UI_SECTION);
+		reader_meassures_dir = master.config.value <std::string>("reader_meassures_dir", lib::UI_SECTION);
 	} else {
 		reader_meassures_dir = master.config.return_default_reader_measures_path();
 	}
@@ -98,7 +99,7 @@ void reader_buffer::operator()()
 	std::string robot_filename = master.config.get_edp_reader_attach_point();
 
 	if (master.config.exists("reader_samples"))
-		nr_of_samples = master.config.value <int> ("reader_samples");
+		nr_of_samples = master.config.value <int>("reader_samples");
 	else
 		nr_of_samples = 1000;
 
@@ -128,21 +129,24 @@ void reader_buffer::operator()()
 		sprintf(tmp_string, "current_joints_%d", j);
 		reader_cnf.current_joints[j] = master.config.check_config(tmp_string);
 
-                sprintf(tmp_string, "desired_joints_%d", j);
-                reader_cnf.desired_joints[j] = master.config.check_config(tmp_string);
+		sprintf(tmp_string, "desired_joints_%d", j);
+		reader_cnf.desired_joints[j] = master.config.check_config(tmp_string);
 
 		sprintf(tmp_string, "measured_current_%d", j);
 		reader_cnf.measured_current[j] = master.config.check_config(tmp_string);
 
 		if (j < 6) {
-			sprintf(tmp_string, "force_%d", j);
-			reader_cnf.force[j] = master.config.check_config(tmp_string);
+			sprintf(tmp_string, "computed_force_%d", j);
+			reader_cnf.computed_force[j] = master.config.check_config(tmp_string);
 
 			sprintf(tmp_string, "desired_force_%d", j);
 			reader_cnf.desired_force[j] = master.config.check_config(tmp_string);
 
-			sprintf(tmp_string, "filtered_force_%d", j);
-			reader_cnf.filtered_force[j] = master.config.check_config(tmp_string);
+			sprintf(tmp_string, "adjusted_force_%d", j);
+			reader_cnf.adjusted_force[j] = master.config.check_config(tmp_string);
+
+			sprintf(tmp_string, "inertial_force_%d", j);
+			reader_cnf.inertial_force[j] = master.config.check_config(tmp_string);
 
 			sprintf(tmp_string, "desired_cartesian_position_%d", j);
 			reader_cnf.desired_cartesian_position[j] = master.config.check_config(tmp_string);
@@ -159,7 +163,7 @@ void reader_buffer::operator()()
 	}
 
 	// ustawienie priorytetu watku
-	if(!master.robot_test_mode) {
+	if (!master.robot_test_mode) {
 		lib::set_thread_priority(lib::PTHREAD_MIN_PRIORITY);
 	}
 
@@ -185,7 +189,7 @@ void reader_buffer::operator()()
 	for (;;) {
 		// TODO: why, Leo? Why?
 		// ustawienie priorytetu watku
-		if(!master.robot_test_mode) {
+		if (!master.robot_test_mode) {
 			lib::set_thread_priority(lib::PTHREAD_MIN_PRIORITY);
 		}
 
@@ -209,7 +213,7 @@ void reader_buffer::operator()()
 		master.msg->message("measures started");
 
 		// TODO: why, Leo? Why?
-		if(!master.robot_test_mode) {
+		if (!master.robot_test_mode) {
 			lib::set_thread_priority(lib::PTHREAD_MAX_PRIORITY);
 		}
 
@@ -254,8 +258,8 @@ void reader_buffer::operator()()
 
 		} while (!stop); // dopoki nie przyjdzie puls stopu
 
-		if(!master.robot_test_mode) {
-			lib::set_thread_priority(lib::PTHREAD_MIN_PRIORITY);// Najnizszy priorytet podczas proby zapisu do pliku
+		if (!master.robot_test_mode) {
+			lib::set_thread_priority(lib::PTHREAD_MIN_PRIORITY); // Najnizszy priorytet podczas proby zapisu do pliku
 		}
 		master.msg->message("measures stopped");
 
@@ -342,20 +346,22 @@ void reader_buffer::write_data_old_format(std::ofstream& outfile, const reader_d
 			outfile << data.current_joints[j] << " ";
 	}
 
-        for (int j = 0; j < master.number_of_servos; j++) {
-                if (reader_cnf.desired_joints[j])
-                        outfile << data.desired_joints[j] << " ";
-        }
+	for (int j = 0; j < master.number_of_servos; j++) {
+		if (reader_cnf.desired_joints[j])
+			outfile << data.desired_joints[j] << " ";
+	}
 
 	outfile << "f: ";
 
 	for (int j = 0; j < 6; j++) {
-		if (reader_cnf.force[j])
-			outfile << data.force[j] << " ";
+		if (reader_cnf.computed_force[j])
+			outfile << data.computed_force[j] << " ";
 		if (reader_cnf.desired_force[j])
 			outfile << data.desired_force[j] << " ";
-		if (reader_cnf.filtered_force[j])
-			outfile << data.filtered_force[j] << " ";
+		if (reader_cnf.adjusted_force[j])
+			outfile << data.adjusted_force[j] << " ";
+		if (reader_cnf.inertial_force[j])
+			outfile << data.inertial_force[j] << " ";
 	}
 
 	outfile << "k: ";
@@ -418,23 +424,25 @@ void reader_buffer::write_header_csv(std::ofstream& outfile)
 			outfile << "current_joints[" << j << "];";
 	}
 
-        for (int j = 0; j < master.number_of_servos; j++) {
-                if (reader_cnf.desired_joints[j])
-                        outfile << "desired_joints[" << j << "];";
-        }
+	for (int j = 0; j < master.number_of_servos; j++) {
+		if (reader_cnf.desired_joints[j])
+			outfile << "desired_joints[" << j << "];";
+	}
 
-        for (int j = 0; j < master.number_of_servos; j++) {
-                if (reader_cnf.pwm[j])
-                        outfile << "pwm[" << j << "];";
-        }
+	for (int j = 0; j < master.number_of_servos; j++) {
+		if (reader_cnf.pwm[j])
+			outfile << "pwm[" << j << "];";
+	}
 
 	for (int j = 0; j < 6; j++) {
-		if (reader_cnf.force[j])
-			outfile << "force[" << j << "];";
+		if (reader_cnf.computed_force[j])
+			outfile << "computed_force[" << j << "];";
 		if (reader_cnf.desired_force[j])
 			outfile << "desired_force[" << j << "];";
-		if (reader_cnf.filtered_force[j])
-			outfile << "filtered_force[" << j << "];";
+		if (reader_cnf.adjusted_force[j])
+			outfile << "adjusted_force[" << j << "];";
+		if (reader_cnf.inertial_force[j])
+			outfile << "inertial_force[" << j << "];";
 	}
 
 	for (int j = 0; j < 6; j++) {
@@ -474,8 +482,8 @@ void reader_buffer::write_data_csv(std::ofstream& outfile, const reader_data & d
 			outfile << data.current_inc[j] << ";";
 		if (reader_cnf.measured_current[j])
 			outfile << data.measured_current[j] << ";";
-                //if (reader_cnf.pwm[j])
-                //	outfile << data.pwm[j] << ";";
+		//if (reader_cnf.pwm[j])
+		//	outfile << data.pwm[j] << ";";
 		if (reader_cnf.uchyb[j])
 			outfile << data.uchyb[j] << ";";
 		if (reader_cnf.abs_pos[j])
@@ -487,23 +495,25 @@ void reader_buffer::write_data_csv(std::ofstream& outfile, const reader_data & d
 			outfile << data.current_joints[j] << ";";
 	}
 
-        for (int j = 0; j < master.number_of_servos; j++) {
-                if (reader_cnf.desired_joints[j])
-                        outfile << data.desired_joints[j] << ";";
-        }
+	for (int j = 0; j < master.number_of_servos; j++) {
+		if (reader_cnf.desired_joints[j])
+			outfile << data.desired_joints[j] << ";";
+	}
 
-        for (int j = 0; j < master.number_of_servos; j++) {
-            if (reader_cnf.pwm[j])
-                    outfile << data.pwm[j] << ";";
-        }
+	for (int j = 0; j < master.number_of_servos; j++) {
+		if (reader_cnf.pwm[j])
+			outfile << data.pwm[j] << ";";
+	}
 
 	for (int j = 0; j < 6; j++) {
-		if (reader_cnf.force[j])
-			outfile << data.force[j] << ";";
+		if (reader_cnf.computed_force[j])
+			outfile << data.computed_force[j] << ";";
 		if (reader_cnf.desired_force[j])
 			outfile << data.desired_force[j] << ";";
-		if (reader_cnf.filtered_force[j])
-			outfile << data.filtered_force[j] << ";";
+		if (reader_cnf.adjusted_force[j])
+			outfile << data.adjusted_force[j] << ";";
+		if (reader_cnf.inertial_force[j])
+			outfile << data.inertial_force[j] << ";";
 	}
 
 	for (int j = 0; j < 6; j++) {

@@ -17,8 +17,9 @@
 
 #include "base/lib/condition_synchroniser.h"
 #include "base/kinematics/kinematics_manager.h"
-#include "base/edp/in_out.h"
-#include "base/edp/edp_effector.h"
+#include "in_out.h"
+#include "edp_effector.h"
+#include "edp_dp.h"
 #include "base/lib/exception.h"
 
 #include <boost/function.hpp>
@@ -148,7 +149,7 @@ protected:
 	void move_servos();
 
 	/*!
-	 * \brief motor position  currently computed in the servo
+	 * \brief current motor position taken in servo thread from hardware interface
 	 *
 	 * for the single step of servo control
 	 */
@@ -204,6 +205,8 @@ protected:
 	lib::MotorArray current_motor_pos;
 
 public:
+
+	bool servo_mode;
 
 	/*!
 	 * \brief method to read current joint position stored in global_current_joints
@@ -265,13 +268,6 @@ public:
 	 * This is dedicated thread that transmits joints positions to visualisation process.
 	 */
 	boost::shared_ptr <vis_server> vis_obj;
-
-	/*!
-	 * \brief force object to collect force measurements.
-	 *
-	 * The force measurements are collected in dedicated thread. Then the influence of gravitational force is removed in the same thread.
-	 */
-	boost::shared_ptr <sensor::force> vs;
 
 	/*!
 	 * \brief class constructor
@@ -370,6 +366,14 @@ public:
 	 * it is impossible to move robot in absolute coordinates before synchronisation.
 	 */
 	virtual void synchronise();
+
+	/*!
+	 * \brief method to unsynchronise robot
+	 *
+	 * it is impossible to move robot in absolute coordinates before synchronisation.
+	 */
+	virtual void unsynchronise();
+
 
 	/*!
 	 * \brief method to compute servo_current_motor_pos, servo_cuurent_joints_pos and surve_current_frame in child classes

@@ -1,5 +1,6 @@
 # Recurse into subdirectories.
 
+include_directories ("${PROJECT_SOURCE_DIR}/src/robot/hi_moxa/settings")
 
 if(ROBOT_BIRD_HAND)
 add_subdirectory (bird_hand)

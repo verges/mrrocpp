@@ -72,8 +72,7 @@ void wgt_base::synchro_depended_init_slot()
 				synchro_depended_widgets_disable(true); // Wygaszanie elementow przy niezsynchronizowanym robocie
 		}
 	}
-	CATCH_SECTION_UI_PTR
-}
+	CATCH_SECTION_UI_PTR}
 
 void wgt_base::init_and_copy()
 {
@@ -160,6 +159,26 @@ QDoubleSpinBox* wgt_base::create_spin_box_to_vector(QVector <QDoubleSpinBox*> &s
 	spin_box->setSingleStep(0.5);
 	spin_boxes.append(spin_box);
 	return spin_box;
+}
+
+QSpinBox* wgt_base::create_spin_box_to_vector(QVector <QSpinBox*> &spin_boxes)
+{
+	QSpinBox *spin_box;
+	spin_box = new QSpinBox(this);
+	spin_box->setMinimum(0);
+	spin_box->setMaximum(100);
+	spin_box->setSingleStep(1);
+	spin_boxes.append(spin_box);
+	return spin_box;
+}
+
+QLabel* wgt_base::create_label_to_vector(QVector <QLabel*> &labels_l)
+{
+	QLabel *label_l;
+	label_l = new QLabel(this);
+	labels_l.append(label_l);
+	return label_l;
+
 }
 
 void wgt_base::add_incremental_move_button(QPushButton *button, int row, int column)

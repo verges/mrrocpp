@@ -18,12 +18,12 @@ namespace common {
 
 /*--------------------------------------------------------------------------*/
 effector::effector(shell &_shell, const lib::robot_name_t & l_robot_name) :
-	server_attach(lib::invalid_fd),
-	edp_shell(_shell),
-	robot_name(l_robot_name),
-	config(_shell.config),
-	msg(_shell.msg),
-	robot_test_mode(true)
+		server_attach(lib::invalid_fd),
+		edp_shell(_shell),
+		robot_name(l_robot_name),
+		config(_shell.config),
+		msg(_shell.msg),
+		robot_test_mode(true)
 {
 
 	if (config.exists(lib::ROBOT_TEST_MODE)) {
@@ -38,7 +38,7 @@ effector::effector(shell &_shell, const lib::robot_name_t & l_robot_name) :
 
 effector::~effector()
 {
-	if(server_attach != lib::invalid_fd) {
+	if (server_attach != lib::invalid_fd) {
 		messip::port_delete(server_attach);
 	}
 }
@@ -46,8 +46,7 @@ effector::~effector()
 /*--------------------------------------------------------------------------*/
 void effector::initialize_communication()
 {
-	const std::string
-			server_attach_point(config.get_edp_resourceman_attach_point());
+	const std::string server_attach_point(config.get_edp_resourceman_attach_point());
 
 	server_attach = messip::port_create(server_attach_point);
 
@@ -58,7 +57,7 @@ void effector::initialize_communication()
 	}
 
 	/* Ustawienie priorytetu procesu */
-	if(!robot_test_mode) {
+	if (!robot_test_mode) {
 		lib::set_thread_priority(lib::PTHREAD_MAX_PRIORITY - 2);
 	}
 

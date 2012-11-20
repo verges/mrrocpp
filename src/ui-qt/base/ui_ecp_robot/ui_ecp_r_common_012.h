@@ -16,7 +16,7 @@ namespace common {
 class UiRobot;
 }
 
-namespace common012 {
+namespace common_012 {
 
 // ---------------------------------------------------------------
 class EcpRobot : public common::EcpRobot
